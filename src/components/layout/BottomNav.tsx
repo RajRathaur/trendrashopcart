@@ -13,7 +13,7 @@ export const BottomNav = () => {
     { icon: Search, label: 'Explore', path: '/products' },
     { icon: Heart, label: 'Wishlist', path: '/wishlist' },
     { icon: ShoppingCart, label: 'Cart', path: '/cart', badge: itemCount },
-    { icon: User, label: user ? 'Account' : 'Login', path: user ? '/profile' : '/login' },
+    { icon: User, label: user ? 'Account' : 'Login', path: user ? '/orders' : '/login' },
   ];
 
   return (
