@@ -1,11 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Store, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
-
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
-
-  return (
-    <footer className="bg-foreground text-primary-foreground mt-auto">
+  return <footer className="bg-foreground text-primary-foreground mt-auto">
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* About */}
@@ -63,8 +60,7 @@ export const Footer = () => {
                 <Phone className="h-4 w-4" />
                 1800-123-4567
               </li>
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
+              <li className="flex items-center gap-2">email- trendra.care.ac.in@gmail.com<Mail className="h-4 w-4" />
                 support@shopkart.in
               </li>
               <li className="flex items-start gap-2">
@@ -99,6 +95,5 @@ export const Footer = () => {
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
