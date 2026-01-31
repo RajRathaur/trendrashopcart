@@ -22,8 +22,35 @@ const LoginPage = () => {
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation
+    if (!formData.email.trim()) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    if (!formData.password || formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
+    if (!isLogin && !formData.fullName.trim()) {
+      toast.error('Please enter your full name');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -32,14 +59,9 @@ const LoginPage = () => {
         if (error) throw error;
         toast.success('Welcome back!');
       } else {
-        if (!formData.fullName.trim()) {
-          toast.error('Please enter your full name');
-          setLoading(false);
-          return;
-        }
         const { error } = await signUp(formData.email, formData.password, formData.fullName);
         if (error) throw error;
-        toast.success('Account created successfully!');
+        toast.success('Account created! Please check your email to verify.');
       }
       navigate(redirect);
     } catch (error: any) {
@@ -200,14 +222,10 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Seller & Admin Links */}
+          {/* Seller Link */}
           <div className="mt-6 text-center text-sm text-muted-foreground">
             <Link to="/become-seller" className="text-primary hover:underline">
               Sell on ShopKart
-            </Link>
-            <span className="mx-2">•</span>
-            <Link to="/admin/login" className="hover:text-primary">
-              Admin Login
             </Link>
           </div>
         </div>

@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { Store, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
 
 export const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-foreground text-primary-foreground mt-auto">
       <div className="container mx-auto px-4 py-10">
@@ -16,10 +18,18 @@ export const Footer = () => {
               India's favorite online shopping destination. Shop for fashion, electronics, home & more.
             </p>
             <div className="flex gap-3">
-              <Facebook className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
-              <Twitter className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
-              <Instagram className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
-              <Youtube className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <Facebook className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <Twitter className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <Instagram className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <Youtube className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
+              </a>
             </div>
           </div>
 
@@ -27,10 +37,10 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm text-primary-foreground/70">
-              <li><Link to="/about" className="hover:text-primary-foreground">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-primary-foreground">Contact Us</Link></li>
-              <li><Link to="/become-seller" className="hover:text-primary-foreground">Sell on ShopKart</Link></li>
-              <li><Link to="/careers" className="hover:text-primary-foreground">Careers</Link></li>
+              <li><Link to="/about" className="hover:text-primary-foreground transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-primary-foreground transition-colors">Contact Us</Link></li>
+              <li><Link to="/become-seller" className="hover:text-primary-foreground transition-colors">Sell on ShopKart</Link></li>
+              <li><Link to="/about" className="hover:text-primary-foreground transition-colors">Careers</Link></li>
             </ul>
           </div>
 
@@ -38,10 +48,10 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Customer Service</h3>
             <ul className="space-y-2 text-sm text-primary-foreground/70">
-              <li><Link to="/help" className="hover:text-primary-foreground">Help Center</Link></li>
-              <li><Link to="/track-order" className="hover:text-primary-foreground">Track Order</Link></li>
-              <li><Link to="/returns" className="hover:text-primary-foreground">Returns & Refunds</Link></li>
-              <li><Link to="/shipping" className="hover:text-primary-foreground">Shipping Info</Link></li>
+              <li><Link to="/help" className="hover:text-primary-foreground transition-colors">Help Center</Link></li>
+              <li><Link to="/orders" className="hover:text-primary-foreground transition-colors">Track Order</Link></li>
+              <li><Link to="/help" className="hover:text-primary-foreground transition-colors">Returns & Refunds</Link></li>
+              <li><Link to="/help" className="hover:text-primary-foreground transition-colors">Shipping Info</Link></li>
             </ul>
           </div>
 
@@ -85,7 +95,7 @@ export const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-primary-foreground/20 mt-8 pt-6 text-center">
           <p className="text-sm text-primary-foreground/50">
-            © 2024 ShopKart India Pvt. Ltd. All rights reserved.
+            © {currentYear} ShopKart India Pvt. Ltd. All rights reserved.
           </p>
         </div>
       </div>
