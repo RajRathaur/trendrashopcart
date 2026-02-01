@@ -1,7 +1,8 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Package, ArrowRight } from 'lucide-react';
+import { CheckCircle, Package, ArrowRight, MessageCircle } from 'lucide-react';
+import { ADMIN_CONFIG, getOrderWhatsAppLink } from '@/config/admin';
 
 const OrderSuccessPage = () => {
   const [searchParams] = useSearchParams();
@@ -31,6 +32,25 @@ const OrderSuccessPage = () => {
             <p className="text-2xl font-bold text-foreground">{orderNumber}</p>
             <p className="text-sm text-muted-foreground mt-2">
               Payment: Cash on Delivery (COD)
+            </p>
+          </div>
+
+          {/* WhatsApp Contact Card */}
+          <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-4 mb-6">
+            <p className="text-sm text-muted-foreground mb-3">
+              Have questions about your order? Contact us on WhatsApp!
+            </p>
+            <a
+              href={getOrderWhatsAppLink(orderNumber)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Chat on WhatsApp
+            </a>
+            <p className="text-xs text-muted-foreground mt-2">
+              {ADMIN_CONFIG.whatsapp.displayNumber}
             </p>
           </div>
 
