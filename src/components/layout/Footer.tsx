@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Store, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Store, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
+import { ADMIN_CONFIG, getWhatsAppLink } from '@/config/admin';
+
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
   return <footer className="bg-foreground text-primary-foreground mt-auto">
@@ -9,22 +11,22 @@ export const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Store className="h-6 w-6" />
-              <span className="text-lg font-bold">ShopKart</span>
+              <span className="text-lg font-bold">Trendra</span>
             </div>
             <p className="text-sm text-primary-foreground/70 mb-4">
               India's favorite online shopping destination. Shop for fashion, electronics, home & more.
             </p>
             <div className="flex gap-3">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <a href={ADMIN_CONFIG.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                 <Facebook className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              <a href={ADMIN_CONFIG.social.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter">
                 <Twitter className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <a href={ADMIN_CONFIG.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <Instagram className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <a href={ADMIN_CONFIG.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                 <Youtube className="h-5 w-5 cursor-pointer hover:text-primary transition-colors" />
               </a>
             </div>
@@ -36,7 +38,7 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm text-primary-foreground/70">
               <li><Link to="/about" className="hover:text-primary-foreground transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-primary-foreground transition-colors">Contact Us</Link></li>
-              <li><Link to="/become-seller" className="hover:text-primary-foreground transition-colors">Sell on ShopKart</Link></li>
+              <li><Link to="/become-seller" className="hover:text-primary-foreground transition-colors">Sell on Trendra</Link></li>
               <li><Link to="/about" className="hover:text-primary-foreground transition-colors">Careers</Link></li>
             </ul>
           </div>
@@ -58,14 +60,23 @@ export const Footer = () => {
             <ul className="space-y-3 text-sm text-primary-foreground/70">
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                1800-123-4567
+                {ADMIN_CONFIG.phone.tollFree}
               </li>
-              <li className="flex items-center gap-2">email- trendra.care.ac.in@gmail.com<Mail className="h-4 w-4" />
-                support@shopkart.in
+              <li>
+                <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-400 transition-colors">
+                  <MessageCircle className="h-4 w-4" />
+                  WhatsApp: {ADMIN_CONFIG.whatsapp.displayNumber}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${ADMIN_CONFIG.email.primary}`} className="flex items-center gap-2 hover:text-primary-foreground transition-colors">
+                  <Mail className="h-4 w-4" />
+                  {ADMIN_CONFIG.email.primary}
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5" />
-                <span>ShopKart India Pvt. Ltd.<br />Bengaluru, Karnataka 560001</span>
+                <span>{ADMIN_CONFIG.address.company}<br />{ADMIN_CONFIG.address.city}, {ADMIN_CONFIG.address.state} {ADMIN_CONFIG.address.pincode}</span>
               </li>
             </ul>
           </div>

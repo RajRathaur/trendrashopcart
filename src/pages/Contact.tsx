@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, MessageSquare, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { ADMIN_CONFIG, getWhatsAppLink } from '@/config/admin';
 
 const ContactPage = () => {
   const [loading, setLoading] = useState(false);
@@ -76,8 +77,26 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="font-medium">Phone</h3>
-                    <p className="text-sm text-muted-foreground">1800-123-4567</p>
-                    <p className="text-sm text-muted-foreground">+91 9876543210</p>
+                    <p className="text-sm text-muted-foreground">{ADMIN_CONFIG.phone.tollFree}</p>
+                    <p className="text-sm text-muted-foreground">{ADMIN_CONFIG.phone.mobile}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
+                    <MessageCircle className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">WhatsApp</h3>
+                    <a 
+                      href={getWhatsAppLink('Hi! I need help with my order.')} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-green-600 hover:text-green-700 font-medium"
+                    >
+                      {ADMIN_CONFIG.whatsapp.displayNumber}
+                    </a>
+                    <p className="text-xs text-muted-foreground mt-1">Click to chat with us</p>
                   </div>
                 </div>
 
@@ -87,8 +106,13 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="font-medium">Email</h3>
-                    <p className="text-sm text-muted-foreground">support@shopkart.in</p>
-                    <p className="text-sm text-muted-foreground">help@shopkart.in</p>
+                    <a href={`mailto:${ADMIN_CONFIG.email.primary}`} className="text-sm text-muted-foreground hover:text-primary">
+                      {ADMIN_CONFIG.email.primary}
+                    </a>
+                    <br />
+                    <a href={`mailto:${ADMIN_CONFIG.email.support}`} className="text-sm text-muted-foreground hover:text-primary">
+                      {ADMIN_CONFIG.email.support}
+                    </a>
                   </div>
                 </div>
 
@@ -99,9 +123,9 @@ const ContactPage = () => {
                   <div>
                     <h3 className="font-medium">Address</h3>
                     <p className="text-sm text-muted-foreground">
-                      ShopKart India Pvt. Ltd.<br />
-                      123 Commerce Street<br />
-                      Bengaluru, Karnataka 560001
+                      {ADMIN_CONFIG.address.company}<br />
+                      {ADMIN_CONFIG.address.street}<br />
+                      {ADMIN_CONFIG.address.city}, {ADMIN_CONFIG.address.state} {ADMIN_CONFIG.address.pincode}
                     </p>
                   </div>
                 </div>
@@ -113,8 +137,8 @@ const ContactPage = () => {
                   <div>
                     <h3 className="font-medium">Business Hours</h3>
                     <p className="text-sm text-muted-foreground">
-                      Monday - Saturday<br />
-                      9:00 AM - 8:00 PM IST
+                      {ADMIN_CONFIG.businessHours.days}<br />
+                      {ADMIN_CONFIG.businessHours.time}
                     </p>
                   </div>
                 </div>
