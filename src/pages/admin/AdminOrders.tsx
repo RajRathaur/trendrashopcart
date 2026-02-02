@@ -62,8 +62,12 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
-      navigate('/login');
+    if (!authLoading) {
+      if (!user) {
+        navigate('/login?redirect=/admin/orders', { replace: true });
+      } else if (!isAdmin) {
+        navigate('/', { replace: true });
+      }
     }
   }, [user, authLoading, isAdmin, navigate]);
 

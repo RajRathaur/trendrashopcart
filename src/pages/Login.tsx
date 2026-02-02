@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Store, Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Store, Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const LoginPage = () => {
@@ -17,10 +17,22 @@ const LoginPage = () => {
     password: '',
   });
 
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      // If user is admin and no specific redirect, go to admin dashboard
+      if (isAdmin && redirect === '/') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(redirect, { replace: true });
+      }
+    }
+  }, [user, isAdmin, authLoading, navigate, redirect]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,18 +70,37 @@ const LoginPage = () => {
         const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
         toast.success('Welcome back!');
+        // Navigation handled by useEffect
       } else {
         const { error } = await signUp(formData.email, formData.password, formData.fullName);
         if (error) throw error;
         toast.success('Account created! Please check your email to verify.');
+        navigate(redirect);
       }
-      navigate(redirect);
     } catch (error: any) {
       toast.error(error.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }
   };
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // If already logged in, show loading (redirect happening)
+  if (user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex">

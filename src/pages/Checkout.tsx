@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { ChevronRight, Truck, Shield, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
+import { getOrderConfirmationWhatsAppLink, openWhatsApp } from '@/config/admin';
 
 const CheckoutPage = () => {
   const { items, totalAmount, clearCart } = useCart();
@@ -94,6 +95,26 @@ const CheckoutPage = () => {
 
       // Clear cart
       await clearCart();
+
+      // Generate WhatsApp message with all items
+      const productNames = items.map(item => item.product?.name || 'Unknown Product').join(', ');
+      const productIds = items.map(item => item.product_id).join(', ');
+      const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+      const deliveryAddress = `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`;
+
+      const whatsappUrl = getOrderConfirmationWhatsAppLink({
+        orderId: order.order_number,
+        productName: productNames,
+        productId: productIds,
+        quantity: totalQuantity,
+        price: finalAmount,
+        customerName: formData.fullName,
+        customerMobile: formData.phone,
+        deliveryAddress: deliveryAddress,
+      });
+
+      // Open WhatsApp with order details
+      openWhatsApp(whatsappUrl);
 
       toast.success('Order placed successfully!');
       navigate(`/order-success?order=${order.order_number}`);

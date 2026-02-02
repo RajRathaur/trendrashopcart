@@ -52,8 +52,12 @@ const AdminProducts = () => {
   });
 
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
-      navigate('/login');
+    if (!authLoading) {
+      if (!user) {
+        navigate('/login?redirect=/admin/products', { replace: true });
+      } else if (!isAdmin) {
+        navigate('/', { replace: true });
+      }
     }
   }, [user, authLoading, isAdmin, navigate]);
 
