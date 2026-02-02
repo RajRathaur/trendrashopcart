@@ -23,8 +23,13 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
-      navigate('/login');
+    // Only redirect if auth is done loading and user is not admin
+    if (!authLoading) {
+      if (!user) {
+        navigate('/login?redirect=/admin', { replace: true });
+      } else if (!isAdmin) {
+        navigate('/', { replace: true });
+      }
     }
   }, [user, authLoading, isAdmin, navigate]);
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,14 +7,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/types';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
+import { useAuth } from '@/hooks/useAuth';
 import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus, Minus, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { getOrderConfirmationWhatsAppLink, openWhatsApp } from '@/config/admin';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { user, profile } = useAuth();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -23,6 +27,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState<'available' | 'unavailable' | null>(null);
+  const [buyNowLoading, setBuyNowLoading] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -132,10 +137,57 @@ const ProductDetail = () => {
     addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
   };
 
-  const handleBuyNow = () => {
-    handleAddToCart();
-    // Navigate to cart/checkout
-    window.location.href = '/cart';
+  const handleBuyNow = async () => {
+    if (!product) return;
+    
+    // Validate selections
+    if (product.sizes?.length && !selectedSize) {
+      toast.error('Please select a size');
+      return;
+    }
+    if (product.colors?.length && !selectedColor) {
+      toast.error('Please select a color');
+      return;
+    }
+
+    // If user is not logged in, redirect to login
+    if (!user) {
+      toast.info('Please login to continue');
+      navigate('/login?redirect=/product/' + id);
+      return;
+    }
+
+    setBuyNowLoading(true);
+
+    try {
+      // Generate WhatsApp message with product details
+      const whatsappUrl = getOrderConfirmationWhatsAppLink({
+        orderId: 'PENDING',
+        productName: product.name,
+        productId: product.id,
+        quantity: quantity,
+        price: product.price * quantity,
+        customerName: profile?.full_name || 'Customer',
+        customerMobile: profile?.phone || 'Not provided',
+        deliveryAddress: profile?.address 
+          ? `${profile.address}, ${profile.city || ''}, ${profile.state || ''} - ${profile.pincode || ''}`
+          : 'Not provided - will be collected at checkout',
+      });
+
+      // Add to cart first
+      addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
+
+      // Open WhatsApp
+      openWhatsApp(whatsappUrl);
+
+      // Navigate to cart/checkout
+      navigate('/cart');
+    } catch (error) {
+      console.error('Buy now error:', error);
+      toast.error('Something went wrong');
+    } finally {
+      setBuyNowLoading(false);
+    }
   };
 
   if (loading) {
@@ -360,8 +412,9 @@ const ProductDetail = () => {
                 onClick={handleBuyNow}
                 className="flex-1 btn-deal"
                 size="lg"
+                disabled={buyNowLoading}
               >
-                Buy Now
+                {buyNowLoading ? 'Processing...' : 'Buy Now'}
               </Button>
             </div>
 
