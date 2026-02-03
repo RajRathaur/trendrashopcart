@@ -55,8 +55,15 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
           <Heart className={cn('h-4 w-4', isWishlisted && 'fill-current')} />
         </button>
 
+        {/* Sale Badge for Featured Products */}
+        {product.is_featured && (
+          <div className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md shadow-md">
+            🔥 SALE
+          </div>
+        )}
+
         {/* Discount Badge */}
-        {product.discount_percent > 0 && (
+        {product.discount_percent > 0 && !product.is_featured && (
           <div className="deal-badge absolute top-2 left-2">
             {product.discount_percent}% OFF
           </div>
