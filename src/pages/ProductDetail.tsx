@@ -96,32 +96,15 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
-  const checkPincode = async () => {
+  const checkPincode = () => {
     if (pincode.length !== 6) {
       toast.error('Please enter a valid 6-digit pincode');
       return;
     }
 
-    try {
-      const { data } = await supabase
-        .from('delivery_pincodes')
-        .select('*')
-        .eq('pincode', pincode)
-        .eq('is_active', true)
-        .single();
-
-      if (data) {
-        setPincodeStatus('available');
-        toast.success(`Delivery available in ${data.delivery_days} days`);
-      } else {
-        setPincodeStatus('unavailable');
-        toast.error('Delivery not available at this pincode');
-      }
-    } catch {
-      // Demo: show available
-      setPincodeStatus('available');
-      toast.success('Delivery available in 3-5 days');
-    }
+    // All pincodes are allowed - delivery available everywhere
+    setPincodeStatus('available');
+    toast.success('Delivery available in 3-5 days');
   };
 
   const handleAddToCart = () => {
