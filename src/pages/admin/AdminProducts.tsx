@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ProductImageUpload } from '@/components/admin/ProductImageUpload';
 import {
   Table,
   TableBody,
@@ -22,7 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Loader2, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Flame } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Product {
@@ -32,8 +34,10 @@ interface Product {
   mrp: number;
   stock: number;
   is_active: boolean;
+  is_featured: boolean;
   slug: string;
   seller_id: string;
+  images: string[];
 }
 
 const AdminProducts = () => {
@@ -49,6 +53,8 @@ const AdminProducts = () => {
     mrp: '',
     stock: '',
     description: '',
+    imageUrl: '',
+    isFeatured: false,
   });
 
   useEffect(() => {
@@ -89,6 +95,7 @@ const AdminProducts = () => {
 
     try {
       const slug = formData.name.toLowerCase().replace(/\s+/g, '-');
+      const images = formData.imageUrl ? [formData.imageUrl] : [];
       
       if (editingProduct) {
         const { error } = await supabase
@@ -99,6 +106,8 @@ const AdminProducts = () => {
             mrp: parseFloat(formData.mrp),
             stock: parseInt(formData.stock),
             slug,
+            images,
+            is_featured: formData.isFeatured,
           })
           .eq('id', editingProduct.id);
 
@@ -125,6 +134,8 @@ const AdminProducts = () => {
           slug,
           seller_id: sellers.id,
           description: formData.description,
+          images,
+          is_featured: formData.isFeatured,
         });
 
         if (error) throw error;
@@ -133,7 +144,7 @@ const AdminProducts = () => {
 
       setDialogOpen(false);
       setEditingProduct(null);
-      setFormData({ name: '', price: '', mrp: '', stock: '', description: '' });
+      setFormData({ name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', isFeatured: false });
       fetchProducts();
     } catch (error: any) {
       console.error('Error saving product:', error);
@@ -149,6 +160,8 @@ const AdminProducts = () => {
       mrp: product.mrp.toString(),
       stock: product.stock.toString(),
       description: '',
+      imageUrl: product.images?.[0] || '',
+      isFeatured: product.is_featured || false,
     });
     setDialogOpen(true);
   };
@@ -184,7 +197,7 @@ const AdminProducts = () => {
             <DialogTrigger asChild>
               <Button onClick={() => {
                 setEditingProduct(null);
-                setFormData({ name: '', price: '', mrp: '', stock: '', description: '' });
+                setFormData({ name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', isFeatured: false });
               }}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Product
@@ -196,7 +209,13 @@ const AdminProducts = () => {
                   {editingProduct ? 'Edit Product' : 'Add New Product'}
                 </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                {/* Image Upload */}
+                <ProductImageUpload
+                  imageUrl={formData.imageUrl}
+                  onImageChange={(url) => setFormData({ ...formData, imageUrl: url })}
+                />
+
                 <div>
                   <Label htmlFor="name">Name</Label>
                   <Input
@@ -248,6 +267,25 @@ const AdminProducts = () => {
                     />
                   </div>
                 )}
+
+                {/* High Discount / Sale Checkbox */}
+                <div className="flex items-center space-x-2 py-2">
+                  <Checkbox
+                    id="isFeatured"
+                    checked={formData.isFeatured}
+                    onCheckedChange={(checked) => 
+                      setFormData({ ...formData, isFeatured: checked === true })
+                    }
+                  />
+                  <Label 
+                    htmlFor="isFeatured" 
+                    className="flex items-center gap-2 cursor-pointer font-normal"
+                  >
+                    <Flame className="h-4 w-4 text-destructive" />
+                    Mark as High Discount / Sale
+                  </Label>
+                </div>
+
                 <Button type="submit" className="w-full">
                   {editingProduct ? 'Update Product' : 'Add Product'}
                 </Button>
@@ -265,6 +303,7 @@ const AdminProducts = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>MRP</TableHead>
@@ -276,14 +315,39 @@ const AdminProducts = () => {
               <TableBody>
                 {products.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       No products found
                     </TableCell>
                   </TableRow>
                 ) : (
                   products.map((product) => (
                     <TableRow key={product.id}>
-                      <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell>
+                        <div className="w-12 h-12 rounded overflow-hidden bg-muted">
+                          {product.images?.[0] ? (
+                            <img 
+                              src={product.images[0]} 
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                              No img
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {product.name}
+                          {product.is_featured && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-destructive text-destructive-foreground">
+                              <Flame className="h-3 w-3" />
+                              SALE
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>₹{product.price}</TableCell>
                       <TableCell>₹{product.mrp}</TableCell>
                       <TableCell>{product.stock}</TableCell>
