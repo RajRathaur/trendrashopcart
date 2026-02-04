@@ -221,21 +221,27 @@ const Index = () => {
         />
 
         {/* Trust Badges */}
-        <section className="py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="py-10">
+          <div className="text-center mb-8">
+            <h2 className="section-title justify-center">Why Shop with Trendra?</h2>
+            <p className="text-muted-foreground mt-2">Trusted by millions of customers across India</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
-              { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹499' },
-              { icon: '💵', title: 'Cash on Delivery', desc: 'Pay when you receive' },
-              { icon: '↩️', title: 'Easy Returns', desc: '7 days return policy' },
-              { icon: '🔒', title: '100% Secure', desc: 'Safe & secure shopping' },
+              { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹499', gradient: 'from-blue-500 to-cyan-500' },
+              { icon: '💵', title: 'Cash on Delivery', desc: 'Pay when you receive', gradient: 'from-green-500 to-emerald-500' },
+              { icon: '↩️', title: 'Easy Returns', desc: '7 days return policy', gradient: 'from-orange-500 to-amber-500' },
+              { icon: '🔒', title: '100% Secure', desc: 'Safe & secure shopping', gradient: 'from-purple-500 to-pink-500' },
             ].map((item, i) => (
               <div
                 key={i}
-                className="bg-card p-4 rounded-lg shadow-sm text-center"
+                className="trust-badge group cursor-pointer"
               >
-                <span className="text-3xl mb-2 block">{item.icon}</span>
-                <h3 className="font-semibold text-foreground">{item.title}</h3>
-                <p className="text-xs text-muted-foreground">{item.desc}</p>
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${item.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <span className="text-3xl">{item.icon}</span>
+                </div>
+                <h3 className="font-bold text-foreground text-lg group-hover:text-primary transition-colors duration-300">{item.title}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
               </div>
             ))}
           </div>
