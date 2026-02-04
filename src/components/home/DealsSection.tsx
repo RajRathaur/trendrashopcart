@@ -63,31 +63,33 @@ export const DealsSection = ({ products, title, type, loading }: DealsSectionPro
   if (products.length === 0) return null;
 
   return (
-    <section className="py-6">
-      <div className="bg-card rounded-xl p-4 shadow-sm">
+    <section className="py-8">
+      <div className="bg-card rounded-2xl p-6 shadow-sm border border-border/50 transition-all duration-300 hover:shadow-md">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg bg-gradient-to-r ${config.gradient}`}>
-              <Icon className="h-5 w-5 text-white" />
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-xl bg-gradient-to-br ${config.gradient} shadow-lg`}>
+              <Icon className="h-6 w-6 text-white" />
             </div>
             <div>
               <h2 className="section-title">{title}</h2>
-              <span className="text-xs text-muted-foreground">{config.badge}</span>
+              <span className="text-sm text-muted-foreground font-medium">{config.badge}</span>
             </div>
           </div>
           <Link to={`/products?type=${type}`}>
-            <Button variant="ghost" size="sm" className="text-primary">
+            <Button variant="outline" size="sm" className="group border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
               View All
-              <ChevronRight className="h-4 w-4 ml-1" />
+              <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
         </div>
 
         {/* Products */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {products.slice(0, 6).map((product) => (
-            <ProductCard key={product.id} product={product} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+          {products.slice(0, 6).map((product, index) => (
+            <div key={product.id} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       </div>

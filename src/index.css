@@ -176,49 +176,87 @@
 }
 
 @layer components {
-  /* Product card styling */
+  /* Product card styling - Flipkart inspired */
   .product-card {
-    @apply bg-card rounded-lg overflow-hidden transition-all duration-300;
-    box-shadow: var(--shadow-product);
+    @apply bg-card rounded-xl overflow-hidden transition-all duration-300 border border-transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
   .product-card:hover {
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    transform: translateY(-6px);
+    border-color: hsl(var(--primary) / 0.2);
   }
 
-  /* Deal badge */
+  /* Deal badge with shine effect */
   .deal-badge {
-    @apply inline-flex items-center px-2 py-1 text-xs font-bold rounded;
+    @apply inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md;
     background: var(--gradient-deal);
     color: hsl(var(--deal-foreground));
+    animation: shine 3s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .deal-badge::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    transform: rotate(30deg);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(30deg); }
+    100% { transform: translateX(100%) rotate(30deg); }
   }
 
   /* Rating stars */
   .rating-badge {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded;
-    background-color: hsl(var(--success));
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-md;
+    background: linear-gradient(135deg, hsl(142, 71%, 45%) 0%, hsl(142, 71%, 35%) 100%);
     color: hsl(var(--success-foreground));
   }
 
   /* COD badge */
   .cod-badge {
-    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded border;
+    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md border;
     border-color: hsl(var(--success));
     color: hsl(var(--success));
-    background: hsl(var(--success) / 0.1);
+    background: hsl(var(--success) / 0.08);
   }
 
-  /* Primary button gradient */
+  /* Primary button gradient with hover effect */
   .btn-primary-gradient {
     background: var(--gradient-primary);
-    @apply text-primary-foreground font-semibold;
+    @apply text-primary-foreground font-semibold transition-all duration-300;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-primary-gradient:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transform: translateY(-1px);
   }
 
   /* Deal button */
   .btn-deal {
     background: var(--gradient-deal);
-    @apply text-white font-semibold;
+    @apply text-white font-semibold transition-all duration-300;
+    box-shadow: 0 4px 14px hsl(24, 95%, 53%, 0.3);
+  }
+
+  .btn-deal:hover {
+    box-shadow: 0 6px 20px hsl(24, 95%, 53%, 0.4);
+    transform: translateY(-1px);
   }
 
   /* Hero section */
@@ -231,7 +269,7 @@
     background: var(--gradient-banner);
   }
 
-  /* Discount text */
+  /* Discount text with pulse */
   .discount-text {
     color: hsl(var(--success));
     @apply font-semibold;
@@ -242,13 +280,16 @@
     @apply text-muted-foreground line-through text-sm;
   }
 
-  /* Category card */
+  /* Category card - enhanced */
   .category-card {
-    @apply flex flex-col items-center p-4 bg-card rounded-lg cursor-pointer transition-all duration-200;
+    @apply flex flex-col items-center p-4 bg-card rounded-xl cursor-pointer transition-all duration-300 border border-transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
   .category-card:hover {
-    @apply shadow-md scale-105;
+    @apply shadow-lg;
+    transform: translateY(-4px) scale(1.02);
+    border-color: hsl(var(--primary) / 0.2);
   }
 
   /* Section title */
@@ -261,20 +302,27 @@
     @apply focus:ring-2 focus:ring-primary focus:border-primary;
   }
 
-  /* Navbar */
+  /* Navbar - Premium look */
   .navbar {
     background: var(--gradient-primary);
     @apply text-primary-foreground;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
-  /* Search bar */
+  /* Search bar - enhanced */
   .search-bar {
-    @apply bg-white text-foreground rounded-md;
+    @apply bg-white text-foreground rounded-lg transition-all duration-300;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .search-bar:focus {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   /* Mobile bottom nav */
   .bottom-nav {
     @apply fixed bottom-0 left-0 right-0 bg-card border-t z-50 md:hidden;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
   }
 
   /* Pincode check */
@@ -289,40 +337,94 @@
 
   /* Admin panel */
   .admin-stat-card {
-    @apply bg-card p-6 rounded-xl shadow-md border;
+    @apply bg-card p-6 rounded-xl shadow-md border transition-all duration-300;
+  }
+
+  .admin-stat-card:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
   }
 
   /* Seller dashboard */
   .seller-card {
-    @apply bg-card p-4 rounded-lg border shadow-sm;
+    @apply bg-card p-4 rounded-lg border shadow-sm transition-all duration-300;
   }
 
-  /* Order status badges */
+  .seller-card:hover {
+    @apply shadow-md;
+  }
+
+  /* Order status badges - animated */
   .status-pending {
-    @apply bg-warning/20 text-warning-foreground border border-warning px-2 py-1 rounded text-xs font-medium;
+    @apply bg-warning/20 text-warning-foreground border border-warning px-2.5 py-1 rounded-md text-xs font-medium;
     color: hsl(var(--warning));
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
 
   .status-confirmed {
-    @apply bg-primary/20 text-primary px-2 py-1 rounded text-xs font-medium;
+    @apply bg-primary/20 text-primary px-2.5 py-1 rounded-md text-xs font-medium;
   }
 
   .status-shipped {
-    @apply bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium;
+    @apply bg-blue-100 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium;
   }
 
   .status-delivered {
-    @apply px-2 py-1 rounded text-xs font-medium;
+    @apply px-2.5 py-1 rounded-md text-xs font-medium;
     background: hsl(var(--success) / 0.2);
     color: hsl(var(--success));
   }
 
   .status-cancelled {
-    @apply bg-destructive/20 text-destructive px-2 py-1 rounded text-xs font-medium;
+    @apply bg-destructive/20 text-destructive px-2.5 py-1 rounded-md text-xs font-medium;
   }
 
   .status-returned {
-    @apply bg-muted text-muted-foreground px-2 py-1 rounded text-xs font-medium;
+    @apply bg-muted text-muted-foreground px-2.5 py-1 rounded-md text-xs font-medium;
+  }
+
+  /* Trust badge card */
+  .trust-badge {
+    @apply bg-card p-5 rounded-xl shadow-sm text-center transition-all duration-300 border border-transparent;
+  }
+
+  .trust-badge:hover {
+    @apply shadow-md;
+    transform: translateY(-4px);
+    border-color: hsl(var(--primary) / 0.1);
+  }
+
+  /* Section card with gradient border */
+  .section-card {
+    @apply bg-card rounded-2xl p-5 shadow-sm border border-border/50;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05)) border-box;
+  }
+
+  /* Floating action button */
+  .fab {
+    @apply fixed bottom-20 right-4 md:bottom-6 z-40 p-4 rounded-full shadow-lg transition-all duration-300;
+    background: var(--gradient-primary);
+  }
+
+  .fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Price tag with animation */
+  .price-tag {
+    @apply text-lg font-bold text-foreground transition-all duration-300;
+  }
+
+  .price-tag:hover {
+    @apply scale-105;
+    color: hsl(var(--primary));
   }
 }
 

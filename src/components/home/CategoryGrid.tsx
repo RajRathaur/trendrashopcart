@@ -2,31 +2,39 @@ import { Link } from 'react-router-dom';
 import { Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby } from 'lucide-react';
 
 const categories = [
-  { name: 'Fashion', slug: 'fashion', icon: Shirt, color: 'bg-pink-100 text-pink-600' },
-  { name: 'Electronics', slug: 'electronics', icon: Smartphone, color: 'bg-blue-100 text-blue-600' },
-  { name: 'Home & Kitchen', slug: 'home-kitchen', icon: Home, color: 'bg-amber-100 text-amber-600' },
-  { name: 'Beauty', slug: 'beauty', icon: Sparkles, color: 'bg-purple-100 text-purple-600' },
-  { name: 'Grocery', slug: 'grocery', icon: ShoppingBasket, color: 'bg-green-100 text-green-600' },
-  { name: 'Laptops', slug: 'laptops', icon: Laptop, color: 'bg-slate-100 text-slate-600' },
-  { name: 'Watches', slug: 'watches', icon: Watch, color: 'bg-orange-100 text-orange-600' },
-  { name: 'Kids', slug: 'kids', icon: Baby, color: 'bg-cyan-100 text-cyan-600' },
+  { name: 'Fashion', slug: 'fashion', icon: Shirt, gradient: 'from-pink-500 to-rose-500', bg: 'bg-pink-50' },
+  { name: 'Electronics', slug: 'electronics', icon: Smartphone, gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-50' },
+  { name: 'Home & Kitchen', slug: 'home-kitchen', icon: Home, gradient: 'from-amber-500 to-orange-500', bg: 'bg-amber-50' },
+  { name: 'Beauty', slug: 'beauty', icon: Sparkles, gradient: 'from-purple-500 to-pink-500', bg: 'bg-purple-50' },
+  { name: 'Grocery', slug: 'grocery', icon: ShoppingBasket, gradient: 'from-green-500 to-emerald-500', bg: 'bg-green-50' },
+  { name: 'Laptops', slug: 'laptops', icon: Laptop, gradient: 'from-slate-500 to-gray-600', bg: 'bg-slate-50' },
+  { name: 'Watches', slug: 'watches', icon: Watch, gradient: 'from-orange-500 to-red-500', bg: 'bg-orange-50' },
+  { name: 'Kids', slug: 'kids', icon: Baby, gradient: 'from-cyan-500 to-blue-500', bg: 'bg-cyan-50' },
 ];
 
 export const CategoryGrid = () => {
   return (
-    <section className="py-6">
-      <h2 className="section-title mb-4">Shop by Category</h2>
-      <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-        {categories.map((category) => (
+    <section className="py-8">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="section-title">Shop by Category</h2>
+        <Link to="/products" className="text-sm font-medium text-primary hover:underline">
+          View All
+        </Link>
+      </div>
+      <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
+        {categories.map((category, index) => (
           <Link
             key={category.slug}
             to={`/products?category=${category.slug}`}
-            className="category-card"
+            className="category-card group"
+            style={{ animationDelay: `${index * 50}ms` }}
           >
-            <div className={`p-3 rounded-full ${category.color} mb-2`}>
-              <category.icon className="h-6 w-6" />
+            <div className={`p-4 rounded-2xl ${category.bg} mb-3 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
+              <div className={`p-2 rounded-xl bg-gradient-to-br ${category.gradient} shadow-md`}>
+                <category.icon className="h-6 w-6 text-white" />
+              </div>
             </div>
-            <span className="text-xs font-medium text-foreground text-center">
+            <span className="text-xs font-semibold text-foreground text-center group-hover:text-primary transition-colors duration-300">
               {category.name}
             </span>
           </Link>
