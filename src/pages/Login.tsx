@@ -4,7 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Store, Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { toast } from 'sonner';
 
 const LoginPage = () => {
@@ -106,13 +107,11 @@ const LoginPage = () => {
     <div className="min-h-screen bg-background flex">
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 hero-gradient items-center justify-center p-12">
-        <div className="max-w-md text-primary-foreground">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-14 h-14 bg-primary-foreground rounded-xl flex items-center justify-center">
-              <Store className="h-8 w-8 text-primary" />
+          <div className="max-w-md text-primary-foreground">
+            <div className="flex items-center gap-3 mb-8">
+              <img src={trendraLogo} alt="Trendra" className="w-14 h-14 rounded-xl object-cover" />
+              <span className="text-3xl font-bold">Trendra</span>
             </div>
-            <span className="text-3xl font-bold">ShopKart</span>
-          </div>
           <h1 className="text-4xl font-bold mb-4">
             India's #1 Online Shopping Destination
           </h1>
@@ -140,10 +139,8 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-              <Store className="h-7 w-7 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold text-primary">ShopKart</span>
+            <img src={trendraLogo} alt="Trendra" className="w-12 h-12 rounded-xl object-cover" />
+            <span className="text-2xl font-bold text-primary">Trendra</span>
           </div>
 
           <div className="bg-card rounded-xl shadow-lg p-8">
