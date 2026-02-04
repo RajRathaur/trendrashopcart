@@ -42,9 +42,9 @@ export const BannerSlider = ({
       <div className="flex transition-transform duration-500 ease-out" style={{
       transform: `translateX(-${currentIndex * 100}%)`
     }}>
-        {banners.map(banner => <div key={banner.id} className="min-w-full aspect-[21/9] md:aspect-[3/1]">
-            <a href={banner.link_url || '#'} className="block w-full h-full">
-              <img src={banner.image_url} alt={banner.title || 'Banner'} className="w-full h-full object-cover" />
+        {banners.map(banner => <div key={banner.id} className="min-w-full">
+            <a href={banner.link_url || '#'} className="block w-full">
+              <img src={banner.image_url} alt={banner.title || 'Banner'} className="w-full h-auto object-contain" />
             </a>
           </div>)}
       </div>
