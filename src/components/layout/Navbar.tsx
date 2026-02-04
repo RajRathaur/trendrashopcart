@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, MapPin, Store, Package } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, MapPin, Package, Store } from 'lucide-react';
+import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -85,12 +86,8 @@ export const Navbar = () => {
 
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary-foreground rounded-lg flex items-center justify-center">
-                <Store className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-xl font-bold text-primary-foreground hidden sm:block">trendra
-
-            </span>
+              <img src={trendraLogo} alt="Trendra" className="w-10 h-10 rounded-lg object-cover" />
+              <span className="text-xl font-bold text-primary-foreground hidden sm:block">Trendra</span>
             </Link>
 
             {/* Search Bar */}
