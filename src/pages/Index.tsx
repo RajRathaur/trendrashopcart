@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { BannerSlider } from '@/components/home/BannerSlider';
-import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { DealsSection } from '@/components/home/DealsSection';
+import { HeroSection } from '@/components/home/HeroSection';
+import { FlashSaleTimer } from '@/components/home/FlashSaleTimer';
+import { FloatingPromo } from '@/components/home/FloatingPromo';
+import { TestimonialsSection } from '@/components/home/TestimonialsSection';
+import { BrandsMarquee } from '@/components/home/BrandsMarquee';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
@@ -190,9 +194,23 @@ const Index = () => {
 
   return (
     <Layout>
+      {/* Floating Promo */}
+      <FloatingPromo />
+
       <div className="container mx-auto px-4 py-4">
+        {/* Hero Section */}
+        <HeroSection />
+
         {/* Banner Slider */}
-        <BannerSlider banners={demoBanners} />
+        {demoBanners.length > 0 && <BannerSlider banners={demoBanners} />}
+
+        {/* Flash Sale Timer */}
+        <div className="flex justify-center my-6">
+          <FlashSaleTimer />
+        </div>
+
+        {/* Brands Marquee */}
+        <BrandsMarquee />
 
         {/* Deals of the Day */}
         <DealsSection
@@ -217,6 +235,9 @@ const Index = () => {
           type="recommended"
           loading={loading}
         />
+
+        {/* Testimonials */}
+        <TestimonialsSection />
 
         {/* Trust Badges */}
         <section className="py-10">
