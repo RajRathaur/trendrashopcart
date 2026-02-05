@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby } from 'lucide-react';
+import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
 
 const categories = [
   { name: 'Fashion', slug: 'fashion', icon: Shirt, gradient: 'from-pink-500 to-rose-500', bg: 'bg-pink-50' },
@@ -15,31 +16,33 @@ const categories = [
 export const CategoryGrid = () => {
   return (
     <section className="py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="section-title">Shop by Category</h2>
-        <Link to="/products" className="text-sm font-medium text-primary hover:underline">
-          View All
-        </Link>
-      </div>
-      <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
-        {categories.map((category, index) => (
-          <Link
-            key={category.slug}
-            to={`/products?category=${category.slug}`}
-            className="category-card group"
-            style={{ animationDelay: `${index * 50}ms` }}
-          >
-            <div className={`p-4 rounded-2xl ${category.bg} mb-3 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
-              <div className={`p-2 rounded-xl bg-gradient-to-br ${category.gradient} shadow-md`}>
-                <category.icon className="h-6 w-6 text-white" />
-              </div>
-            </div>
-            <span className="text-xs font-semibold text-foreground text-center group-hover:text-primary transition-colors duration-300">
-              {category.name}
-            </span>
+      <ScrollReveal variant="fadeUp">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="section-title">Shop by Category</h2>
+          <Link to="/products" className="text-sm font-medium text-primary hover:underline">
+            View All
           </Link>
+        </div>
+      </ScrollReveal>
+      <StaggerContainer className="grid grid-cols-4 md:grid-cols-8 gap-4" staggerDelay={0.08}>
+        {categories.map((category) => (
+          <StaggerItem key={category.slug}>
+            <Link
+              to={`/products?category=${category.slug}`}
+              className="category-card group"
+            >
+              <div className={`p-4 rounded-2xl ${category.bg} mb-3 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
+                <div className={`p-2 rounded-xl bg-gradient-to-br ${category.gradient} shadow-md`}>
+                  <category.icon className="h-6 w-6 text-white" />
+                </div>
+              </div>
+              <span className="text-xs font-semibold text-foreground text-center group-hover:text-primary transition-colors duration-300">
+                {category.name}
+              </span>
+            </Link>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
     </section>
   );
 };
