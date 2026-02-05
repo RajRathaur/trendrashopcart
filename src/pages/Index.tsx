@@ -194,9 +194,6 @@ const Index = () => {
         {/* Banner Slider */}
         <BannerSlider banners={demoBanners} />
 
-        {/* Categories */}
-        <CategoryGrid />
-
         {/* Deals of the Day */}
         <DealsSection
           products={demoProducts.filter(p => p.discount_percent >= 50)}
