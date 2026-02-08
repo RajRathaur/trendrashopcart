@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Heart, Star, ShoppingCart } from 'lucide-react';
+import { Heart, Star, ShoppingCart, BadgeCheck } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/useCart';
@@ -36,61 +36,51 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
       className={cn('product-card block group', className)}
     >
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+      <div className="relative aspect-square overflow-hidden bg-white">
         <img
           src={imageUrl}
           alt={product.name}
-          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+          className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
-        
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
+
         {/* Wishlist Button */}
         <button
           onClick={handleWishlistToggle}
           className={cn(
-            'absolute top-3 right-3 p-2.5 rounded-full bg-card/90 backdrop-blur-sm shadow-lg transition-all duration-300 hover:scale-110',
+            'absolute top-2 right-2 p-2 rounded-full bg-card/95 shadow-sm transition-all duration-200',
             isWishlisted ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'
           )}
         >
-          <Heart className={cn('h-4 w-4 transition-transform duration-300', isWishlisted && 'fill-current scale-110')} />
+          <Heart className={cn('h-4 w-4', isWishlisted && 'fill-current')} />
         </button>
 
-        {/* Sale Badge for Featured Products */}
-        {product.is_featured && (
-          <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg animate-pulse">
-            🔥 SALE
-          </div>
-        )}
-
         {/* Discount Badge */}
-        {product.discount_percent > 0 && !product.is_featured && (
-          <div className="deal-badge absolute top-3 left-3 shadow-lg">
+        {product.discount_percent > 0 && (
+          <div className="absolute top-2 left-2 deal-badge">
             {product.discount_percent}% OFF
           </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="p-4">
+      {/* Content - Flipkart style: compact, info-dense */}
+      <div className="p-3">
         {/* Brand/Category */}
-        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5 font-medium">
+        <p className="text-[11px] text-muted-foreground font-medium mb-1">
           {product.category?.name || 'Trendra'}
         </p>
 
         {/* Product Name */}
-        <h3 className="font-semibold text-sm text-foreground line-clamp-2 mb-2.5 min-h-[2.5rem] group-hover:text-primary transition-colors duration-300">
+        <h3 className="text-sm text-foreground line-clamp-2 mb-1.5 min-h-[2.5rem] group-hover:text-primary transition-colors">
           {product.name}
         </h3>
 
         {/* Rating */}
         {product.rating > 0 && (
-          <div className="flex items-center gap-2 mb-3">
-            <div className="rating-badge shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="rating-badge">
               <span>{product.rating.toFixed(1)}</span>
-              <Star className="h-3 w-3 fill-current" />
+              <Star className="h-2.5 w-2.5 fill-current" />
             </div>
             <span className="text-xs text-muted-foreground">
               ({product.review_count?.toLocaleString()})
@@ -98,35 +88,43 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Price */}
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+        {/* Price - Flipkart style */}
+        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+          <span className="text-base font-bold text-foreground">
             ₹{product.price.toLocaleString('en-IN')}
           </span>
           {product.mrp > product.price && (
             <>
-              <span className="original-price">
+              <span className="original-price text-xs">
                 ₹{product.mrp.toLocaleString('en-IN')}
               </span>
-              <span className="discount-text text-xs bg-green-50 px-1.5 py-0.5 rounded">
+              <span className="discount-text text-xs font-medium">
                 {product.discount_percent}% off
               </span>
             </>
           )}
         </div>
 
-        {/* COD Badge */}
-        <div className="cod-badge text-[10px] mb-3">
-          💵 COD Available
+        {/* Assured badge */}
+        <div className="flex items-center gap-2 mb-2">
+          <div className="assured-badge">
+            <BadgeCheck className="h-3.5 w-3.5" />
+            <span>Trendra Assured</span>
+          </div>
         </div>
+
+        {/* Free delivery text */}
+        <p className="text-[11px] text-muted-foreground">
+          Free delivery
+        </p>
 
         {/* Quick Add Button - Shows on hover */}
         <Button
           onClick={handleAddToCart}
-          className="w-full btn-primary-gradient opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+          className="w-full mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground"
           size="sm"
         >
-          <ShoppingCart className="h-4 w-4 mr-2" />
+          <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
           Add to Cart
         </Button>
       </div>

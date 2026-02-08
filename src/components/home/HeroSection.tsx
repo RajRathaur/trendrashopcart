@@ -1,125 +1,102 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 export const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden rounded-2xl mb-8">
-      {/* Background gradient */}
+    <section className="relative overflow-hidden rounded mb-4">
+      {/* Background - Flipkart blue */}
       <div className="absolute inset-0 hero-gradient" />
       
-      {/* Animated background shapes */}
+      {/* Subtle animated shapes */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          className="absolute -top-20 -right-20 w-72 h-72 bg-white/5 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-60 h-60 bg-white/5 rounded-full blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.5, 0.3, 0.5],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          className="absolute -bottom-16 -left-16 w-56 h-56 bg-white/5 rounded-full blur-3xl"
+          animate={{ scale: [1.15, 1, 1.15], opacity: [0.4, 0.2, 0.4] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
 
-      <div className="relative z-10 px-6 py-12 md:py-20 text-center">
-        {/* Badge */}
+      <div className="relative z-10 px-6 py-10 md:py-16 text-center">
+        {/* Flash badge */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6"
+          transition={{ duration: 0.4 }}
+          className="inline-flex items-center gap-2 bg-yellow-400 text-foreground px-4 py-1.5 rounded-sm mb-5 font-bold text-sm"
         >
-          <Sparkles className="h-4 w-4 text-yellow-400" />
-          <span className="text-sm font-medium text-white">New Year Sale - Up to 70% Off!</span>
+          <Zap className="h-4 w-4" />
+          Mega Sale — Up to 80% Off!
         </motion.div>
 
         {/* Main heading */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="text-3xl md:text-5xl font-bold text-white mb-3"
         >
-          <span className="block">Shop the Best</span>
+          <span className="block">India's Favourite</span>
           <motion.span
-            className="block bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 bg-clip-text text-transparent"
-            animate={{
-              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            style={{
-              backgroundSize: '200% 200%',
-            }}
+            className="block text-yellow-300"
+            animate={{ opacity: [1, 0.8, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            Deals of the Season
+            Shopping Destination
           </motion.span>
         </motion.h1>
 
         {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-base md:text-lg text-white/80 mb-7 max-w-xl mx-auto"
         >
-          Discover premium fashion, electronics, and lifestyle products at unbeatable prices
+          Fashion, Electronics, Home & more at unbeatable prices. Free delivery on your first order!
         </motion.p>
 
-        {/* CTA Buttons */}
+        {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="flex flex-col sm:flex-row gap-3 justify-center"
         >
           <Link to="/products">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-semibold px-8 group">
+            <Button size="lg" className="bg-yellow-400 text-foreground hover:bg-yellow-300 font-bold px-10 rounded-sm group shadow-md">
               Shop Now
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
           <Link to="/products?type=deals">
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 font-semibold px-8">
-              View All Deals
+            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 font-semibold px-8 rounded-sm">
+              Explore Deals
             </Button>
           </Link>
         </motion.div>
 
-        {/* Stats */}
+        {/* Stats row */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="grid grid-cols-3 gap-8 mt-12 max-w-md mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex justify-center gap-10 mt-10"
         >
           {[
             { value: '10K+', label: 'Products' },
-            { value: '50K+', label: 'Customers' },
-            { value: '4.9★', label: 'Rating' },
+            { value: '50K+', label: 'Happy Customers' },
+            { value: '4.8★', label: 'App Rating' },
           ].map((stat, i) => (
             <div key={i} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-white">{stat.value}</div>
-              <div className="text-sm text-white/60">{stat.label}</div>
+              <div className="text-xl md:text-2xl font-bold text-white">{stat.value}</div>
+              <div className="text-xs text-white/60">{stat.label}</div>
             </div>
           ))}
         </motion.div>

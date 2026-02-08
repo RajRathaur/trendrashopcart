@@ -16,147 +16,146 @@
 
 @layer base {
   :root {
-    /* Core Brand Colors - Premium Slate Theme */
-    --background: 0 0% 100%;
-    --foreground: 224 10% 10%;
+    /* Flipkart-Inspired Blue Theme */
+    --background: 0 0% 97%;
+    --foreground: 220 13% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 224 10% 10%;
+    --card-foreground: 220 13% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 10% 10%;
+    --popover-foreground: 220 13% 13%;
 
-    /* Premium Slate */
-    --primary: 215 25% 27%;
-    --primary-foreground: 0 0% 98%;
+    /* Flipkart Blue */
+    --primary: 217 89% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Light Slate for secondary elements */
     --secondary: 220 14% 96%;
-    --secondary-foreground: 215 25% 27%;
+    --secondary-foreground: 220 13% 13%;
 
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 46%;
 
-    /* Gold/Bronze Accent for premium feel */
-    --accent: 220 14% 96%;
-    --accent-foreground: 215 25% 27%;
+    /* Flipkart Yellow Accent */
+    --accent: 37 100% 50%;
+    --accent-foreground: 220 13% 13%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 215 20% 65%;
+    --ring: 217 89% 55%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
 
     /* Extended palette */
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
+    --warning: 37 100% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --deal: 24 95% 53%;
+    --deal: 4 90% 58%;
     --deal-foreground: 0 0% 100%;
 
-    --rating: 45 93% 47%;
+    --rating: 142 71% 45%;
 
-    /* Premium Gradient definitions */
-    --gradient-primary: linear-gradient(135deg, hsl(215, 25%, 27%) 0%, hsl(220, 20%, 20%) 100%);
-    --gradient-deal: linear-gradient(135deg, hsl(24, 95%, 53%) 0%, hsl(38, 92%, 50%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(215, 25%, 27%) 0%, hsl(220, 20%, 18%) 100%);
-    --gradient-banner: linear-gradient(90deg, hsl(215, 25%, 27%) 0%, hsl(240, 15%, 25%) 100%);
+    /* Flipkart Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217, 89%, 55%) 0%, hsl(217, 89%, 45%) 100%);
+    --gradient-deal: linear-gradient(135deg, hsl(4, 90%, 58%) 0%, hsl(37, 100%, 50%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(217, 89%, 55%) 0%, hsl(217, 89%, 42%) 100%);
+    --gradient-banner: linear-gradient(90deg, hsl(217, 89%, 55%) 0%, hsl(217, 89%, 48%) 100%);
 
     /* Shadows */
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-product: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --shadow-sm: 0 1px 4px 0px hsl(0 0% 0% / 0.08);
+    --shadow-md: 0 2px 8px 0px hsl(0 0% 0% / 0.08);
+    --shadow-lg: 0 4px 16px 0px hsl(0 0% 0% / 0.1);
+    --shadow-product: 0 1px 4px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 265 4% 12.9%;
-    --sidebar-primary: 266 4% 20.8%;
-    --sidebar-primary-foreground: 248 0.3% 98.4%;
-    --sidebar-accent: 248 0.7% 96.8%;
-    --sidebar-accent-foreground: 266 4% 20.8%;
-    --sidebar-border: 256 1.3% 92.9%;
-    --sidebar-ring: 257 4% 70.4%;
-    --chart-1: 41 22.2% 64.6%;
-    --chart-2: 185 11.8% 60%;
-    --chart-3: 227 7% 39.8%;
-    --chart-4: 84 18.9% 82.8%;
-    --chart-5: 70 18.8% 76.9%;
-    --sidebar: 248 0.3% 98.4%;
-    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --sidebar-foreground: 220 13% 13%;
+    --sidebar-primary: 217 89% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 13% 13%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217 89% 55%;
+    --chart-1: 217 89% 55%;
+    --chart-2: 37 100% 50%;
+    --chart-3: 142 71% 45%;
+    --chart-4: 4 90% 58%;
+    --chart-5: 270 60% 55%;
+    --sidebar: 0 0% 100%;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.04);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.06);
+    --shadow: 0 1px 4px 0px hsl(0 0% 0% / 0.08);
+    --shadow-xl: 0 8px 24px 0px hsl(0 0% 0% / 0.1);
+    --shadow-2xl: 0 12px 32px 0px hsl(0 0% 0% / 0.15);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
 
   .dark {
-    --background: 0 0% 15%;
-    --foreground: 248 0.3% 98.4%;
+    --background: 220 13% 10%;
+    --foreground: 0 0% 95%;
 
-    --card: 266 4% 20.8%;
-    --card-foreground: 248 0.3% 98.4%;
+    --card: 220 13% 14%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 266 4% 20.8%;
-    --popover-foreground: 248 0.3% 98.4%;
+    --popover: 220 13% 14%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 256 1.3% 92.9%;
-    --primary-foreground: 266 4% 20.8%;
+    --primary: 217 89% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 4.1% 27.9%;
-    --secondary-foreground: 248 0.3% 98.4%;
+    --secondary: 220 13% 20%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 260 4.1% 27.9%;
-    --muted-foreground: 257 4% 70.4%;
+    --muted: 220 13% 20%;
+    --muted-foreground: 220 9% 60%;
 
-    --accent: 260 4.1% 27.9%;
-    --accent-foreground: 248 0.3% 98.4%;
+    --accent: 37 100% 55%;
+    --accent-foreground: 220 13% 10%;
 
-    --destructive: 22 19.1% 70.4%;
-    --destructive-foreground: 248 0.3% 98.4%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 100% / 10%;
-    --input: 0 0% 100% / 15%;
-    --ring: 264 2.7% 55.1%;
+    --border: 220 13% 22%;
+    --input: 220 13% 22%;
+    --ring: 217 89% 60%;
 
-    --success: 142 71% 35%;
-    --warning: 38 92% 40%;
-    --deal: 28 100% 55%;
-    --rating: 45 100% 45%;
+    --success: 142 71% 40%;
+    --warning: 37 100% 50%;
+    --deal: 4 90% 58%;
+    --rating: 142 71% 40%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 248 0.3% 98.4%;
-    --sidebar-primary: 264 24.3% 48.8%;
-    --sidebar-primary-foreground: 248 0.3% 98.4%;
-    --sidebar-accent: 260 4.1% 27.9%;
-    --sidebar-accent-foreground: 248 0.3% 98.4%;
-    --sidebar-border: 0 0% 100% / 10%;
-    --sidebar-ring: 264 2.7% 55.1%;
-    --chart-1: 264 24.3% 48.8%;
-    --chart-2: 162 17% 69.6%;
-    --chart-3: 70 18.8% 76.9%;
-    --chart-4: 304 26.5% 62.7%;
-    --chart-5: 16 24.6% 64.5%;
-    --sidebar: 266 4% 20.8%;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --sidebar-background: 220 13% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 217 89% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 13% 20%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 220 13% 22%;
+    --sidebar-ring: 217 89% 60%;
+    --chart-1: 217 89% 60%;
+    --chart-2: 37 100% 55%;
+    --chart-3: 142 71% 40%;
+    --chart-4: 4 90% 60%;
+    --chart-5: 270 60% 60%;
+    --sidebar: 220 13% 14%;
+    --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.1);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.1);
+    --shadow-sm: 0 1px 4px 0px hsl(0 0% 0% / 0.15);
+    --shadow: 0 2px 6px 0px hsl(0 0% 0% / 0.15);
+    --shadow-md: 0 4px 12px 0px hsl(0 0% 0% / 0.15);
+    --shadow-lg: 0 8px 20px 0px hsl(0 0% 0% / 0.15);
+    --shadow-xl: 0 12px 28px 0px hsl(0 0% 0% / 0.15);
+    --shadow-2xl: 0 16px 36px 0px hsl(0 0% 0% / 0.2);
   }
 }
 
@@ -176,87 +175,63 @@
 }
 
 @layer components {
-  /* Product card styling - Flipkart inspired */
+  /* Product card - Flipkart style: white bg, subtle shadow, clean */
   .product-card {
-    @apply bg-card rounded-xl overflow-hidden transition-all duration-300 border border-transparent;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    @apply bg-card overflow-hidden transition-all duration-200 border-0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
   .product-card:hover {
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-    transform: translateY(-6px);
-    border-color: hsl(var(--primary) / 0.2);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
   }
 
-  /* Deal badge with shine effect */
+  /* Deal badge - Flipkart green */
   .deal-badge {
-    @apply inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md;
-    background: var(--gradient-deal);
-    color: hsl(var(--deal-foreground));
-    animation: shine 3s ease-in-out infinite;
-    position: relative;
-    overflow: hidden;
+    @apply inline-flex items-center px-2 py-0.5 text-xs font-bold rounded-sm;
+    background: hsl(var(--success));
+    color: hsl(var(--success-foreground));
   }
 
-  .deal-badge::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 100%
-    );
-    transform: rotate(30deg);
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0% { transform: translateX(-100%) rotate(30deg); }
-    100% { transform: translateX(100%) rotate(30deg); }
-  }
-
-  /* Rating stars */
+  /* Rating badge - Flipkart green pill */
   .rating-badge {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-md;
-    background: linear-gradient(135deg, hsl(142, 71%, 45%) 0%, hsl(142, 71%, 35%) 100%);
+    @apply inline-flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-bold rounded-sm;
+    background: hsl(var(--success));
     color: hsl(var(--success-foreground));
   }
 
   /* COD badge */
   .cod-badge {
-    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md border;
+    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded border;
     border-color: hsl(var(--success));
     color: hsl(var(--success));
-    background: hsl(var(--success) / 0.08);
+    background: hsl(var(--success) / 0.06);
   }
 
-  /* Primary button gradient with hover effect */
+  /* Primary button - Flipkart yellow/blue */
   .btn-primary-gradient {
-    background: var(--gradient-primary);
-    @apply text-primary-foreground font-semibold transition-all duration-300;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    @apply font-semibold transition-all duration-200;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 1px 4px rgba(40, 116, 240, 0.3);
   }
 
   .btn-primary-gradient:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 116, 240, 0.4);
+    filter: brightness(1.05);
   }
 
-  /* Deal button */
+  /* Deal/Buy Now button - Flipkart orange/yellow */
   .btn-deal {
-    background: var(--gradient-deal);
-    @apply text-white font-semibold transition-all duration-300;
-    box-shadow: 0 4px 14px hsl(24, 95%, 53%, 0.3);
+    @apply font-semibold transition-all duration-200;
+    background: hsl(var(--accent));
+    color: hsl(var(--foreground));
+    box-shadow: 0 1px 4px hsl(37, 100%, 50%, 0.3);
   }
 
   .btn-deal:hover {
-    box-shadow: 0 6px 20px hsl(24, 95%, 53%, 0.4);
-    transform: translateY(-1px);
+    box-shadow: 0 2px 8px hsl(37, 100%, 50%, 0.4);
+    filter: brightness(1.05);
   }
 
   /* Hero section */
@@ -269,10 +244,10 @@
     background: var(--gradient-banner);
   }
 
-  /* Discount text with pulse */
+  /* Discount text - Flipkart green */
   .discount-text {
     color: hsl(var(--success));
-    @apply font-semibold;
+    @apply font-medium;
   }
 
   /* Original price strikethrough */
@@ -280,49 +255,48 @@
     @apply text-muted-foreground line-through text-sm;
   }
 
-  /* Category card - enhanced */
+  /* Category card */
   .category-card {
-    @apply flex flex-col items-center p-4 bg-card rounded-xl cursor-pointer transition-all duration-300 border border-transparent;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    @apply flex flex-col items-center p-3 bg-card cursor-pointer transition-all duration-200;
   }
 
   .category-card:hover {
-    @apply shadow-lg;
-    transform: translateY(-4px) scale(1.02);
-    border-color: hsl(var(--primary) / 0.2);
+    @apply shadow-md;
+    transform: translateY(-2px);
   }
 
-  /* Section title */
+  /* Section title - Flipkart bold style */
   .section-title {
-    @apply text-xl md:text-2xl font-bold text-foreground flex items-center gap-2;
+    @apply text-xl md:text-2xl font-semibold text-foreground flex items-center gap-2;
   }
 
-  /* Input focus styles */
+  /* Input focus */
   .input-focus {
     @apply focus:ring-2 focus:ring-primary focus:border-primary;
   }
 
-  /* Navbar - Premium look */
+  /* Navbar - Flipkart blue */
   .navbar {
-    background: var(--gradient-primary);
+    background: hsl(var(--primary));
     @apply text-primary-foreground;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
   }
 
-  /* Search bar - enhanced */
+  /* Search bar - Flipkart style */
   .search-bar {
-    @apply bg-white text-foreground rounded-lg transition-all duration-300;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    @apply bg-white text-foreground transition-all duration-200;
+    border-radius: 2px;
+    box-shadow: none;
   }
 
   .search-bar:focus {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
   /* Mobile bottom nav */
   .bottom-nav {
     @apply fixed bottom-0 left-0 right-0 bg-card border-t z-50 md:hidden;
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.06);
   }
 
   /* Pincode check */
@@ -337,94 +311,92 @@
 
   /* Admin panel */
   .admin-stat-card {
-    @apply bg-card p-6 rounded-xl shadow-md border transition-all duration-300;
+    @apply bg-card p-6 rounded-sm shadow-sm border transition-all duration-200;
   }
 
   .admin-stat-card:hover {
-    @apply shadow-lg;
-    transform: translateY(-2px);
+    @apply shadow-md;
   }
 
-  /* Seller dashboard */
+  /* Seller card */
   .seller-card {
-    @apply bg-card p-4 rounded-lg border shadow-sm transition-all duration-300;
+    @apply bg-card p-4 border shadow-sm transition-all duration-200;
   }
 
   .seller-card:hover {
     @apply shadow-md;
   }
 
-  /* Order status badges - animated */
+  /* Order status badges */
   .status-pending {
-    @apply bg-warning/20 text-warning-foreground border border-warning px-2.5 py-1 rounded-md text-xs font-medium;
+    @apply px-2 py-0.5 rounded-sm text-xs font-medium;
+    background: hsl(var(--warning) / 0.15);
     color: hsl(var(--warning));
-    animation: pulse-subtle 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-subtle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
   }
 
   .status-confirmed {
-    @apply bg-primary/20 text-primary px-2.5 py-1 rounded-md text-xs font-medium;
+    @apply px-2 py-0.5 rounded-sm text-xs font-medium;
+    background: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
   }
 
   .status-shipped {
-    @apply bg-blue-100 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium;
+    @apply px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-50 text-blue-700;
   }
 
   .status-delivered {
-    @apply px-2.5 py-1 rounded-md text-xs font-medium;
-    background: hsl(var(--success) / 0.2);
+    @apply px-2 py-0.5 rounded-sm text-xs font-medium;
+    background: hsl(var(--success) / 0.12);
     color: hsl(var(--success));
   }
 
   .status-cancelled {
-    @apply bg-destructive/20 text-destructive px-2.5 py-1 rounded-md text-xs font-medium;
+    @apply bg-destructive/10 text-destructive px-2 py-0.5 rounded-sm text-xs font-medium;
   }
 
   .status-returned {
-    @apply bg-muted text-muted-foreground px-2.5 py-1 rounded-md text-xs font-medium;
+    @apply bg-muted text-muted-foreground px-2 py-0.5 rounded-sm text-xs font-medium;
   }
 
-  /* Trust badge card */
+  /* Trust badge */
   .trust-badge {
-    @apply bg-card p-5 rounded-xl shadow-sm text-center transition-all duration-300 border border-transparent;
+    @apply bg-card p-4 text-center transition-all duration-200;
   }
 
   .trust-badge:hover {
-    @apply shadow-md;
-    transform: translateY(-4px);
-    border-color: hsl(var(--primary) / 0.1);
+    @apply shadow-sm;
   }
 
-  /* Section card with gradient border */
+  /* Section card */
   .section-card {
-    @apply bg-card rounded-2xl p-5 shadow-sm border border-border/50;
-    background: linear-gradient(white, white) padding-box,
-                linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05)) border-box;
+    @apply bg-card p-4 shadow-sm;
   }
 
   /* Floating action button */
   .fab {
-    @apply fixed bottom-20 right-4 md:bottom-6 z-40 p-4 rounded-full shadow-lg transition-all duration-300;
-    background: var(--gradient-primary);
+    @apply fixed bottom-20 right-4 md:bottom-6 z-40 p-3 rounded-full shadow-lg transition-all duration-200;
+    background: hsl(var(--primary));
   }
 
   .fab:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(40, 116, 240, 0.3);
   }
 
-  /* Price tag with animation */
+  /* Price tag */
   .price-tag {
-    @apply text-lg font-bold text-foreground transition-all duration-300;
+    @apply text-lg font-bold text-foreground;
   }
 
-  .price-tag:hover {
-    @apply scale-105;
+  /* Flipkart Assured badge */
+  .assured-badge {
+    @apply inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider;
     color: hsl(var(--primary));
+  }
+
+  /* Flipkart-style section separator */
+  .section-separator {
+    @apply bg-muted h-2.5 w-full;
   }
 }
 

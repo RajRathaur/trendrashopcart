@@ -1,26 +1,19 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Clock } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 interface FlashSaleTimerProps {
   endTime?: Date;
 }
 
 export const FlashSaleTimer = ({ endTime }: FlashSaleTimerProps) => {
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    // Default: sale ends at midnight
     const saleEndTime = endTime || new Date(new Date().setHours(23, 59, 59, 999));
 
     const calculateTimeLeft = () => {
-      const now = new Date().getTime();
-      const distance = saleEndTime.getTime() - now;
-
+      const distance = saleEndTime.getTime() - Date.now();
       if (distance > 0) {
         setTimeLeft({
           hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -32,42 +25,37 @@ export const FlashSaleTimer = ({ endTime }: FlashSaleTimerProps) => {
 
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
-
     return () => clearInterval(timer);
   }, [endTime]);
 
-  const formatNumber = (num: number) => num.toString().padStart(2, '0');
+  const fmt = (n: number) => n.toString().padStart(2, '0');
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-xl shadow-lg"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full bg-card shadow-sm px-4 py-3 flex items-center justify-between"
     >
       <div className="flex items-center gap-2">
-        <Zap className="h-5 w-5 text-yellow-300 animate-pulse" />
-        <span className="font-bold text-sm md:text-base">Flash Sale Ends In:</span>
+        <Zap className="h-5 w-5 text-yellow-500" />
+        <span className="font-bold text-base text-foreground">Flash Sale</span>
       </div>
-      
-      <div className="flex items-center gap-1">
-        <TimeBlock value={formatNumber(timeLeft.hours)} label="H" />
-        <span className="text-xl font-bold">:</span>
-        <TimeBlock value={formatNumber(timeLeft.minutes)} label="M" />
-        <span className="text-xl font-bold">:</span>
-        <TimeBlock value={formatNumber(timeLeft.seconds)} label="S" />
+
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs text-muted-foreground mr-1">Ends in</span>
+        <TimeBlock value={fmt(timeLeft.hours)} />
+        <span className="text-foreground font-bold">:</span>
+        <TimeBlock value={fmt(timeLeft.minutes)} />
+        <span className="text-foreground font-bold">:</span>
+        <TimeBlock value={fmt(timeLeft.seconds)} />
       </div>
     </motion.div>
   );
 };
 
-const TimeBlock = ({ value, label }: { value: string; label: string }) => (
-  <div className="bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 min-w-[40px] text-center">
-    <motion.span
-      key={value}
-      initial={{ y: -10, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      className="text-lg md:text-xl font-bold block"
-    >
+const TimeBlock = ({ value }: { value: string }) => (
+  <div className="bg-foreground text-background text-sm font-bold rounded-sm px-1.5 py-0.5 min-w-[28px] text-center">
+    <motion.span key={value} initial={{ y: -6, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
       {value}
     </motion.span>
   </div>

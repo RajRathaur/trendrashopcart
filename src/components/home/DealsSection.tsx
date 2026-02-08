@@ -13,26 +13,10 @@ interface DealsSectionProps {
 }
 
 const sectionConfig = {
-  deals: {
-    icon: Zap,
-    gradient: 'from-orange-500 to-red-500',
-    badge: 'Deal of the Day',
-  },
-  trending: {
-    icon: TrendingUp,
-    gradient: 'from-blue-500 to-purple-500',
-    badge: 'Trending Now',
-  },
-  recommended: {
-    icon: Star,
-    gradient: 'from-green-500 to-teal-500',
-    badge: 'For You',
-  },
-  new: {
-    icon: Clock,
-    gradient: 'from-pink-500 to-rose-500',
-    badge: 'New Arrivals',
-  },
+  deals: { icon: Zap, color: 'text-red-500', bgColor: 'bg-red-50', badge: 'Top Deals' },
+  trending: { icon: TrendingUp, color: 'text-primary', bgColor: 'bg-blue-50', badge: 'Trending Now' },
+  recommended: { icon: Star, color: 'text-yellow-500', bgColor: 'bg-yellow-50', badge: 'For You' },
+  new: { icon: Clock, color: 'text-green-600', bgColor: 'bg-green-50', badge: 'New Arrivals' },
 };
 
 export const DealsSection = ({ products, title, type, loading }: DealsSectionProps) => {
@@ -41,21 +25,23 @@ export const DealsSection = ({ products, title, type, loading }: DealsSectionPro
 
   if (loading) {
     return (
-      <section className="py-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="h-8 bg-muted rounded w-48 animate-pulse" />
-          <div className="h-8 bg-muted rounded w-24 animate-pulse" />
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="product-card animate-pulse">
-              <div className="aspect-square bg-muted" />
-              <div className="p-3 space-y-2">
-                <div className="h-4 bg-muted rounded w-full" />
-                <div className="h-5 bg-muted rounded w-1/2" />
+      <section className="py-3">
+        <div className="bg-card shadow-sm p-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="h-7 bg-muted rounded w-48 animate-pulse" />
+            <div className="h-8 bg-muted rounded w-24 animate-pulse" />
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-square bg-muted" />
+                <div className="p-3 space-y-2">
+                  <div className="h-3 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-1/2" />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -65,32 +51,29 @@ export const DealsSection = ({ products, title, type, loading }: DealsSectionPro
 
   return (
     <ScrollReveal variant="fadeUp">
-      <section className="py-8">
-        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border/50 transition-all duration-300 hover:shadow-md">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-xl bg-gradient-to-br ${config.gradient} shadow-lg`}>
-                <Icon className="h-6 w-6 text-white" />
-              </div>
+      <section className="py-3">
+        <div className="bg-card shadow-sm">
+          {/* Header - Flipkart style: simple bg with title + view all */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
+            <div className="flex items-center gap-3">
+              <Icon className={`h-5 w-5 ${config.color}`} />
               <div>
-                <h2 className="section-title">{title}</h2>
-                <span className="text-sm text-muted-foreground font-medium">{config.badge}</span>
+                <h2 className="text-lg md:text-xl font-semibold text-foreground">{title}</h2>
+                <span className="text-xs text-muted-foreground">{config.badge}</span>
               </div>
             </div>
             <Link to={`/products?type=${type}`}>
-              <Button variant="outline" size="sm" className="group border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm h-8 px-6 text-sm font-medium">
                 View All
-                <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
           </div>
 
-          {/* Products */}
-          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5" staggerDelay={0.1}>
+          {/* Products - Flipkart grid with dividers */}
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 divide-x divide-border/30" staggerDelay={0.05}>
             {products.slice(0, 6).map((product) => (
               <StaggerItem key={product.id}>
-                <ProductCard product={product} />
+                <ProductCard product={product} className="shadow-none border-0 hover:shadow-none" />
               </StaggerItem>
             ))}
           </StaggerContainer>
