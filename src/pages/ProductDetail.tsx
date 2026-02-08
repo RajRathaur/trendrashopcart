@@ -274,7 +274,7 @@ const ProductDetail = () => {
           <div className="space-y-6">
             <div>
               <p className="text-sm text-primary font-medium mb-1">
-                {product.seller?.business_name || 'ShopKart'}
+                {product.seller?.business_name || 'Trendra'}
               </p>
               <h1 className="text-2xl font-bold text-foreground mb-2">
                 {product.name}

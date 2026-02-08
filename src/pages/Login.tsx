@@ -253,7 +253,7 @@ const LoginPage = () => {
           {/* Seller Link */}
           <div className="mt-6 text-center text-sm text-muted-foreground">
             <Link to="/become-seller" className="text-primary hover:underline">
-              Sell on ShopKart
+              Sell on Trendra
             </Link>
           </div>
         </div>

@@ -197,74 +197,102 @@ const Index = () => {
       {/* Floating Promo */}
       <FloatingPromo />
 
-      <div className="container mx-auto px-4 py-4">
-        {/* Hero Section */}
+      {/* Hero Section */}
+      <div className="container mx-auto px-3 pt-3">
         <HeroSection />
+      </div>
 
-        {/* Banner Slider */}
-        {demoBanners.length > 0 && <BannerSlider banners={demoBanners} />}
-
-        {/* Flash Sale Timer */}
-        <div className="flex justify-center my-6">
-          <FlashSaleTimer />
+      {/* Banner Slider */}
+      {demoBanners.length > 0 && (
+        <div className="container mx-auto px-3">
+          <BannerSlider banners={demoBanners} />
         </div>
+      )}
 
-        {/* Brands Marquee */}
-        <BrandsMarquee />
+      {/* Flash Sale Timer */}
+      <div className="container mx-auto px-3 py-2">
+        <FlashSaleTimer />
+      </div>
 
-        {/* Deals of the Day */}
+      {/* Section separator */}
+      <div className="section-separator" />
+
+      {/* Deals of the Day */}
+      <div className="container mx-auto px-3">
         <DealsSection
           products={demoProducts.filter(p => p.discount_percent >= 50)}
           title="Deals of the Day"
           type="deals"
           loading={loading}
         />
+      </div>
 
-        {/* Trending Products */}
+      <div className="section-separator" />
+
+      {/* Trending Products */}
+      <div className="container mx-auto px-3">
         <DealsSection
           products={demoProducts.filter(p => p.is_featured)}
           title="Trending Now"
           type="trending"
           loading={loading}
         />
+      </div>
 
-        {/* Recommended for You */}
+      <div className="section-separator" />
+
+      {/* Brands Marquee */}
+      <div className="container mx-auto px-3 py-3">
+        <BrandsMarquee />
+      </div>
+
+      <div className="section-separator" />
+
+      {/* Recommended for You */}
+      <div className="container mx-auto px-3">
         <DealsSection
           products={demoProducts}
           title="Recommended for You"
           type="recommended"
           loading={loading}
         />
+      </div>
 
-        {/* Testimonials */}
+      <div className="section-separator" />
+
+      {/* Testimonials */}
+      <div className="container mx-auto px-3">
         <TestimonialsSection />
+      </div>
 
-        {/* Trust Badges */}
-        <section className="py-10">
+      <div className="section-separator" />
+
+      {/* Trust Badges - Flipkart style */}
+      <div className="container mx-auto px-3">
+        <section className="py-6">
           <ScrollReveal variant="fadeUp">
-            <div className="text-center mb-8">
-              <h2 className="section-title justify-center">Why Shop with Trendra?</h2>
-              <p className="text-muted-foreground mt-2">Trusted by millions of customers across India</p>
+            <div className="bg-card shadow-sm p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-5 text-center">Why Shop with Trendra?</h2>
+              <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-6" staggerDelay={0.1}>
+                {[
+                  { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹499' },
+                  { icon: '💵', title: 'Cash on Delivery', desc: 'Pay when you receive' },
+                  { icon: '↩️', title: '7 Days Return', desc: 'Easy return policy' },
+                  { icon: '🔒', title: 'Trendra Assured', desc: 'Quality guaranteed' },
+                ].map((item, i) => (
+                  <StaggerItem key={i}>
+                    <div className="flex items-center gap-3 p-3">
+                      <span className="text-2xl">{item.icon}</span>
+                      <div>
+                        <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+                        <p className="text-xs text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
             </div>
           </ScrollReveal>
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-5" staggerDelay={0.15}>
-            {[
-              { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹499', gradient: 'from-blue-500 to-cyan-500' },
-              { icon: '💵', title: 'Cash on Delivery', desc: 'Pay when you receive', gradient: 'from-green-500 to-emerald-500' },
-              { icon: '↩️', title: 'Easy Returns', desc: '7 days return policy', gradient: 'from-orange-500 to-amber-500' },
-              { icon: '🔒', title: '100% Secure', desc: 'Safe & secure shopping', gradient: 'from-purple-500 to-pink-500' },
-            ].map((item, i) => (
-              <StaggerItem key={i}>
-                <div className="trust-badge group cursor-pointer">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${item.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    <span className="text-3xl">{item.icon}</span>
-                  </div>
-                  <h3 className="font-bold text-foreground text-lg group-hover:text-primary transition-colors duration-300">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
-                </div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
         </section>
       </div>
     </Layout>
