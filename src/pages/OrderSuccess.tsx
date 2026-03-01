@@ -1,8 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Package, ArrowRight, MessageCircle } from 'lucide-react';
-import { ADMIN_CONFIG, getOrderWhatsAppLink } from '@/config/admin';
+import { CheckCircle, Package, ArrowRight } from 'lucide-react';
 
 const OrderSuccessPage = () => {
   const [searchParams] = useSearchParams();
@@ -12,8 +11,8 @@ const OrderSuccessPage = () => {
     <Layout>
       <div className="container mx-auto px-4 py-12 text-center">
         <div className="max-w-md mx-auto">
-          <div className="w-24 h-24 mx-auto mb-6 bg-success/20 rounded-full flex items-center justify-center animate-scale-in">
-            <CheckCircle className="h-14 w-14 text-success" />
+          <div className="w-24 h-24 mx-auto mb-6 bg-green-100 dark:bg-green-950/30 rounded-full flex items-center justify-center animate-scale-in">
+            <CheckCircle className="h-14 w-14 text-green-600" />
           </div>
 
           <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -32,25 +31,6 @@ const OrderSuccessPage = () => {
             <p className="text-2xl font-bold text-foreground">{orderNumber}</p>
             <p className="text-sm text-muted-foreground mt-2">
               Payment: Cash on Delivery (COD)
-            </p>
-          </div>
-
-          {/* WhatsApp Contact Card */}
-          <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-4 mb-6">
-            <p className="text-sm text-muted-foreground mb-3">
-              Have questions about your order? Contact us on WhatsApp!
-            </p>
-            <a
-              href={getOrderWhatsAppLink(orderNumber)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Chat on WhatsApp
-            </a>
-            <p className="text-xs text-muted-foreground mt-2">
-              {ADMIN_CONFIG.whatsapp.displayNumber}
             </p>
           </div>
 

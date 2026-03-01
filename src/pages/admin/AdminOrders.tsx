@@ -19,20 +19,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Loader2, Trash2, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
 
 type OrderStatus = Database['public']['Enums']['order_status'];
 
+interface OrderItem {
+  id: string;
+  product_name: string;
+  product_image: string | null;
+  quantity: number;
+  price: number;
+  size: string | null;
+  color: string | null;
+}
+
 interface Order {
   id: string;
   order_number: string;
   total_amount: number;
   status: OrderStatus;
+  shipping_address: string;
   shipping_city: string;
   shipping_state: string;
+  shipping_pincode: string;
+  shipping_phone: string;
+  payment_method: string | null;
   created_at: string;
   user_id: string;
 }
@@ -60,6 +85,8 @@ const AdminOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [orderItems, setOrderItems] = useState<Record<string, OrderItem[]>>({});
 
   useEffect(() => {
     if (!authLoading) {
@@ -94,6 +121,29 @@ const AdminOrders = () => {
     }
   };
 
+  const fetchOrderItems = async (orderId: string) => {
+    if (orderItems[orderId]) return;
+    try {
+      const { data, error } = await supabase
+        .from('order_items')
+        .select('*')
+        .eq('order_id', orderId);
+      if (error) throw error;
+      setOrderItems(prev => ({ ...prev, [orderId]: data || [] }));
+    } catch (error) {
+      console.error('Error fetching order items:', error);
+    }
+  };
+
+  const toggleExpand = (orderId: string) => {
+    if (expandedOrder === orderId) {
+      setExpandedOrder(null);
+    } else {
+      setExpandedOrder(orderId);
+      fetchOrderItems(orderId);
+    }
+  };
+
   const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
     try {
       const { error } = await supabase
@@ -110,6 +160,30 @@ const AdminOrders = () => {
     }
   };
 
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      // Delete order items first
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .delete()
+        .eq('order_id', orderId);
+      if (itemsError) throw itemsError;
+
+      // Delete the order
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+      if (error) throw error;
+
+      toast.success('Order deleted successfully');
+      setOrders(prev => prev.filter(o => o.id !== orderId));
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      toast.error('Failed to delete order');
+    }
+  };
+
   if (authLoading || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -121,14 +195,16 @@ const AdminOrders = () => {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold">Orders</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Orders ({orders.length})</h1>
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="border rounded-lg">
+          <div className="border rounded-lg overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -136,6 +212,7 @@ const AdminOrders = () => {
                   <TableHead>Date</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Location</TableHead>
+                  <TableHead>Phone</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -143,44 +220,123 @@ const AdminOrders = () => {
               <TableBody>
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       No orders found
                     </TableCell>
                   </TableRow>
                 ) : (
                   orders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-medium">{order.order_number}</TableCell>
-                      <TableCell>
-                        {format(new Date(order.created_at), 'dd MMM yyyy')}
-                      </TableCell>
-                      <TableCell>₹{order.total_amount.toLocaleString()}</TableCell>
-                      <TableCell>
-                        {order.shipping_city}, {order.shipping_state}
-                      </TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs capitalize ${statusColors[order.status]}`}>
-                          {order.status}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Select
-                          value={order.status}
-                          onValueChange={(value: OrderStatus) => handleStatusChange(order.id, value)}
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {statusOptions.map((status) => (
-                              <SelectItem key={status} value={status} className="capitalize">
-                                {status}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                    </TableRow>
+                    <>
+                      <TableRow key={order.id}>
+                        <TableCell className="font-medium">{order.order_number}</TableCell>
+                        <TableCell>
+                          {format(new Date(order.created_at), 'dd MMM yyyy')}
+                        </TableCell>
+                        <TableCell>₹{order.total_amount.toLocaleString()}</TableCell>
+                        <TableCell>
+                          {order.shipping_city}, {order.shipping_state}
+                        </TableCell>
+                        <TableCell>{order.shipping_phone}</TableCell>
+                        <TableCell>
+                          <span className={`px-2 py-1 rounded-full text-xs capitalize ${statusColors[order.status]}`}>
+                            {order.status}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => toggleExpand(order.id)}
+                              title="View details"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Select
+                              value={order.status}
+                              onValueChange={(value: OrderStatus) => handleStatusChange(order.id, value)}
+                            >
+                              <SelectTrigger className="w-28">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {statusOptions.map((status) => (
+                                  <SelectItem key={status} value={status} className="capitalize">
+                                    {status}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete Order</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to delete order #{order.order_number}? This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDeleteOrder(order.id)}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      {expandedOrder === order.id && (
+                        <TableRow key={`${order.id}-details`}>
+                          <TableCell colSpan={7} className="bg-muted/30 p-4">
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div>
+                                <h4 className="font-semibold mb-2">Shipping Address</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {order.shipping_address}<br />
+                                  {order.shipping_city}, {order.shipping_state} - {order.shipping_pincode}<br />
+                                  Phone: {order.shipping_phone}
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold mb-2">Order Items</h4>
+                                {orderItems[order.id] ? (
+                                  <div className="space-y-2">
+                                    {orderItems[order.id].map(item => (
+                                      <div key={item.id} className="flex gap-2 items-center text-sm">
+                                        <img
+                                          src={item.product_image || '/placeholder.svg'}
+                                          alt=""
+                                          className="w-10 h-10 rounded object-cover"
+                                        />
+                                        <div className="flex-1">
+                                          <p className="font-medium line-clamp-1">{item.product_name}</p>
+                                          <p className="text-muted-foreground text-xs">
+                                            Qty: {item.quantity} × ₹{item.price.toLocaleString()}
+                                            {item.size && ` • ${item.size}`}
+                                            {item.color && ` • ${item.color}`}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                )}
+                              </div>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </>
                   ))
                 )}
               </TableBody>
