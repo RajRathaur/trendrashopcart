@@ -11,7 +11,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus, Minus, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { getOrderConfirmationWhatsAppLink, openWhatsApp } from '@/config/admin';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -143,28 +142,11 @@ const ProductDetail = () => {
     setBuyNowLoading(true);
 
     try {
-      // Generate WhatsApp message with product details
-      const whatsappUrl = getOrderConfirmationWhatsAppLink({
-        orderId: 'PENDING',
-        productName: product.name,
-        productId: product.id,
-        quantity: quantity,
-        price: product.price * quantity,
-        customerName: profile?.full_name || 'Customer',
-        customerMobile: profile?.phone || 'Not provided',
-        deliveryAddress: profile?.address 
-          ? `${profile.address}, ${profile.city || ''}, ${profile.state || ''} - ${profile.pincode || ''}`
-          : 'Not provided - will be collected at checkout',
-      });
-
       // Add to cart first
-      addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
+      await addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
 
-      // Open WhatsApp
-      openWhatsApp(whatsappUrl);
-
-      // Navigate to cart/checkout
-      navigate('/cart');
+      // Navigate to checkout
+      navigate('/checkout');
     } catch (error) {
       console.error('Buy now error:', error);
       toast.error('Something went wrong');
