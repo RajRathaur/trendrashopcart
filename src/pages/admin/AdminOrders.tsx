@@ -175,6 +175,27 @@ const AdminOrders = () => {
           type: 'order_update',
           order_id: orderId,
         });
+
+        // Send email notification via Resend
+        try {
+          const { error: emailError } = await supabase.functions.invoke('send-order-email', {
+            body: {
+              orderNumber: order.order_number,
+              status: newStatus,
+              totalAmount: order.total_amount,
+              shippingCity: order.shipping_city,
+              shippingState: order.shipping_state,
+              customerUserId: order.user_id,
+            },
+          });
+
+          if (emailError) {
+            console.warn('Email notification failed:', emailError);
+          }
+        } catch (emailErr) {
+          console.warn('Email notification error:', emailErr);
+          // Don't block the status update if email fails
+        }
       }
 
       toast.success('Order status updated');
