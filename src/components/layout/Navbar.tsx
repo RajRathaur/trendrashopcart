@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, Package, Store, Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby, TrendingUp, MoreVertical } from 'lucide-react';
+import { NotificationBell } from './NotificationBell';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -289,6 +290,9 @@ export const Navbar = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* Notifications */}
+              <NotificationBell />
 
               {/* Cart */}
               <Button

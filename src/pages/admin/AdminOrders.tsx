@@ -30,10 +30,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Loader2, Trash2, Eye } from 'lucide-react';
+import { Loader2, Trash2, Eye, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
+import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
 
 type OrderStatus = Database['public']['Enums']['order_status'];
 
@@ -146,18 +147,48 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
     try {
+      // Find the order to get user_id and order_number
+      const order = orders.find(o => o.id === orderId);
+      
       const { error } = await supabase
         .from('orders')
         .update({ status: newStatus })
         .eq('id', orderId);
 
       if (error) throw error;
+
+      // Create in-app notification for the customer
+      if (order?.user_id) {
+        const statusMessages: Record<OrderStatus, string> = {
+          pending: 'Your order is pending confirmation.',
+          confirmed: 'Your order has been confirmed!',
+          shipped: 'Your order has been shipped and is on its way!',
+          delivered: 'Your order has been delivered. Enjoy!',
+          cancelled: 'Your order has been cancelled.',
+          returned: 'Your order return has been processed.',
+        };
+
+        await supabase.from('notifications').insert({
+          user_id: order.user_id,
+          title: `Order #${order.order_number} - ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`,
+          message: statusMessages[newStatus],
+          type: 'order_update',
+          order_id: orderId,
+        });
+      }
+
       toast.success('Order status updated');
       fetchOrders();
     } catch (error) {
       console.error('Error updating order:', error);
       toast.error('Failed to update order status');
     }
+  };
+
+  const handleWhatsAppNotify = (order: Order) => {
+    const message = `Hi! Your Trendra order #${order.order_number} status has been updated to: *${order.status.toUpperCase()}*.\n\nTotal: ₹${order.total_amount.toLocaleString()}\nShipping to: ${order.shipping_city}, ${order.shipping_state}\n\nThank you for shopping with Trendra!`;
+    const url = getWhatsAppLink(message);
+    openWhatsApp(url);
   };
 
   const handleDeleteOrder = async (orderId: string) => {
@@ -251,6 +282,15 @@ const AdminOrders = () => {
                               title="View details"
                             >
                               <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleWhatsAppNotify(order)}
+                              title="Notify via WhatsApp"
+                              className="text-green-600 hover:text-green-700"
+                            >
+                              <MessageCircle className="h-4 w-4" />
                             </Button>
                             <Select
                               value={order.status}
