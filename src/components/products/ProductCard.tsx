@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Heart, Star, ShoppingCart, BadgeCheck } from 'lucide-react';
+import { Heart, Star, ShoppingCart, BadgeCheck, Zap } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: Product;
@@ -26,6 +27,16 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     toggleWishlist(product.id);
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const upiLink = `upi://pay?pa=9125442370@ybl&pn=Trendra%20Shopcart&am=${product.price}&cu=INR`;
+    toast.info('Redirecting to secure UPI payment...', { duration: 2000 });
+    setTimeout(() => {
+      window.location.href = upiLink;
+    }, 1000);
   };
 
   const imageUrl = product.images?.[0] || '/placeholder.svg';
@@ -118,15 +129,26 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
           Free delivery
         </p>
 
-        {/* Quick Add Button - Shows on hover */}
-        <Button
-          onClick={handleAddToCart}
-          className="w-full mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground"
-          size="sm"
-        >
-          <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
-          Add to Cart
-        </Button>
+        {/* Quick Action Buttons - Shows on hover */}
+        <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+          <Button
+            onClick={handleAddToCart}
+            variant="outline"
+            className="flex-1"
+            size="sm"
+          >
+            <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
+            Cart
+          </Button>
+          <Button
+            onClick={handleBuyNow}
+            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+            size="sm"
+          >
+            <Zap className="h-3.5 w-3.5 mr-1.5" />
+            Buy Now
+          </Button>
+        </div>
       </div>
     </Link>
   );
