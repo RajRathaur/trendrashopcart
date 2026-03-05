@@ -122,7 +122,6 @@ const ProductDetail = () => {
   const handleBuyNow = async () => {
     if (!product) return;
     
-    // Validate selections
     if (product.sizes?.length && !selectedSize) {
       toast.error('Please select a size');
       return;
@@ -137,12 +136,16 @@ const ProductDetail = () => {
     const totalPrice = product.price * quantity;
     const upiLink = `upi://pay?pa=9125442370@ybl&pn=Trendra%20Shopcart&am=${totalPrice}&cu=INR`;
 
-    toast.info('Redirecting to secure UPI payment...', { duration: 2000 });
+    toast.info('Redirecting to secure UPI payment...', { duration: 3000 });
 
+    // Open UPI app
+    window.location.href = upiLink;
+
+    // After a short delay, redirect to confirmation page
     setTimeout(() => {
-      window.location.href = upiLink;
+      navigate(`/confirm-payment?product=${encodeURIComponent(product.name)}&amount=${totalPrice}&productId=${product.id}`);
       setBuyNowLoading(false);
-    }, 1000);
+    }, 3000);
   };
 
   if (loading) {

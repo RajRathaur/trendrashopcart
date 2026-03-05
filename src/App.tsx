@@ -23,11 +23,13 @@ import About from "./pages/About";
 import Help from "./pages/Help";
 import BecomeSeller from "./pages/BecomeSeller";
 import NotFound from "./pages/NotFound";
+import ConfirmPayment from "./pages/ConfirmPayment";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminPayments from "./pages/admin/AdminPayments";
 
 const queryClient = new QueryClient();
 
@@ -56,10 +58,12 @@ const App = () => (
                 <Route path="/about" element={<About />} />
                 <Route path="/help" element={<Help />} />
                 <Route path="/become-seller" element={<BecomeSeller />} />
+                <Route path="/confirm-payment" element={<ConfirmPayment />} />
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
                 <Route path="/admin/orders" element={<AdminOrders />} />
+                <Route path="/admin/payments" element={<AdminPayments />} />
                 {/* Redirect common paths */}
                 <Route path="/track-order" element={<Orders />} />
                 <Route path="/returns" element={<Help />} />
