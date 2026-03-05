@@ -315,6 +315,62 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_confirmations: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          customer_name: string
+          delivery_address: string
+          id: string
+          payment_amount: number
+          phone_number: string
+          product_id: string | null
+          product_name: string
+          screenshot_url: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          customer_name: string
+          delivery_address: string
+          id?: string
+          payment_amount: number
+          phone_number: string
+          product_id?: string | null
+          product_name: string
+          screenshot_url: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          customer_name?: string
+          delivery_address?: string
+          id?: string
+          payment_amount?: number
+          phone_number?: string
+          product_id?: string | null
+          product_name?: string
+          screenshot_url?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_confirmations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_reviews: {
         Row: {
           comment: string | null
