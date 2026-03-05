@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Store } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, CreditCard } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
@@ -13,6 +13,7 @@ const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
+  { href: '/admin/payments', label: 'Payments', icon: CreditCard },
 ];
 
 export const AdminLayout = ({ children }: AdminLayoutProps) => {

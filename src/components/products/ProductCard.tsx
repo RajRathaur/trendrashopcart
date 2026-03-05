@@ -15,6 +15,7 @@ interface ProductCardProps {
 export const ProductCard = ({ product, className }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const navigate = useNavigate();
   const isWishlisted = isInWishlist(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -33,10 +34,11 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     const upiLink = `upi://pay?pa=9125442370@ybl&pn=Trendra%20Shopcart&am=${product.price}&cu=INR`;
-    toast.info('Redirecting to secure UPI payment...', { duration: 2000 });
+    toast.info('Redirecting to secure UPI payment...', { duration: 3000 });
+    window.location.href = upiLink;
     setTimeout(() => {
-      window.location.href = upiLink;
-    }, 1000);
+      navigate(`/confirm-payment?product=${encodeURIComponent(product.name)}&amount=${product.price}&productId=${product.id}`);
+    }, 3000);
   };
 
   const imageUrl = product.images?.[0] || '/placeholder.svg';
