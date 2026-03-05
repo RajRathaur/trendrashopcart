@@ -132,27 +132,17 @@ const ProductDetail = () => {
       return;
     }
 
-    // If user is not logged in, redirect to login
-    if (!user) {
-      toast.info('Please login to continue');
-      navigate('/login?redirect=/product/' + id);
-      return;
-    }
-
     setBuyNowLoading(true);
 
-    try {
-      // Add to cart first
-      await addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
+    const totalPrice = product.price * quantity;
+    const upiLink = `upi://pay?pa=9125442370@ybl&pn=Trendra%20Shopcart&am=${totalPrice}&cu=INR`;
 
-      // Navigate to checkout
-      navigate('/checkout');
-    } catch (error) {
-      console.error('Buy now error:', error);
-      toast.error('Something went wrong');
-    } finally {
+    toast.info('Redirecting to secure UPI payment...', { duration: 2000 });
+
+    setTimeout(() => {
+      window.location.href = upiLink;
       setBuyNowLoading(false);
-    }
+    }, 1000);
   };
 
   if (loading) {
