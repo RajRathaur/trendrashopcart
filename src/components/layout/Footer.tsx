@@ -35,10 +35,11 @@ export const Footer = () => {
           <div>
             <h3 className="text-xs font-bold text-white/50 uppercase tracking-wider mb-4">Policy</h3>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/help" className="hover:text-white transition-colors">Return Policy</Link></li>
+              <li><Link to="/refund-policy" className="hover:text-white transition-colors">Return Policy</Link></li>
               <li><Link to="/help" className="hover:text-white transition-colors">Terms of Use</Link></li>
               <li><Link to="/help" className="hover:text-white transition-colors">Security</Link></li>
-              <li><Link to="/help" className="hover:text-white transition-colors">Privacy</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy</Link></li>
+              <li><Link to="/shipping-policy" className="hover:text-white transition-colors">Shipping</Link></li>
             </ul>
           </div>
 
