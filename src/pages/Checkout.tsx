@@ -16,6 +16,14 @@ const CheckoutPage = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discount_type: string;
+    discount_value: number;
+    max_discount_amount: number | null;
+  } | null>(null);
   
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
@@ -28,7 +36,22 @@ const CheckoutPage = () => {
   });
 
   const deliveryFee = totalAmount >= 499 ? 0 : 40;
-  const finalAmount = totalAmount + deliveryFee;
+  
+  // Calculate coupon discount
+  let couponDiscount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount_type === 'percentage') {
+      couponDiscount = (totalAmount * appliedCoupon.discount_value) / 100;
+      if (appliedCoupon.max_discount_amount) {
+        couponDiscount = Math.min(couponDiscount, appliedCoupon.max_discount_amount);
+      }
+    } else {
+      couponDiscount = appliedCoupon.discount_value;
+    }
+    couponDiscount = Math.min(couponDiscount, totalAmount);
+  }
+  
+  const finalAmount = totalAmount - couponDiscount + deliveryFee;
 
   if (!user) {
     navigate('/login?redirect=/checkout');
