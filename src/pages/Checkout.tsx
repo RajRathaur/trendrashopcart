@@ -63,6 +63,63 @@ const CheckoutPage = () => {
     return null;
   }
 
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast.error('Please enter a coupon code');
+      return;
+    }
+    setCouponLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('coupons' as any)
+        .select('*')
+        .eq('code', couponCode.trim().toUpperCase())
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) {
+        toast.error('Invalid coupon code');
+        setCouponLoading(false);
+        return;
+      }
+
+      const coupon = data as any;
+      if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+        toast.error('This coupon has expired');
+        setCouponLoading(false);
+        return;
+      }
+      if (coupon.usage_limit && coupon.used_count >= coupon.usage_limit) {
+        toast.error('This coupon has reached its usage limit');
+        setCouponLoading(false);
+        return;
+      }
+      if (coupon.min_order_amount && totalAmount < coupon.min_order_amount) {
+        toast.error(`Minimum order amount is ₹${coupon.min_order_amount}`);
+        setCouponLoading(false);
+        return;
+      }
+
+      setAppliedCoupon({
+        code: coupon.code,
+        discount_type: coupon.discount_type,
+        discount_value: coupon.discount_value,
+        max_discount_amount: coupon.max_discount_amount,
+      });
+      toast.success(`Coupon "${coupon.code}" applied!`);
+    } catch (err) {
+      toast.error('Failed to apply coupon');
+    }
+    setCouponLoading(false);
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    toast.info('Coupon removed');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
