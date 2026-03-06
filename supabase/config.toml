@@ -2,3 +2,6 @@ project_id = "vkbummbomljtgnmexkfp"
 
 [functions.send-order-email]
 verify_jwt = false
+
+[functions.notify-admin-payment]
+verify_jwt = false

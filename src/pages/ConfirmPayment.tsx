@@ -87,6 +87,18 @@ const ConfirmPayment = () => {
 
       if (insertError) throw insertError;
 
+      // Notify admin via email (fire and forget)
+      supabase.functions.invoke('notify-admin-payment', {
+        body: {
+          customerName: customerName.trim(),
+          phoneNumber: phone.trim(),
+          deliveryAddress: address.trim(),
+          productName: productName || 'Unknown Product',
+          paymentAmount: parseFloat(productPrice) || 0,
+          screenshotUrl: urlData.publicUrl,
+        },
+      }).catch((err) => console.error('Admin notification error:', err));
+
       setSubmitted(true);
       toast.success('Payment confirmation submitted!');
     } catch (error) {
