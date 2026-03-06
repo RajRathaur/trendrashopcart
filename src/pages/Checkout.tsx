@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { ChevronRight, Truck, Shield, CreditCard } from 'lucide-react';
+import { ChevronRight, Truck, Shield, CreditCard, Tag, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CheckoutPage = () => {
@@ -16,6 +16,14 @@ const CheckoutPage = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discount_type: string;
+    discount_value: number;
+    max_discount_amount: number | null;
+  } | null>(null);
   
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
@@ -28,7 +36,22 @@ const CheckoutPage = () => {
   });
 
   const deliveryFee = totalAmount >= 499 ? 0 : 40;
-  const finalAmount = totalAmount + deliveryFee;
+  
+  // Calculate coupon discount
+  let couponDiscount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount_type === 'percentage') {
+      couponDiscount = (totalAmount * appliedCoupon.discount_value) / 100;
+      if (appliedCoupon.max_discount_amount) {
+        couponDiscount = Math.min(couponDiscount, appliedCoupon.max_discount_amount);
+      }
+    } else {
+      couponDiscount = appliedCoupon.discount_value;
+    }
+    couponDiscount = Math.min(couponDiscount, totalAmount);
+  }
+  
+  const finalAmount = totalAmount - couponDiscount + deliveryFee;
 
   if (!user) {
     navigate('/login?redirect=/checkout');
@@ -39,6 +62,63 @@ const CheckoutPage = () => {
     navigate('/cart');
     return null;
   }
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast.error('Please enter a coupon code');
+      return;
+    }
+    setCouponLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('coupons' as any)
+        .select('*')
+        .eq('code', couponCode.trim().toUpperCase())
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) {
+        toast.error('Invalid coupon code');
+        setCouponLoading(false);
+        return;
+      }
+
+      const coupon = data as any;
+      if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+        toast.error('This coupon has expired');
+        setCouponLoading(false);
+        return;
+      }
+      if (coupon.usage_limit && coupon.used_count >= coupon.usage_limit) {
+        toast.error('This coupon has reached its usage limit');
+        setCouponLoading(false);
+        return;
+      }
+      if (coupon.min_order_amount && totalAmount < coupon.min_order_amount) {
+        toast.error(`Minimum order amount is ₹${coupon.min_order_amount}`);
+        setCouponLoading(false);
+        return;
+      }
+
+      setAppliedCoupon({
+        code: coupon.code,
+        discount_type: coupon.discount_type,
+        discount_value: coupon.discount_value,
+        max_discount_amount: coupon.max_discount_amount,
+      });
+      toast.success(`Coupon "${coupon.code}" applied!`);
+    } catch (err) {
+      toast.error('Failed to apply coupon');
+    }
+    setCouponLoading(false);
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    toast.info('Coupon removed');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -253,11 +333,45 @@ const CheckoutPage = () => {
               <div className="bg-card rounded-lg p-4 shadow-sm sticky top-24">
                 <h2 className="font-bold text-lg mb-4">Order Summary</h2>
 
+                {/* Coupon Code */}
+                <div className="mb-4">
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-700 dark:text-green-400">{appliedCoupon.code}</span>
+                      </div>
+                      <button onClick={removeCoupon} className="text-muted-foreground hover:text-destructive">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Coupon code"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        className="flex-1"
+                        maxLength={20}
+                      />
+                      <Button variant="secondary" onClick={applyCoupon} disabled={couponLoading}>
+                        {couponLoading ? '...' : 'Apply'}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-medium">₹{totalAmount.toLocaleString('en-IN')}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Coupon Discount</span>
+                      <span className="discount-text font-medium">-₹{couponDiscount.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Delivery</span>
                     <span className={deliveryFee === 0 ? 'discount-text' : 'font-medium'}>
@@ -271,6 +385,9 @@ const CheckoutPage = () => {
                     <span>Total</span>
                     <span>₹{finalAmount.toLocaleString('en-IN')}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <p className="text-xs text-green-600 font-medium">You save ₹{couponDiscount.toLocaleString('en-IN')} with this coupon!</p>
+                  )}
                 </div>
 
                 <Button

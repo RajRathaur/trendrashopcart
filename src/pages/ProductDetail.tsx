@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ProductReviews } from '@/components/products/ProductReviews';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/types';
 import { useCart } from '@/hooks/useCart';
@@ -456,6 +457,15 @@ const ProductDetail = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mt-12 border-t pt-8">
+          <ProductReviews
+            productId={product.id}
+            productRating={product.rating}
+            reviewCount={product.review_count}
+          />
         </div>
       </div>
     </Layout>

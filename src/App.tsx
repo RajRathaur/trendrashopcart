@@ -24,6 +24,9 @@ import Help from "./pages/Help";
 import BecomeSeller from "./pages/BecomeSeller";
 import NotFound from "./pages/NotFound";
 import ConfirmPayment from "./pages/ConfirmPayment";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
+import ShippingPolicy from "./pages/ShippingPolicy";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -59,6 +62,9 @@ const App = () => (
                 <Route path="/help" element={<Help />} />
                 <Route path="/become-seller" element={<BecomeSeller />} />
                 <Route path="/confirm-payment" element={<ConfirmPayment />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/refund-policy" element={<RefundPolicy />} />
+                <Route path="/shipping-policy" element={<ShippingPolicy />} />
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
