@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { ChevronRight, Truck, Shield, CreditCard } from 'lucide-react';
+import { ChevronRight, Truck, Shield, CreditCard, Tag, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CheckoutPage = () => {
@@ -333,11 +333,45 @@ const CheckoutPage = () => {
               <div className="bg-card rounded-lg p-4 shadow-sm sticky top-24">
                 <h2 className="font-bold text-lg mb-4">Order Summary</h2>
 
+                {/* Coupon Code */}
+                <div className="mb-4">
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-700 dark:text-green-400">{appliedCoupon.code}</span>
+                      </div>
+                      <button onClick={removeCoupon} className="text-muted-foreground hover:text-destructive">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Coupon code"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        className="flex-1"
+                        maxLength={20}
+                      />
+                      <Button variant="secondary" onClick={applyCoupon} disabled={couponLoading}>
+                        {couponLoading ? '...' : 'Apply'}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-medium">₹{totalAmount.toLocaleString('en-IN')}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Coupon Discount</span>
+                      <span className="discount-text font-medium">-₹{couponDiscount.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Delivery</span>
                     <span className={deliveryFee === 0 ? 'discount-text' : 'font-medium'}>
@@ -351,6 +385,9 @@ const CheckoutPage = () => {
                     <span>Total</span>
                     <span>₹{finalAmount.toLocaleString('en-IN')}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <p className="text-xs text-green-600 font-medium">You save ₹{couponDiscount.toLocaleString('en-IN')} with this coupon!</p>
+                  )}
                 </div>
 
                 <Button
