@@ -25,6 +25,7 @@ const CheckoutPage = () => {
     max_discount_amount: number | null;
   } | null>(null);
   
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online'>('cod');
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
     phone: profile?.phone || '',
@@ -145,7 +146,7 @@ const CheckoutPage = () => {
           shipping_state: formData.state,
           shipping_pincode: formData.pincode,
           shipping_phone: formData.phone,
-          payment_method: 'cod',
+          payment_method: paymentMethod,
           notes: formData.notes,
         })
         .select()
@@ -172,11 +173,33 @@ const CheckoutPage = () => {
 
       if (itemsError) throw itemsError;
 
+      // Send admin notification email
+      try {
+        const itemNames = items.map(i => `${i.product?.name} (x${i.quantity})`).join(', ');
+        await supabase.functions.invoke('notify-admin-payment', {
+          body: {
+            customerName: formData.fullName,
+            phoneNumber: formData.phone,
+            deliveryAddress: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
+            productName: itemNames,
+            paymentAmount: finalAmount,
+            paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment',
+          },
+        });
+      } catch (emailErr) {
+        console.warn('Admin notification failed:', emailErr);
+      }
+
       // Clear cart
       await clearCart();
 
-      toast.success('Order placed successfully!');
-      navigate(`/order-success?order=${order.order_number}`);
+      if (paymentMethod === 'online') {
+        // Redirect to UPI payment confirmation page
+        navigate(`/confirm-payment?order=${order.order_number}&amount=${finalAmount}&orderId=${order.id}`);
+      } else {
+        toast.success('Order placed successfully!');
+        navigate(`/order-success?order=${order.order_number}`);
+      }
     } catch (error: any) {
       console.error('Checkout error:', error);
       toast.error(error.message || 'Failed to place order');
@@ -284,19 +307,37 @@ const CheckoutPage = () => {
                   <CreditCard className="h-5 w-5 text-primary" />
                   Payment Method
                 </h2>
+                <div className="space-y-3">
+                  <div
+                    onClick={() => setPaymentMethod('cod')}
+                    className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${paymentMethod === 'cod' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'cod' ? 'border-primary' : 'border-muted-foreground'}`}>
+                        {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <div>
+                        <span className="font-medium">Cash on Delivery (COD)</span>
+                        <p className="text-sm text-muted-foreground">Pay when you receive your order</p>
+                      </div>
+                      <span className="ml-auto text-2xl">💵</span>
+                    </div>
+                  </div>
 
-                <div className="border-2 border-primary rounded-lg p-4 bg-primary/5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
-                      <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+                  <div
+                    onClick={() => setPaymentMethod('online')}
+                    className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${paymentMethod === 'online' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'online' ? 'border-primary' : 'border-muted-foreground'}`}>
+                        {paymentMethod === 'online' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <div>
+                        <span className="font-medium">Online Payment (UPI)</span>
+                        <p className="text-sm text-muted-foreground">Pay via UPI screenshot verification</p>
+                      </div>
+                      <span className="ml-auto text-2xl">📱</span>
                     </div>
-                    <div>
-                      <span className="font-medium">Cash on Delivery (COD)</span>
-                      <p className="text-sm text-muted-foreground">
-                        Pay when you receive your order
-                      </p>
-                    </div>
-                    <span className="ml-auto text-2xl">💵</span>
                   </div>
                 </div>
               </div>
@@ -396,7 +437,7 @@ const CheckoutPage = () => {
                   size="lg"
                   disabled={loading}
                 >
-                  {loading ? 'Placing Order...' : 'Place Order (COD)'}
+                  {loading ? 'Placing Order...' : paymentMethod === 'cod' ? 'Place Order (COD)' : 'Continue to Payment'}
                 </Button>
 
                 <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
