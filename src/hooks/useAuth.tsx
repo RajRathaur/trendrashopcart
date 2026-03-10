@@ -117,6 +117,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         data: { full_name: fullName },
       },
     });
+
+    // Send admin notification about new signup
+    if (!error) {
+      try {
+        await supabase.functions.invoke('notify-signup', {
+          body: {
+            userName: fullName,
+            userEmail: email,
+            registrationDate: new Date().toISOString(),
+          },
+        });
+      } catch (e) {
+        console.warn('Signup notification failed:', e);
+      }
+    }
+
     return { error };
   };
 
