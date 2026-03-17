@@ -26,34 +26,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get admin emails from user_roles table
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-
-    const { data: adminRoles } = await supabaseAdmin
-      .from("user_roles")
-      .select("user_id")
-      .eq("role", "admin");
-
-    const adminEmails: string[] = [];
-    if (adminRoles?.length) {
-      for (const role of adminRoles) {
-        const { data: userData } = await supabaseAdmin.auth.admin.getUserById(role.user_id);
-        if (userData?.user?.email) {
-          adminEmails.push(userData.user.email);
-        }
-      }
-    }
-
-    if (adminEmails.length === 0) {
-      console.error("No admin emails found");
-      return new Response(JSON.stringify({ error: "No admin emails found" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    // Testing mode: send all emails to test account only
+    const adminEmails = ["aksahuakhil@gmail.com"];
 
     const htmlContent = `
 <!DOCTYPE html>

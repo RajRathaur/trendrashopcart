@@ -85,21 +85,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Look up customer email using service role
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-
-    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(customerUserId);
-    if (userError || !userData?.user?.email) {
-      return new Response(JSON.stringify({ error: "Customer email not found" }), {
-        status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const customerEmail = userData.user.email;
+    // Testing mode: send all emails to test account only
+    const customerEmail = "aksahuakhil@gmail.com";
 
     const emoji = statusEmoji[status] || "📋";
     const message = statusMessages[status] || `Your order status has been updated to: ${status}.`;
