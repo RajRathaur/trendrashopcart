@@ -173,29 +173,21 @@ const CheckoutPage = () => {
 
       if (itemsError) throw itemsError;
 
-      // Send order notification emails (admin + customer)
+      // Send admin notification email
       try {
-        const productsList = items.map(i => ({
-          name: i.product?.name || 'Unknown Product',
-          quantity: i.quantity,
-          price: i.product?.price || 0,
-        }));
-        await supabase.functions.invoke('notify-order', {
+        const itemNames = items.map(i => `${i.product?.name} (x${i.quantity})`).join(', ');
+        await supabase.functions.invoke('notify-admin-payment', {
           body: {
-            orderId: order.id,
-            orderNumber: order.order_number,
             customerName: formData.fullName,
-            customerEmail: user.email,
             phoneNumber: formData.phone,
             deliveryAddress: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
-            products: productsList,
-            totalAmount: finalAmount,
-            paymentMethod,
-            orderDate: new Date().toISOString(),
+            productName: itemNames,
+            paymentAmount: finalAmount,
+            paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment',
           },
         });
       } catch (emailErr) {
-        console.warn('Order notification failed:', emailErr);
+        console.warn('Admin notification failed:', emailErr);
       }
 
       // Clear cart

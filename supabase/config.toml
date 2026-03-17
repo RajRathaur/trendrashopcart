@@ -5,9 +5,3 @@ verify_jwt = false
 
 [functions.notify-admin-payment]
 verify_jwt = false
-
-[functions.notify-signup]
-verify_jwt = false
-
-[functions.notify-order]
-verify_jwt = false
