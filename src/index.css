@@ -208,30 +208,56 @@
     background: hsl(var(--success) / 0.06);
   }
 
-  /* Primary button - Flipkart yellow/blue */
+  /* Primary button - Pink gradient */
   .btn-primary-gradient {
-    @apply font-semibold transition-all duration-200;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    box-shadow: 0 1px 4px rgba(40, 116, 240, 0.3);
+    @apply font-semibold transition-all duration-200 rounded-lg;
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 2px 8px hsla(330, 85%, 55%, 0.35);
   }
 
   .btn-primary-gradient:hover {
-    box-shadow: 0 2px 8px rgba(40, 116, 240, 0.4);
-    filter: brightness(1.05);
+    box-shadow: 0 4px 16px hsla(330, 85%, 55%, 0.45);
+    filter: brightness(1.08);
   }
 
-  /* Deal/Buy Now button - Flipkart orange/yellow */
+  /* Deal/Buy Now button - Red */
   .btn-deal {
-    @apply font-semibold transition-all duration-200;
-    background: hsl(var(--accent));
-    color: hsl(var(--foreground));
-    box-shadow: 0 1px 4px hsl(37, 100%, 50%, 0.3);
+    @apply font-semibold transition-all duration-200 rounded-lg;
+    background: hsl(var(--destructive));
+    color: white;
+    box-shadow: 0 2px 8px hsla(0, 72%, 51%, 0.35);
   }
 
   .btn-deal:hover {
-    box-shadow: 0 2px 8px hsl(37, 100%, 50%, 0.4);
-    filter: brightness(1.05);
+    box-shadow: 0 4px 16px hsla(0, 72%, 51%, 0.45);
+    filter: brightness(1.08);
+  }
+
+  /* Blue accent button */
+  .btn-blue {
+    @apply font-semibold transition-all duration-200 rounded-lg;
+    background: hsl(var(--accent));
+    color: white;
+    box-shadow: 0 2px 8px hsla(217, 90%, 55%, 0.35);
+  }
+
+  .btn-blue:hover {
+    box-shadow: 0 4px 16px hsla(217, 90%, 55%, 0.45);
+    filter: brightness(1.08);
+  }
+
+  /* Black button */
+  .btn-dark {
+    @apply font-semibold transition-all duration-200 rounded-lg;
+    background: hsl(0, 0%, 8%);
+    color: white;
+    box-shadow: 0 2px 8px hsla(0, 0%, 0%, 0.25);
+  }
+
+  .btn-dark:hover {
+    background: hsl(0, 0%, 15%);
+    box-shadow: 0 4px 16px hsla(0, 0%, 0%, 0.35);
   }
 
   /* Hero section */
