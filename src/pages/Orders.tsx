@@ -197,7 +197,7 @@ const OrdersPage = () => {
                     )}
                   </div>
 
-                  {/* Shipping Info */}
+                  {/* Shipping Info & Track */}
                   <div className="mt-4 pt-4 border-t flex flex-wrap items-center justify-between gap-2">
                     <div className="text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
@@ -207,6 +207,15 @@ const OrdersPage = () => {
                         💵 {order.payment_method === 'cod' ? 'Cash on Delivery' : order.payment_method}
                       </span>
                     </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => navigate(`/order/${order.id}`)}
+                      className="text-primary border-primary/30 hover:bg-primary/5"
+                    >
+                      <Truck className="h-3.5 w-3.5 mr-1" />
+                      Track Order
+                    </Button>
                   </div>
                 </div>
               </div>
