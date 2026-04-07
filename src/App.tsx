@@ -24,6 +24,7 @@ import Help from "./pages/Help";
 import BecomeSeller from "./pages/BecomeSeller";
 import NotFound from "./pages/NotFound";
 import ConfirmPayment from "./pages/ConfirmPayment";
+import OrderDetail from "./pages/OrderDetail";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
