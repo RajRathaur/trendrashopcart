@@ -101,53 +101,53 @@
   }
 
   .dark {
-    --background: 220 13% 10%;
+    --background: 0 0% 6%;
     --foreground: 0 0% 95%;
 
-    --card: 220 13% 14%;
+    --card: 0 0% 10%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 220 13% 14%;
+    --popover: 0 0% 10%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 217 89% 60%;
+    --primary: 330 85% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 13% 20%;
+    --secondary: 0 0% 16%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 220 13% 20%;
-    --muted-foreground: 220 9% 60%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 37 100% 55%;
-    --accent-foreground: 220 13% 10%;
+    --accent: 217 90% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 22%;
-    --input: 220 13% 22%;
-    --ring: 217 89% 60%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 330 85% 60%;
 
     --success: 142 71% 40%;
     --warning: 37 100% 50%;
-    --deal: 4 90% 58%;
+    --deal: 0 72% 55%;
     --rating: 142 71% 40%;
 
-    --sidebar-background: 220 13% 10%;
+    --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 217 89% 60%;
+    --sidebar-primary: 330 85% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 13% 20%;
+    --sidebar-accent: 0 0% 16%;
     --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 220 13% 22%;
-    --sidebar-ring: 217 89% 60%;
-    --chart-1: 217 89% 60%;
-    --chart-2: 37 100% 55%;
-    --chart-3: 142 71% 40%;
-    --chart-4: 4 90% 60%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 330 85% 60%;
+    --chart-1: 330 85% 60%;
+    --chart-2: 217 90% 60%;
+    --chart-3: 0 72% 55%;
+    --chart-4: 0 0% 90%;
     --chart-5: 270 60% 60%;
-    --sidebar: 220 13% 14%;
+    --sidebar: 0 0% 10%;
     --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.1);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.1);
     --shadow-sm: 0 1px 4px 0px hsl(0 0% 0% / 0.15);
