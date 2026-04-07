@@ -301,11 +301,11 @@
     @apply focus:ring-2 focus:ring-primary focus:border-primary;
   }
 
-  /* Navbar - Flipkart blue */
+  /* Navbar - Black */
   .navbar {
-    background: hsl(var(--primary));
-    @apply text-primary-foreground;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    background: hsl(0, 0%, 8%);
+    @apply text-white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   /* Search bar - Flipkart style */
