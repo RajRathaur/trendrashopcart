@@ -401,12 +401,12 @@
   /* Floating action button */
   .fab {
     @apply fixed bottom-20 right-4 md:bottom-6 z-40 p-3 rounded-full shadow-lg transition-all duration-200;
-    background: hsl(var(--primary));
+    background: var(--gradient-primary);
   }
 
   .fab:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(40, 116, 240, 0.3);
+    box-shadow: 0 4px 16px hsla(330, 85%, 55%, 0.4);
   }
 
   /* Price tag */
