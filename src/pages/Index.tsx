@@ -7,6 +7,7 @@ import { FlashSaleTimer } from '@/components/home/FlashSaleTimer';
 import { FloatingPromo } from '@/components/home/FloatingPromo';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { BrandsMarquee } from '@/components/home/BrandsMarquee';
+import { GamePromoBanner } from '@/components/home/GamePromoBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
@@ -246,9 +247,12 @@ const Index = () => {
         <BrandsMarquee />
       </div>
 
-      <div className="section-separator" />
+      {/* Game Promo */}
+      <div className="container mx-auto px-3">
+        <GamePromoBanner />
+      </div>
 
-      {/* Recommended for You */}
+      <div className="section-separator" />
       <div className="container mx-auto px-3">
         <DealsSection
           products={demoProducts}
