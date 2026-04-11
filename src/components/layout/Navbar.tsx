@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, Package, Store, Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby, TrendingUp, MoreVertical } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, Package, Store, Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby, TrendingUp, MoreVertical, Gamepad2 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { Button } from '@/components/ui/button';
@@ -97,6 +97,13 @@ export const Navbar = () => {
                       <span className="text-sm">{cat.name}</span>
                     </Link>
                   ))}
+                  <hr className="my-2" />
+                  <Link to="/coin-game" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted">
+                    <div className="p-1.5 rounded bg-gradient-to-br from-yellow-400 to-orange-500">
+                      <Gamepad2 className="h-3.5 w-3.5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium">🎮 Coin Game</span>
+                  </Link>
                   <hr className="my-2" />
                   {user && (
                     <>
