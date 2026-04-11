@@ -7,6 +7,7 @@ import { FlashSaleTimer } from '@/components/home/FlashSaleTimer';
 import { FloatingPromo } from '@/components/home/FloatingPromo';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { BrandsMarquee } from '@/components/home/BrandsMarquee';
+import { GamePromoBanner } from '@/components/home/GamePromoBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
