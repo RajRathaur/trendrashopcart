@@ -28,6 +28,7 @@ import OrderDetail from "./pages/OrderDetail";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
+import CoinGame from "./pages/CoinGame";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
