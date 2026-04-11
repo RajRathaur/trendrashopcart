@@ -247,9 +247,12 @@ const Index = () => {
         <BrandsMarquee />
       </div>
 
-      <div className="section-separator" />
+      {/* Game Promo */}
+      <div className="container mx-auto px-3">
+        <GamePromoBanner />
+      </div>
 
-      {/* Recommended for You */}
+      <div className="section-separator" />
       <div className="container mx-auto px-3">
         <DealsSection
           products={demoProducts}
