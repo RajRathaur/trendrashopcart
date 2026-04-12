@@ -98,8 +98,8 @@ export const Navbar = () => {
                     </Link>
                   ))}
                   <hr className="my-2" />
-                  <Link to="/coin-game" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted">
-                    <div className="p-1.5 rounded bg-gradient-to-br from-yellow-400 to-orange-500">
+                  <Link to="/fruit-game" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted">
+                    <div className="p-1.5 rounded bg-gradient-to-br from-green-400 to-emerald-500">
                       <Gamepad2 className="h-3.5 w-3.5 text-white" />
                     </div>
                     <span className="text-sm font-medium">🎮 Coin Game</span>
