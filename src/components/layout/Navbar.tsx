@@ -102,7 +102,7 @@ export const Navbar = () => {
                     <div className="p-1.5 rounded bg-gradient-to-br from-green-400 to-emerald-500">
                       <Gamepad2 className="h-3.5 w-3.5 text-white" />
                     </div>
-                    <span className="text-sm font-medium">🎮 Coin Game</span>
+                    <span className="text-sm font-medium">🍉 Fruit Slicer</span>
                   </Link>
                   <hr className="my-2" />
                   {user && (
