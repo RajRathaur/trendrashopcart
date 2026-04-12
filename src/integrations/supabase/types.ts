@@ -201,6 +201,39 @@ export type Database = {
         }
         Relationships: []
       }
+      game_rewards: {
+        Row: {
+          coupon_code: string
+          created_at: string
+          discount_percent: number
+          expires_at: string
+          game_score: number
+          id: string
+          is_redeemed: boolean
+          user_id: string
+        }
+        Insert: {
+          coupon_code: string
+          created_at?: string
+          discount_percent: number
+          expires_at?: string
+          game_score: number
+          id?: string
+          is_redeemed?: boolean
+          user_id: string
+        }
+        Update: {
+          coupon_code?: string
+          created_at?: string
+          discount_percent?: number
+          expires_at?: string
+          game_score?: number
+          id?: string
+          is_redeemed?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
