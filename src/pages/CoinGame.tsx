@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Coins, Trophy, Heart, Play, RotateCcw } from 'lucide-react';
@@ -149,166 +148,172 @@ const CoinGame = () => {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-3 py-4">
-        <div className="max-w-lg mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Coins className="w-6 h-6 text-primary" />
-              <h1 className="text-xl font-bold text-foreground">Coin Catcher</h1>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Trophy className="w-4 h-4 text-yellow-500" />
-              <span className="font-semibold">{highScore}</span>
-            </div>
+    <div className="fixed inset-0 bg-background z-50 flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-card border-b shrink-0">
+        <div className="flex items-center gap-2">
+          <Coins className="w-6 h-6 text-primary" />
+          <h1 className="text-xl font-bold text-foreground">Coin Catcher</h1>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 text-sm">
+            <Trophy className="w-4 h-4 text-yellow-500" />
+            <span className="font-semibold">{highScore}</span>
           </div>
-
-          {/* Game Area */}
-          <div
-            ref={gameRef}
-            className="relative w-full bg-gradient-to-b from-blue-950 via-indigo-950 to-purple-950 rounded-xl overflow-hidden border-2 border-primary/30 select-none"
-            style={{ height: '450px' }}
+          <button 
+            onClick={() => window.location.href = '/'}
+            className="text-sm text-muted-foreground hover:text-foreground"
           >
-            {/* Stars background */}
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-1 h-1 bg-white/40 rounded-full animate-pulse"
-                style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 3}s` }}
-              />
-            ))}
-
-            {gameState === 'menu' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10">
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-6xl">🪙</motion.div>
-                <h2 className="text-2xl font-bold text-white">Coin Catcher</h2>
-                <p className="text-white/70 text-sm text-center px-8">Tap coins to collect them!<br />Avoid the bombs 💣</p>
-                <div className="text-white/50 text-xs space-y-1 text-center">
-                  <p>🟡 Gold = 10pts | 🪙 Silver = 20pts | 💎 Diamond = 50pts</p>
-                  <p>Build combos for multipliers!</p>
-                </div>
-                <Button onClick={startGame} className="btn-primary-gradient gap-2 px-8">
-                  <Play className="w-4 h-4" /> Play Game
-                </Button>
-              </div>
-            )}
-
-            {gameState === 'playing' && (
-              <>
-                {/* HUD */}
-                <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-10">
-                  <div className="flex gap-1">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <Heart key={i} className={`w-5 h-5 ${i < lives ? 'text-red-500 fill-red-500' : 'text-white/20'}`} />
-                    ))}
-                  </div>
-                  <div className="bg-black/50 rounded-full px-3 py-1 text-white font-bold text-sm">
-                    Score: {score}
-                  </div>
-                  <div className="bg-black/50 rounded-full px-2 py-1 text-white/80 text-xs">
-                    Lv.{level}
-                  </div>
-                </div>
-
-                {/* Combo indicator */}
-                <AnimatePresence>
-                  {showCombo && combo > 1 && (
-                    <motion.div
-                      initial={{ scale: 0, y: 20 }}
-                      animate={{ scale: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      className="absolute top-12 left-1/2 -translate-x-1/2 z-10 bg-gradient-to-r from-primary to-accent text-white font-bold px-3 py-1 rounded-full text-sm"
-                    >
-                      {combo}x Combo! 🔥
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Coins */}
-                <AnimatePresence>
-                  {coins.map(coin => (
-                    <motion.button
-                      key={coin.id}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 1.5, opacity: 0 }}
-                      onClick={() => collectCoin(coin.id, coin.type)}
-                      className="absolute cursor-pointer z-20 active:scale-150 transition-transform"
-                      style={{
-                        left: `${coin.x}%`,
-                        top: `${coin.y}%`,
-                        fontSize: `${coin.size}px`,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                    >
-                      {coinEmoji(coin.type)}
-                    </motion.button>
-                  ))}
-                </AnimatePresence>
-
-                {/* Bombs */}
-                <AnimatePresence>
-                  {bombs.map(bomb => (
-                    <motion.button
-                      key={bomb.id}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1, rotate: [0, 10, -10, 0] }}
-                      exit={{ scale: 2, opacity: 0 }}
-                      onClick={() => hitBomb(bomb.id)}
-                      className="absolute cursor-pointer z-20"
-                      style={{
-                        left: `${bomb.x}%`,
-                        top: `${bomb.y}%`,
-                        fontSize: '28px',
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                    >
-                      💣
-                    </motion.button>
-                  ))}
-                </AnimatePresence>
-              </>
-            )}
-
-            {gameState === 'gameover' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-black/60 backdrop-blur-sm">
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-5xl">
-                  {score > highScore ? '🏆' : '💀'}
-                </motion.div>
-                <h2 className="text-2xl font-bold text-white">Game Over!</h2>
-                <div className="text-center text-white/80">
-                  <p className="text-lg">Score: <span className="font-bold text-primary">{score}</span></p>
-                  <p className="text-sm">Level Reached: {level}</p>
-                  {score >= highScore && score > 0 && (
-                    <p className="text-yellow-400 font-bold mt-1">🎉 New High Score!</p>
-                  )}
-                </div>
-                <div className="flex gap-3 mt-2">
-                  <Button onClick={startGame} className="btn-primary-gradient gap-2">
-                    <RotateCcw className="w-4 h-4" /> Play Again
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Info */}
-          <div className="mt-4 bg-card rounded-lg p-4 border">
-            <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-              <Coins className="w-4 h-4 text-primary" /> How to Play
-            </h3>
-            <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• Tap falling coins to collect points</li>
-              <li>• 🟡 Gold = 10 | 🪙 Silver = 20 | 💎 Diamond = 50</li>
-              <li>• Avoid tapping 💣 bombs — you lose a life!</li>
-              <li>• Chain catches for combo multipliers (up to 5x)</li>
-              <li>• Game speeds up as you level up</li>
-            </ul>
-          </div>
+            Exit ✕
+          </button>
         </div>
       </div>
-    </Layout>
+
+      {/* Game Area - Full Screen */}
+      <div className="flex-1 relative overflow-hidden">
+        <div
+          ref={gameRef}
+          className="absolute inset-0 bg-gradient-to-b from-blue-950 via-indigo-950 to-purple-950 select-none"
+        >
+          {/* Stars background */}
+          {Array.from({ length: 30 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white/40 rounded-full animate-pulse"
+              style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 3}s` }}
+            />
+          ))}
+
+          {gameState === 'menu' && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10">
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-7xl md:text-8xl">🪙</motion.div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white">Coin Catcher</h2>
+              <p className="text-white/70 text-base md:text-lg text-center px-8 max-w-md">Tap falling coins to collect them!<br />Avoid the bombs 💣</p>
+              <div className="text-white/50 text-sm space-y-1 text-center">
+                <p>🟡 Gold = 10pts | 🪙 Silver = 20pts | 💎 Diamond = 50pts</p>
+                <p>Build combos for multipliers!</p>
+              </div>
+              <Button onClick={startGame} className="btn-primary-gradient gap-2 px-10 py-6 text-lg">
+                <Play className="w-5 h-5" /> Play Game
+              </Button>
+            </div>
+          )}
+
+          {gameState === 'playing' && (
+            <>
+              {/* HUD */}
+              <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
+                <div className="flex gap-1">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Heart key={i} className={`w-6 h-6 ${i < lives ? 'text-red-500 fill-red-500' : 'text-white/20'}`} />
+                  ))}
+                </div>
+                <div className="bg-black/50 rounded-full px-4 py-2 text-white font-bold text-base">
+                  Score: {score}
+                </div>
+                <div className="bg-black/50 rounded-full px-3 py-2 text-white/80 text-sm">
+                  Lv.{level}
+                </div>
+              </div>
+
+              {/* Combo indicator */}
+              <AnimatePresence>
+                {showCombo && combo > 1 && (
+                  <motion.div
+                    initial={{ scale: 0, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="absolute top-16 left-1/2 -translate-x-1/2 z-10 bg-gradient-to-r from-primary to-accent text-white font-bold px-4 py-2 rounded-full text-base"
+                  >
+                    {combo}x Combo! 🔥
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Coins */}
+              <AnimatePresence>
+                {coins.map(coin => (
+                  <motion.button
+                    key={coin.id}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 1.5, opacity: 0 }}
+                    onClick={() => collectCoin(coin.id, coin.type)}
+                    className="absolute cursor-pointer z-20 active:scale-150 transition-transform"
+                    style={{
+                      left: `${coin.x}%`,
+                      top: `${coin.y}%`,
+                      fontSize: `${coin.size}px`,
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
+                    {coinEmoji(coin.type)}
+                  </motion.button>
+                ))}
+              </AnimatePresence>
+
+              {/* Bombs */}
+              <AnimatePresence>
+                {bombs.map(bomb => (
+                  <motion.button
+                    key={bomb.id}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1, rotate: [0, 10, -10, 0] }}
+                    exit={{ scale: 2, opacity: 0 }}
+                    onClick={() => hitBomb(bomb.id)}
+                    className="absolute cursor-pointer z-20"
+                    style={{
+                      left: `${bomb.x}%`,
+                      top: `${bomb.y}%`,
+                      fontSize: '28px',
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
+                    💣
+                  </motion.button>
+                ))}
+              </AnimatePresence>
+            </>
+          )}
+
+          {gameState === 'gameover' && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-black/60 backdrop-blur-sm">
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-6xl md:text-7xl">
+                {score > highScore ? '🏆' : '💀'}
+              </motion.div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white">Game Over!</h2>
+              <div className="text-center text-white/80 space-y-1">
+                <p className="text-xl">Score: <span className="font-bold text-primary">{score}</span></p>
+                <p className="text-base">Level Reached: {level}</p>
+                {score >= highScore && score > 0 && (
+                  <p className="text-yellow-400 font-bold mt-2 text-lg">🎉 New High Score!</p>
+                )}
+              </div>
+              <div className="flex gap-3 mt-4">
+                <Button onClick={startGame} className="btn-primary-gradient gap-2 px-8 py-6 text-lg">
+                  <RotateCcw className="w-5 h-5" /> Play Again
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Info Panel - Bottom */}
+      <div className="bg-card border-t px-4 py-3 shrink-0">
+        <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2 text-sm">
+          <Coins className="w-4 h-4 text-primary" /> How to Play
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <span>• Tap coins to collect</span>
+          <span>• 🟡 Gold = 10 | 🪙 Silver = 20</span>
+          <span>• Avoid 💣 bombs</span>
+          <span>• 💎 Diamond = 50</span>
+          <span>• Chain for combos</span>
+          <span>• Speed increases</span>
+        </div>
+      </div>
+    </div>
   );
 };
 
