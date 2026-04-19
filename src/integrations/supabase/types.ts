@@ -123,6 +123,33 @@ export type Database = {
           },
         ]
       }
+      coin_wallet: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_earned: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           code: string
@@ -622,6 +649,48 @@ export type Database = {
         }
         Relationships: []
       }
+      redeem_requests: {
+        Row: {
+          admin_notes: string | null
+          amount_inr: number
+          coins_spent: number
+          contact_email: string | null
+          created_at: string
+          google_play_code: string | null
+          id: string
+          redeem_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount_inr: number
+          coins_spent: number
+          contact_email?: string | null
+          created_at?: string
+          google_play_code?: string | null
+          id?: string
+          redeem_type?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount_inr?: number
+          coins_spent?: number
+          contact_email?: string | null
+          created_at?: string
+          google_play_code?: string | null
+          id?: string
+          redeem_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       sellers: {
         Row: {
           address: string | null
@@ -728,6 +797,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_coins: { Args: { _coins: number }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -736,6 +806,10 @@ export type Database = {
         Returns: boolean
       }
       is_seller: { Args: { _user_id: string }; Returns: boolean }
+      request_redeem: {
+        Args: { _coins: number; _email: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "seller" | "user"
