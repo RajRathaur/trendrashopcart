@@ -29,6 +29,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import FruitGame from "./pages/FruitGame";
+import Redeem from "./pages/Redeem";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -37,6 +38,7 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminBanners from "./pages/admin/AdminBanners";
 import AdminCategories from "./pages/admin/AdminCategories";
+import AdminRedeems from "./pages/admin/AdminRedeems";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +74,7 @@ const App = () => (
                 <Route path="/shipping-policy" element={<ShippingPolicy />} />
                 <Route path="/coin-game" element={<FruitGame />} />
                 <Route path="/fruit-game" element={<FruitGame />} />
+                <Route path="/redeem" element={<Redeem />} />
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
@@ -79,6 +82,7 @@ const App = () => (
                 <Route path="/admin/payments" element={<AdminPayments />} />
                 <Route path="/admin/banners" element={<AdminBanners />} />
                 <Route path="/admin/categories" element={<AdminCategories />} />
+                <Route path="/admin/redeems" element={<AdminRedeems />} />
                 {/* Redirect common paths */}
                 <Route path="/track-order" element={<Orders />} />
                 <Route path="/returns" element={<Help />} />

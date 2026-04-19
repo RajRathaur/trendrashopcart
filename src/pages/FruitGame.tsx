@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Heart, Play, RotateCcw, Gift, LogIn } from 'lucide-react';
+import { Trophy, Heart, Play, RotateCcw, Gift, LogIn, Coins } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useGameRewards } from '@/hooks/useGameRewards';
+import { useCoinWallet, COINS_PER_RUPEE } from '@/hooks/useCoinWallet';
 import { Link } from 'react-router-dom';
 
 interface Fruit {
@@ -41,6 +42,8 @@ const FRUITS = [
 const FruitGame = () => {
   const { user } = useAuth();
   const { claimReward, getEarnedDiscount, rewards, REWARD_THRESHOLDS } = useGameRewards();
+  const { balance, addCoins } = useCoinWallet();
+  const [coinsAwarded, setCoinsAwarded] = useState(0);
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(() =>
@@ -247,8 +250,12 @@ const FruitGame = () => {
         setHighScore(score);
         localStorage.setItem('fruitGameHighScore', score.toString());
       }
+      // Credit coins to wallet (1 score point = 1 coin)
+      if (user && score > 0) {
+        addCoins(score).then(() => setCoinsAwarded(score));
+      }
     }
-  }, [lives, gameState, score, highScore]);
+  }, [lives, gameState, score, highScore, user, addCoins]);
 
   const handleClaimReward = async () => {
     const result = await claimReward(score);
@@ -472,6 +479,24 @@ const FruitGame = () => {
 
                 {!earnedDiscount && (
                   <p className="text-white/50 text-xs">Score {REWARD_THRESHOLDS[0].score}+ to earn a coupon!</p>
+                )}
+
+                {/* Coins earned */}
+                {user && coinsAwarded > 0 && (
+                  <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-lg p-3 mx-6 text-center">
+                    <p className="text-yellow-200 text-sm flex items-center justify-center gap-1">
+                      <Coins className="w-4 h-4" /> +{coinsAwarded} coins added! Balance: <b>{balance}</b>
+                    </p>
+                    <p className="text-yellow-100/80 text-xs mt-1">{COINS_PER_RUPEE} coins = ₹1 • Redeem for Google Play code</p>
+                    <Link to="/redeem">
+                      <Button size="sm" className="mt-2 gap-1 bg-yellow-500 hover:bg-yellow-600 text-black font-bold">
+                        <Gift className="w-3.5 h-3.5" /> Redeem Coins
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+                {!user && score > 0 && (
+                  <p className="text-white/60 text-xs px-6 text-center">Login to save coins & redeem Google Play codes!</p>
                 )}
 
                 <Button onClick={startGame} className="gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold">
