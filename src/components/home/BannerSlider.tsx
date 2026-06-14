@@ -60,11 +60,11 @@ export const BannerSlider = ({
         >
           {banners.map(banner => (
             <div key={banner.id} className="min-w-full">
-              <a href={banner.link_url || '#'} className="block w-full">
+              <a href={banner.link_url || '#'} className="block w-full aspect-[4/3] md:aspect-[3/1]">
                 <img 
                   src={banner.image_url} 
                   alt={banner.title || 'Banner'} 
-                  className="w-full h-auto object-contain" 
+                  className="w-full h-full object-cover" 
                 />
               </a>
             </div>
