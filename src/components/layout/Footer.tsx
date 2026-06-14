@@ -87,7 +87,7 @@ export const Footer = () => {
               <li>
                 <a href={`mailto:${ADMIN_CONFIG.email.primary}`} className="flex items-center gap-2 hover:text-white transition-colors">
                   <Mail className="h-3.5 w-3.5 shrink-0" />
-                  {ADMIN_CONFIG.email.primary}
+                  &nbsp;EMAIL - {ADMIN_CONFIG.email.primary}
                 </a>
               </li>
               <li className="flex items-start gap-2">
