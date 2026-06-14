@@ -31,10 +31,11 @@ export const HeroSection = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="inline-flex items-center gap-2 bg-yellow-400 text-foreground px-4 py-1.5 rounded-sm mb-5 font-bold text-sm"
+          className="inline-flex items-center gap-2 px-5 py-1.5 mb-6 font-semibold text-xs tracking-[0.2em] uppercase border"
+          style={{ background: 'var(--gradient-gold)', color: 'hsl(220 60% 10%)', borderColor: 'hsl(42 70% 70%)' }}
         >
-          <Zap className="h-4 w-4" />
-          Mega Sale — Up to 80% Off!
+          <Zap className="h-3.5 w-3.5" />
+          Exclusive Collection
         </motion.div>
 
         {/* Main heading */}
