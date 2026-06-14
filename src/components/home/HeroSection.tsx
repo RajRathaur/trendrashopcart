@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 
 export const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden rounded mb-4">
-      {/* Background - Flipkart blue */}
-      <div className="absolute inset-0 hero-gradient" />
+    <section className="relative overflow-hidden mb-4 border border-accent/30">
+      {/* Background - Premium navy gradient */}
+      <div className="absolute inset-0" style={{ background: 'var(--gradient-hero)' }} />
+      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, hsl(42 70% 60% / 0.4), transparent 50%), radial-gradient(circle at 80% 70%, hsl(42 70% 60% / 0.3), transparent 50%)' }} />
+
       
       {/* Subtle animated shapes */}
       <div className="absolute inset-0 overflow-hidden">
