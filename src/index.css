@@ -175,15 +175,18 @@
 }
 
 @layer components {
-  /* Product card - Flipkart style: white bg, subtle shadow, clean */
+  /* Product card - Premium: sharp edges, navy border, gold hover */
   .product-card {
-    @apply bg-card overflow-hidden transition-all duration-200 border-0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    @apply bg-card overflow-hidden transition-all duration-300 border;
+    border-color: hsl(var(--primary) / 0.15);
+    border-radius: 0 !important;
+    box-shadow: 0 1px 3px hsl(220 60% 10% / 0.06);
   }
 
   .product-card:hover {
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
+    border-color: hsl(var(--accent));
+    box-shadow: 0 10px 30px hsl(220 60% 10% / 0.18);
+    transform: translateY(-3px);
   }
 
   /* Deal badge - Flipkart green */
