@@ -25,13 +25,13 @@ export const HeroSection = () => {
         />
       </div>
 
-      <div className="relative z-10 px-6 py-10 md:py-16 text-center">
+      <div className="relative z-10 px-4 py-5 md:py-12 text-center">
         {/* Flash badge */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="inline-flex items-center gap-2 px-5 py-1.5 mb-6 font-semibold text-xs tracking-[0.2em] uppercase border"
+          className="inline-flex items-center gap-2 px-5 py-1.5 mb-3 md:mb-6 font-semibold text-xs tracking-[0.2em] uppercase border"
           style={{ background: 'var(--gradient-gold)', color: 'hsl(220 60% 10%)', borderColor: 'hsl(42 70% 70%)' }}
         >
           <Zap className="h-3.5 w-3.5" />
@@ -43,7 +43,7 @@ export const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-4xl md:text-6xl font-serif font-medium text-white mb-4 tracking-tight"
+          className="text-2xl md:text-6xl font-serif font-medium text-white mb-2 md:mb-4 tracking-tight"
         >
           <span className="block">Curated Luxury</span>
           <motion.span
@@ -61,7 +61,7 @@ export const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-sm md:text-base text-white/70 mb-8 max-w-xl mx-auto font-light tracking-wide"
+          className="text-xs md:text-base text-white/70 mb-4 md:mb-8 max-w-xl mx-auto font-light tracking-wide"
         >
           Discover handpicked fashion, electronics & home essentials — premium quality, complimentary delivery.
         </motion.p>
@@ -91,7 +91,7 @@ export const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex justify-center gap-10 mt-10"
+          className="flex justify-center gap-6 md:gap-10 mt-5 md:mt-10"
         >
           {[
             { value: '10K+', label: 'Products' },
