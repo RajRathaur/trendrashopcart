@@ -43,15 +43,16 @@ export const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-3xl md:text-5xl font-bold text-white mb-3"
+          className="text-4xl md:text-6xl font-serif font-medium text-white mb-4 tracking-tight"
         >
-          <span className="block">India's Favourite</span>
+          <span className="block">Curated Luxury</span>
           <motion.span
-            className="block text-yellow-300"
-            animate={{ opacity: [1, 0.8, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="block italic"
+            style={{ background: 'var(--gradient-gold)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            animate={{ opacity: [1, 0.85, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
-            Shopping Destination
+            Crafted for You
           </motion.span>
         </motion.h1>
 
@@ -60,9 +61,9 @@ export const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-base md:text-lg text-white/80 mb-7 max-w-xl mx-auto"
+          className="text-sm md:text-base text-white/70 mb-8 max-w-xl mx-auto font-light tracking-wide"
         >
-          Fashion, Electronics, Home & more at unbeatable prices. Free delivery on your first order!
+          Discover handpicked fashion, electronics & home essentials — premium quality, complimentary delivery.
         </motion.p>
 
         {/* CTA */}
@@ -73,13 +74,13 @@ export const HeroSection = () => {
           className="flex flex-col sm:flex-row gap-3 justify-center"
         >
           <Link to="/products">
-            <Button size="lg" className="bg-yellow-400 text-foreground hover:bg-yellow-300 font-bold px-10 rounded-sm group shadow-md">
-              Shop Now
+            <Button size="lg" className="font-semibold px-10 group border-0 tracking-wider uppercase text-xs" style={{ background: 'var(--gradient-gold)', color: 'hsl(220 60% 10%)' }}>
+              Shop Collection
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
           <Link to="/products?type=deals">
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 font-semibold px-8 rounded-sm">
+            <Button size="lg" variant="outline" className="border border-accent/60 text-white hover:bg-accent/10 font-semibold px-8 tracking-wider uppercase text-xs bg-transparent">
               Explore Deals
             </Button>
           </Link>
