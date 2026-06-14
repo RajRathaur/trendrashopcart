@@ -9,8 +9,8 @@ export const ADMIN_CONFIG = {
     link: 'https://wa.me/919125442370',
   },
   email: {
-    primary: 'trendracare.ac.in@gmail.com',
-    support: 'trendracare.ac.in@gmail.com',
+    primary: 'trendra.care.ac.in@gmail.com',
+    support: 'trendra.care.ac.in@gmail.com',
   },
   phone: {
     tollFree: '1800-123-4567',
