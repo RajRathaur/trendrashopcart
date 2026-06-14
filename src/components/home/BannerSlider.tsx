@@ -41,7 +41,7 @@ export const BannerSlider = ({
   if (banners.length === 0) {
     return (
       <ScrollReveal variant="scale">
-        <div className="banner-gradient aspect-[21/9] md:aspect-[3/1] rounded-lg flex items-center justify-center">
+        <div className="banner-gradient aspect-[21/9] md:aspect-[4/1] rounded-lg flex items-center justify-center">
           <div className="text-center text-primary-foreground">
             <h2 className="text-2xl md:text-4xl font-bold mb-2">Welcome to ShopKart</h2>
             <p className="text-lg opacity-90">Best deals, best prices!</p>
@@ -60,7 +60,7 @@ export const BannerSlider = ({
         >
           {banners.map(banner => (
             <div key={banner.id} className="min-w-full">
-              <a href={banner.link_url || '#'} className="block w-full aspect-[4/3] md:aspect-[3/1]">
+              <a href={banner.link_url || '#'} className="block w-full aspect-[4/3] md:aspect-[4/1]">
                 <img 
                   src={banner.image_url} 
                   alt={banner.title || 'Banner'} 
