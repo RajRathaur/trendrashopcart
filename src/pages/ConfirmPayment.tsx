@@ -43,6 +43,11 @@ const ConfirmPayment = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!user) {
+      toast.error('Please log in to submit payment confirmation');
+      navigate('/login');
+      return;
+    }
     if (!screenshot) {
       toast.error('Please upload your payment screenshot');
       return;
@@ -59,17 +64,14 @@ const ConfirmPayment = () => {
     setSubmitting(true);
     try {
       const fileExt = screenshot.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      // Upload under the user's folder so storage RLS allows it
+      const filePath = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('payment-screenshots')
-        .upload(fileName, screenshot);
+        .upload(filePath, screenshot);
 
       if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from('payment-screenshots')
-        .getPublicUrl(fileName);
 
       const { error: insertError } = await supabase
         .from('payment_confirmations' as any)
@@ -79,9 +81,9 @@ const ConfirmPayment = () => {
           delivery_address: address.trim(),
           product_name: productName || 'Unknown Product',
           payment_amount: parseFloat(productPrice) || 0,
-          screenshot_url: urlData.publicUrl,
+          screenshot_url: filePath,
           product_id: productId || null,
-          user_id: user?.id || null,
+          user_id: user.id,
         } as any);
 
       if (insertError) throw insertError;
@@ -93,7 +95,7 @@ const ConfirmPayment = () => {
           deliveryAddress: address.trim(),
           productName: productName || 'Unknown Product',
           paymentAmount: parseFloat(productPrice) || 0,
-          screenshotUrl: urlData.publicUrl,
+          screenshotPath: filePath,
         },
       }).catch((err) => console.error('Admin notification error:', err));
 

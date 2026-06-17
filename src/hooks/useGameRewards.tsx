@@ -57,26 +57,18 @@ export const useGameRewards = () => {
     const discount = getEarnedDiscount(score);
     if (!discount) return null;
 
-    const code = `FRUIT${discount}${Date.now().toString(36).toUpperCase()}`;
-    const { data, error } = await supabase
-      .from('game_rewards')
-      .insert({
-        user_id: user.id,
-        coupon_code: code,
-        discount_percent: discount,
-        game_score: score,
-      })
-      .select()
-      .single();
+    // Server-side validated reward claim — coupon code and discount come from the database
+    const { data, error } = await (supabase as any).rpc('claim_game_reward', { _score: score });
 
-    if (error) {
+    if (error || !data) {
       toast({ title: 'Error', description: 'Could not claim reward', variant: 'destructive' });
       return null;
     }
 
-    toast({ title: '🎉 Reward Earned!', description: `You got a ${discount}% off coupon: ${code}` });
+    const reward = data as unknown as GameReward;
+    toast({ title: '🎉 Reward Earned!', description: `You got a ${reward.discount_percent}% off coupon: ${reward.coupon_code}` });
     await fetchRewards();
-    return data as GameReward;
+    return reward;
   };
 
   return { rewards, loading, claimReward, getEarnedDiscount, fetchRewards, REWARD_THRESHOLDS };

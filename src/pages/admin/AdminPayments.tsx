@@ -25,6 +25,20 @@ const AdminPayments = () => {
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<PaymentConfirmation | null>(null);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedItem) { setSignedUrl(null); return; }
+    const path = selectedItem.screenshot_url;
+    if (path?.startsWith('http')) {
+      setSignedUrl(path); // legacy public URL
+      return;
+    }
+    supabase.storage
+      .from('payment-screenshots')
+      .createSignedUrl(path, 3600)
+      .then(({ data }) => setSignedUrl(data?.signedUrl || null));
+  }, [selectedItem]);
 
   const fetchConfirmations = async () => {
     setLoading(true);
@@ -124,7 +138,7 @@ const AdminPayments = () => {
       </div>
 
       {/* Detail Dialog */}
-      <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
+      <Dialog open={!!selectedItem} onOpenChange={() => { setSelectedItem(null); setSignedUrl(null); }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Payment Confirmation Details</DialogTitle>
@@ -156,11 +170,17 @@ const AdminPayments = () => {
 
               <div>
                 <span className="text-sm text-muted-foreground block mb-2">Payment Screenshot</span>
-                <img
-                  src={selectedItem.screenshot_url}
-                  alt="Payment screenshot"
-                  className="w-full rounded-lg border max-h-72 object-contain bg-muted"
-                />
+                {signedUrl ? (
+                  <img
+                    src={signedUrl}
+                    alt="Payment screenshot"
+                    className="w-full rounded-lg border max-h-72 object-contain bg-muted"
+                  />
+                ) : (
+                  <div className="w-full h-40 rounded-lg border bg-muted flex items-center justify-center text-sm text-muted-foreground">
+                    Loading screenshot…
+                  </div>
+                )}
               </div>
 
               {selectedItem.status === 'pending' && (
