@@ -35,6 +35,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
 import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
+import { logAdminAction } from '@/lib/auditLog';
 
 type OrderStatus = Database['public']['Enums']['order_status'];
 
@@ -157,6 +158,12 @@ const AdminOrders = () => {
 
       if (error) throw error;
 
+      await logAdminAction('order_status_change', 'order', orderId, {
+        order_number: order?.order_number,
+        from: order?.status,
+        to: newStatus,
+      });
+
       // Create in-app notification for the customer
       if (order?.user_id) {
         const statusMessages: Record<OrderStatus, string> = {
@@ -214,6 +221,8 @@ const AdminOrders = () => {
 
   const handleDeleteOrder = async (orderId: string) => {
     try {
+      const orderSnapshot = orders.find(o => o.id === orderId);
+
       // Delete order items first
       const { error: itemsError } = await supabase
         .from('order_items')
@@ -227,6 +236,12 @@ const AdminOrders = () => {
         .delete()
         .eq('id', orderId);
       if (error) throw error;
+
+      await logAdminAction('order_delete', 'order', orderId, {
+        order_number: orderSnapshot?.order_number,
+        total_amount: orderSnapshot?.total_amount,
+        status: orderSnapshot?.status,
+      });
 
       toast.success('Order deleted successfully');
       setOrders(prev => prev.filter(o => o.id !== orderId));
