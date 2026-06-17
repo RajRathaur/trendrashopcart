@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json
+        }
+        Relationships: []
+      }
       banners: {
         Row: {
           created_at: string
@@ -806,6 +836,15 @@ export type Database = {
         Returns: boolean
       }
       is_seller: { Args: { _user_id: string }; Returns: boolean }
+      log_admin_action: {
+        Args: {
+          _action: string
+          _entity_id?: string
+          _entity_type: string
+          _metadata?: Json
+        }
+        Returns: string
+      }
       request_redeem: {
         Args: { _coins: number; _email: string }
         Returns: string
