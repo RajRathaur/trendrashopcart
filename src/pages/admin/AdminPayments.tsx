@@ -124,7 +124,7 @@ const AdminPayments = () => {
       </div>
 
       {/* Detail Dialog */}
-      <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
+      <Dialog open={!!selectedItem} onOpenChange={() => { setSelectedItem(null); setSignedUrl(null); }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Payment Confirmation Details</DialogTitle>
@@ -156,11 +156,17 @@ const AdminPayments = () => {
 
               <div>
                 <span className="text-sm text-muted-foreground block mb-2">Payment Screenshot</span>
-                <img
-                  src={selectedItem.screenshot_url}
-                  alt="Payment screenshot"
-                  className="w-full rounded-lg border max-h-72 object-contain bg-muted"
-                />
+                {signedUrl ? (
+                  <img
+                    src={signedUrl}
+                    alt="Payment screenshot"
+                    className="w-full rounded-lg border max-h-72 object-contain bg-muted"
+                  />
+                ) : (
+                  <div className="w-full h-40 rounded-lg border bg-muted flex items-center justify-center text-sm text-muted-foreground">
+                    Loading screenshot…
+                  </div>
+                )}
               </div>
 
               {selectedItem.status === 'pending' && (
