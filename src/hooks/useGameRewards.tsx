@@ -58,7 +58,7 @@ export const useGameRewards = () => {
     if (!discount) return null;
 
     // Server-side validated reward claim — coupon code and discount come from the database
-    const { data, error } = await supabase.rpc('claim_game_reward', { _score: score });
+    const { data, error } = await (supabase as any).rpc('claim_game_reward', { _score: score });
 
     if (error || !data) {
       toast({ title: 'Error', description: 'Could not claim reward', variant: 'destructive' });

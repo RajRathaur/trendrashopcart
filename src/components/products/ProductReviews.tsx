@@ -52,10 +52,10 @@ export const ProductReviews = ({ productId, productRating, reviewCount }: Produc
     if (!error && data) {
       // Fetch only safe display fields via security-definer function
       const userIds = [...new Set(data.map(r => r.user_id))];
-      const { data: profiles } = await supabase
+      const { data: profiles } = await (supabase as any)
         .rpc('get_public_profiles', { _user_ids: userIds });
 
-      const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+      const profileMap = new Map(((profiles as any[]) || []).map((p: any) => [p.user_id, p]));
       setReviews(data.map(r => ({ ...r, profile: profileMap.get(r.user_id) || null })) as Review[]);
     }
     setLoading(false);

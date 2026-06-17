@@ -25,6 +25,20 @@ const AdminPayments = () => {
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<PaymentConfirmation | null>(null);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedItem) { setSignedUrl(null); return; }
+    const path = selectedItem.screenshot_url;
+    if (path?.startsWith('http')) {
+      setSignedUrl(path); // legacy public URL
+      return;
+    }
+    supabase.storage
+      .from('payment-screenshots')
+      .createSignedUrl(path, 3600)
+      .then(({ data }) => setSignedUrl(data?.signedUrl || null));
+  }, [selectedItem]);
 
   const fetchConfirmations = async () => {
     setLoading(true);
