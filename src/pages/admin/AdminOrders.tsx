@@ -35,7 +35,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
 import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
-import { logAdminAction } from '@/lib/auditLog';
+import { logAdminAction, maskPhone, addressSnippet } from '@/lib/auditLog';
 
 type OrderStatus = Database['public']['Enums']['order_status'];
 
@@ -162,6 +162,12 @@ const AdminOrders = () => {
         order_number: order?.order_number,
         from: order?.status,
         to: newStatus,
+        total_amount: order?.total_amount,
+        shipping_pincode: order?.shipping_pincode ?? null,
+        shipping_city: order?.shipping_city ?? null,
+        shipping_state: order?.shipping_state ?? null,
+        address_snippet: addressSnippet(order?.shipping_address),
+        phone_masked: maskPhone(order?.shipping_phone),
       });
 
       // Create in-app notification for the customer
@@ -241,6 +247,10 @@ const AdminOrders = () => {
         order_number: orderSnapshot?.order_number,
         total_amount: orderSnapshot?.total_amount,
         status: orderSnapshot?.status,
+        shipping_pincode: orderSnapshot?.shipping_pincode ?? null,
+        shipping_city: orderSnapshot?.shipping_city ?? null,
+        address_snippet: addressSnippet(orderSnapshot?.shipping_address),
+        phone_masked: maskPhone(orderSnapshot?.shipping_phone),
       });
 
       toast.success('Order deleted successfully');
