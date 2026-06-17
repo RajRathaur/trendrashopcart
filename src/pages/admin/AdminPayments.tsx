@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Eye, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { logAdminAction } from '@/lib/auditLog';
 
 interface PaymentConfirmation {
   id: string;
@@ -60,6 +61,7 @@ const AdminPayments = () => {
 
   const updateStatus = async (id: string, status: string) => {
     setUpdating(id);
+    const item = confirmations.find(c => c.id === id);
     const { error } = await supabase
       .from('payment_confirmations' as any)
       .update({ status, updated_at: new Date().toISOString() } as any)
@@ -68,6 +70,16 @@ const AdminPayments = () => {
     if (error) {
       toast.error('Failed to update status');
     } else {
+      await logAdminAction(
+        status === 'verified' ? 'payment_verify' : 'payment_reject',
+        'payment_confirmation',
+        id,
+        {
+          customer_name: item?.customer_name,
+          amount: item?.payment_amount,
+          product: item?.product_name,
+        }
+      );
       toast.success(`Payment ${status === 'verified' ? 'verified' : 'rejected'}`);
       fetchConfirmations();
       setSelectedItem(null);
