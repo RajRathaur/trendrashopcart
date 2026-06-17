@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Gift, Coins } from 'lucide-react';
-import { logAdminAction } from '@/lib/auditLog';
+import { logAdminAction, maskEmail } from '@/lib/auditLog';
 
 interface Req {
   id: string;
@@ -67,7 +67,13 @@ const AdminRedeems = () => {
       status === 'approved' ? 'redeem_approve' : 'redeem_reject',
       'redeem_request',
       r.id,
-      { coins_spent: r.coins_spent, amount_inr: r.amount_inr, contact_email: r.contact_email }
+      {
+        coins_spent: r.coins_spent,
+        amount_inr: r.amount_inr,
+        contact_email_masked: maskEmail(r.contact_email),
+        code_issued: status === 'approved' && !!e.code.trim(),
+        notes_present: !!e.notes.trim(),
+      }
     );
     toast({ title: `Request ${status}` });
     load();

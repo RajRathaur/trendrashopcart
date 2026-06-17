@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Eye, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { logAdminAction } from '@/lib/auditLog';
+import { logAdminAction, maskPhone, addressSnippet } from '@/lib/auditLog';
 
 interface PaymentConfirmation {
   id: string;
@@ -78,6 +78,9 @@ const AdminPayments = () => {
           customer_name: item?.customer_name,
           amount: item?.payment_amount,
           product: item?.product_name,
+          phone_masked: maskPhone(item?.phone_number),
+          address_snippet: addressSnippet(item?.delivery_address),
+          new_status: status,
         }
       );
       toast.success(`Payment ${status === 'verified' ? 'verified' : 'rejected'}`);
