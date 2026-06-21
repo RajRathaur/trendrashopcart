@@ -26,7 +26,7 @@ const AboutPage = () => {
             <div>
               <h2 className="text-2xl font-bold mb-4">Our Story</h2>
               <p className="text-muted-foreground mb-4">
-                Founded with a vision to make online shopping accessible to every Indian, ShopKart started as a small initiative to bridge the gap between quality products and affordable prices.
+                Founded with a vision to make online shopping accessible to every Indian, Trendra started as a small initiative to bridge the gap between quality products and affordable prices.
               </p>
               <p className="text-muted-foreground mb-4">
                 Today, we've grown to become one of India's most trusted e-commerce platforms, serving millions of customers across the country with a wide range of products from fashion to electronics, home essentials to beauty care.
