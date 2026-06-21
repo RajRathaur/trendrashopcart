@@ -96,6 +96,8 @@ const WishlistPage = () => {
                   className="w-full h-full object-cover"
                 />
                 <button
+                  type="button"
+                  aria-label="Remove from wishlist"
                   onClick={(e) => {
                     e.preventDefault();
                     removeFromWishlist(item.product_id);
