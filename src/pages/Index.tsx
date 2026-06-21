@@ -195,6 +195,11 @@ const Index = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Trendra Shopkart — Shop Fashion, Electronics & More in India"
+        description="Discover trending products across fashion, electronics, beauty and home — at unbeatable prices with Cash on Delivery across India."
+        path="/"
+      />
       {/* Floating Promo */}
       <FloatingPromo />
 
