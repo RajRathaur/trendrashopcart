@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ADMIN_CONFIG, getWhatsAppLink } from '@/config/admin';
+import { Seo } from '@/components/Seo';
 
 const ContactPage = () => {
   const [loading, setLoading] = useState(false);
