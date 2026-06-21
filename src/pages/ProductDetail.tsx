@@ -212,6 +212,9 @@ const ProductDetail = () => {
                 className="w-full h-full object-cover"
               />
               <button
+                type="button"
+                aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                aria-pressed={isWishlisted}
                 onClick={() => toggleWishlist(product.id)}
                 className={cn(
                   'absolute top-4 right-4 p-3 rounded-full bg-card shadow-lg transition-all',
