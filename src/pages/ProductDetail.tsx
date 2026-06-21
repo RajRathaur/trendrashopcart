@@ -236,6 +236,8 @@ const ProductDetail = () => {
                 {images.map((img, i) => (
                   <button
                     key={i}
+                    type="button"
+                    aria-label={`Show image ${i + 1} of ${product.name}`}
                     onClick={() => setSelectedImage(i)}
                     className={cn(
                       'w-16 h-16 rounded-lg overflow-hidden border-2 shrink-0 transition-all',
