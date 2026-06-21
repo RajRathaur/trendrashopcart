@@ -406,7 +406,7 @@ const CheckoutPage = () => {
                     <div key={item.id} className="flex gap-3 py-3 first:pt-0 last:pb-0">
                       <img
                         src={item.product?.images?.[0] || '/placeholder.svg'}
-                        alt=""
+                        alt={item.product?.name || 'Product image'}
                         className="w-14 h-14 rounded-lg object-cover border"
                       />
                       <div className="flex-1 min-w-0">
