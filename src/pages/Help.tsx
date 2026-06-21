@@ -4,6 +4,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Input } from '@/components/ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Search, Package, Truck, RotateCcw, CreditCard, ShieldCheck, HelpCircle, ChevronRight } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 
 const helpCategories = [
   { icon: Package, title: 'Orders', description: 'Track, cancel, or return orders' },
@@ -99,8 +100,24 @@ const HelpPage = () => {
       })).filter(category => category.questions.length > 0)
     : faqs;
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.flatMap(c => c.questions.map(q => ({
+      "@type": "Question",
+      name: q.q,
+      acceptedAnswer: { "@type": "Answer", text: q.a },
+    }))),
+  };
+
   return (
     <Layout>
+      <Seo
+        title="Help Center & FAQs — Trendra Shopkart"
+        description="Get answers about orders, shipping, returns, payments and your Trendra account. Browse FAQs or contact our support team."
+        path="/help"
+        jsonLd={faqSchema}
+      />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">

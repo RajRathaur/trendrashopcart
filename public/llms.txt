@@ -1,0 +1,22 @@
+# Trendra Shopkart
+
+> India's online shopping destination for fashion, electronics, beauty, and home essentials with Cash on Delivery and fast nationwide shipping.
+
+Trendra Shopkart is a multi-vendor e-commerce platform serving customers across India. Browse curated catalogs, earn rewards from in-app games, and pay on delivery.
+
+## Pages
+
+- [Home](/): Featured deals, banners, and trending categories.
+- [All Products](/products): Full catalog with filters by category, brand and price.
+- [About](/about): Our story, mission, and what makes Trendra different.
+- [Contact](/contact): Customer support via WhatsApp, email, and phone.
+- [Help Center](/help): FAQs covering orders, shipping, returns, and payments.
+- [Become a Seller](/become-seller): Apply to sell your products on Trendra.
+- [Privacy Policy](/privacy-policy): How we handle your data.
+- [Refund Policy](/refund-policy): Returns and refund terms.
+- [Shipping Policy](/shipping-policy): Delivery times and charges.
+
+## Optional
+
+- [Coin Game](/coin-game): Play to earn discount coupons.
+- [Redeem](/redeem): Convert earned coins into rewards.

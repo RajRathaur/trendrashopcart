@@ -9,6 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Filter, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -208,6 +209,11 @@ const ProductsPage = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Shop All Products — Trendra Shopkart"
+        description="Browse the full Trendra catalog: fashion, electronics, beauty, home essentials and more. Filter by category, brand and price to find the best deals."
+        path="/products"
+      />
       <div className="container mx-auto px-4 py-4">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">

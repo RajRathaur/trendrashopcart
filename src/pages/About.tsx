@@ -1,9 +1,15 @@
 import { Layout } from '@/components/layout/Layout';
 import { Store, Truck, Shield, Users, Award, Heart } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 
 const AboutPage = () => {
   return (
     <Layout>
+      <Seo
+        title="About Trendra — India's Trusted Online Shopping Destination"
+        description="Learn about Trendra Shopkart, India's growing e-commerce platform offering quality products, Cash on Delivery, and fast nationwide shipping."
+        path="/about"
+      />
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12">

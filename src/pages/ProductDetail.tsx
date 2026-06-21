@@ -12,6 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus, Minus, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Seo } from '@/components/Seo';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -182,8 +183,39 @@ const ProductDetail = () => {
   const images = product.images?.length ? product.images : ['/placeholder.svg'];
   const isWishlisted = isInWishlist(product.id);
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: images,
+    description: product.description || product.name,
+    sku: product.id,
+    brand: { "@type": "Brand", name: product.seller?.business_name || "Trendra" },
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "INR",
+      availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      url: `https://trendrashopcart.lovable.app/product/${product.id}`,
+    },
+    ...(product.rating > 0 ? {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: product.rating,
+        reviewCount: Math.max(1, product.review_count || 1),
+      },
+    } : {}),
+  };
+
   return (
     <Layout>
+      <Seo
+        title={`${product.name} — Buy Online at Trendra Shopkart`}
+        description={(product.description || `Buy ${product.name} online at Trendra Shopkart. Best price, Cash on Delivery, fast shipping across India.`).slice(0, 160)}
+        path={`/product/${product.id}`}
+        image={images[0]}
+        jsonLd={productSchema}
+      />
       <div className="container mx-auto px-4 py-4">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 overflow-x-auto no-scrollbar">

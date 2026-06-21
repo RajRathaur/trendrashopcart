@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ADMIN_CONFIG, getWhatsAppLink } from '@/config/admin';
+import { Seo } from '@/components/Seo';
 
 const ContactPage = () => {
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,11 @@ const ContactPage = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Contact Trendra Shopkart — Customer Support"
+        description="Reach the Trendra Shopkart team for orders, returns, seller queries or partnership requests. WhatsApp, email and phone support available."
+        path="/contact"
+      />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">

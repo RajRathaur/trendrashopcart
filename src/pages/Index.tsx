@@ -11,6 +11,7 @@ import { GamePromoBanner } from '@/components/home/GamePromoBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
+import { Seo } from '@/components/Seo';
 
 const Index = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -195,6 +196,11 @@ const Index = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Trendra Shopkart — Shop Fashion, Electronics & More in India"
+        description="Discover trending products across fashion, electronics, beauty and home — at unbeatable prices with Cash on Delivery across India."
+        path="/"
+      />
       {/* Floating Promo */}
       <FloatingPromo />
 
