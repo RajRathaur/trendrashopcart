@@ -12,15 +12,42 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Require an authenticated user to prevent anonymous email spam
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: userData, error: userError } = await authClient.auth.getUser();
+    if (userError || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const { customerName, phoneNumber, deliveryAddress, productName, paymentAmount, screenshotUrl } = await req.json();
+    const body = await req.json();
+    const customerName = String(body.customerName ?? "").slice(0, 120);
+    const phoneNumber = String(body.phoneNumber ?? "").slice(0, 20);
+    const deliveryAddress = String(body.deliveryAddress ?? "").slice(0, 500);
+    const productName = String(body.productName ?? "").slice(0, 200);
+    const paymentAmount = Number(body.paymentAmount);
+    const screenshotUrl = body.screenshotUrl ? String(body.screenshotUrl).slice(0, 500) : "";
 
-    if (!customerName || !productName || !paymentAmount) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+    if (!customerName || !productName || !Number.isFinite(paymentAmount) || paymentAmount <= 0) {
+      return new Response(JSON.stringify({ error: "Missing or invalid fields" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
