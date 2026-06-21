@@ -135,7 +135,7 @@ const CartPage = () => {
                   >
                     <img
                       src={item.product?.images?.[0] || '/placeholder.svg'}
-                      alt={item.product?.name}
+                      alt={item.product?.name || 'Product image'}
                       className="w-full h-full object-cover hover:scale-105 transition-transform"
                     />
                   </Link>
