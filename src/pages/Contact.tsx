@@ -53,6 +53,11 @@ const ContactPage = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Contact Trendra Shopkart — Customer Support"
+        description="Reach the Trendra Shopkart team for orders, returns, seller queries or partnership requests. WhatsApp, email and phone support available."
+        path="/contact"
+      />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
