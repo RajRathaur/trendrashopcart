@@ -12,6 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus, Minus, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Seo } from '@/components/Seo';
 
 const ProductDetail = () => {
   const { id } = useParams();
