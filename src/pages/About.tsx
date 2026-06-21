@@ -13,7 +13,7 @@ const AboutPage = () => {
             </div>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            About ShopKart
+            About Trendra
           </h1>
           <p className="text-lg text-muted-foreground">
             India's favorite online shopping destination, bringing quality products at the best prices right to your doorstep.
