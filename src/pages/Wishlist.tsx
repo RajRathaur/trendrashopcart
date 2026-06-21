@@ -92,7 +92,7 @@ const WishlistPage = () => {
               >
                 <img
                   src={item.product?.images?.[0] || '/placeholder.svg'}
-                  alt={item.product?.name}
+                  alt={item.product?.name || 'Wishlist product'}
                   className="w-full h-full object-cover"
                 />
                 <button
