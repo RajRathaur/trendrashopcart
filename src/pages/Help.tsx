@@ -4,6 +4,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Input } from '@/components/ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Search, Package, Truck, RotateCcw, CreditCard, ShieldCheck, HelpCircle, ChevronRight } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 
 const helpCategories = [
   { icon: Package, title: 'Orders', description: 'Track, cancel, or return orders' },
