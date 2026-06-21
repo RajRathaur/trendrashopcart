@@ -153,6 +153,27 @@ export type Database = {
           },
         ]
       }
+      coin_earn_log: {
+        Row: {
+          coins_delta: number
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          coins_delta: number
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          coins_delta?: number
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       coin_wallet: {
         Row: {
           balance: number
