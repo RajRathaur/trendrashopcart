@@ -9,6 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Filter, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
