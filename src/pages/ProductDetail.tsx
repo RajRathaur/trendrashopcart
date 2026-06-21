@@ -346,13 +346,17 @@ const ProductDetail = () => {
               <h3 className="font-semibold mb-2">Quantity</h3>
               <div className="flex items-center gap-3">
                 <button
+                  type="button"
+                  aria-label="Decrease quantity"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="p-2 rounded-md border hover:bg-muted"
                 >
                   <Minus className="h-4 w-4" />
                 </button>
-                <span className="text-lg font-medium w-12 text-center">{quantity}</span>
+                <span className="text-lg font-medium w-12 text-center" aria-live="polite">{quantity}</span>
                 <button
+                  type="button"
+                  aria-label="Increase quantity"
                   onClick={() => setQuantity(quantity + 1)}
                   className="p-2 rounded-md border hover:bg-muted"
                 >
