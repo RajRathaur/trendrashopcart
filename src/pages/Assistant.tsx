@@ -19,7 +19,8 @@ import {
   PromptInputBody,
   PromptInputTextarea,
   PromptInputSubmit,
-  PromptInputToolbar,
+  PromptInputFooter,
+  type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Plus, Trash2, ShoppingBag, MessageSquare, Loader2 } from "lucide-react";
@@ -127,9 +128,8 @@ const AssistantPage = () => {
     onFinish: () => loadThreads(),
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
+  const handleSubmit = async (message: PromptInputMessage) => {
+    const text = (message.text ?? input).trim();
     if (!text || !threadId) return;
     setInput("");
     await sendMessage({ text });
@@ -285,14 +285,12 @@ const AssistantPage = () => {
                     placeholder="Ask Trendra anything… 'Find a saree under 1500'"
                     autoFocus
                   />
-                  <PromptInputToolbar>
-                    <div className="flex-1" />
+                  <PromptInputFooter className="justify-end">
                     <PromptInputSubmit
                       status={status}
                       disabled={!input.trim() && !isBusy}
-                      onClick={isBusy ? (e: any) => { e.preventDefault(); stop(); } : undefined}
                     />
-                  </PromptInputToolbar>
+                  </PromptInputFooter>
                 </PromptInputBody>
               </PromptInput>
               <p className="text-[10px] text-muted-foreground mt-2 text-center">
