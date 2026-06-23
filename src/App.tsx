@@ -30,6 +30,7 @@ import RefundPolicy from "./pages/RefundPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import FruitGame from "./pages/FruitGame";
 import Redeem from "./pages/Redeem";
+import Assistant from "./pages/Assistant";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -76,6 +77,8 @@ const App = () => (
                 <Route path="/coin-game" element={<FruitGame />} />
                 <Route path="/fruit-game" element={<FruitGame />} />
                 <Route path="/redeem" element={<Redeem />} />
+                <Route path="/assistant" element={<Assistant />} />
+                <Route path="/assistant/:threadId" element={<Assistant />} />
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
