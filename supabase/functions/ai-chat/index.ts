@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
         execute: async ({ query, maxPrice, minPrice }) => {
           let q = supabase
             .from("products")
-            .select("id,name,price,discount_price,image_url,category_id,description,stock")
+            .select("id,name,slug,price,mrp,discount_percent,images,category_id,description,stock")
             .eq("is_active", true)
             .limit(8);
           if (query) q = q.or(`name.ilike.%${query}%,description.ilike.%${query}%`);
