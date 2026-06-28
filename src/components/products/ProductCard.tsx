@@ -1,11 +1,12 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Heart, Star, ShoppingCart, BadgeCheck, Zap } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
+import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
 
 interface ProductCardProps {
   product: Product;
@@ -15,7 +16,7 @@ interface ProductCardProps {
 export const ProductCard = ({ product, className }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
-  const navigate = useNavigate();
+  const [buyNowOpen, setBuyNowOpen] = useState(false);
   const isWishlisted = isInWishlist(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -33,12 +34,7 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const upiLink = `upi://pay?pa=9125442370@ybl&pn=Trendra%20Shopcart&am=${product.price}&cu=INR`;
-    toast.info('Redirecting to secure UPI payment...', { duration: 3000 });
-    window.location.href = upiLink;
-    setTimeout(() => {
-      navigate(`/confirm-payment?product=${encodeURIComponent(product.name)}&amount=${product.price}&productId=${product.id}`);
-    }, 3000);
+    setBuyNowOpen(true);
   };
 
   const imageUrl = product.images?.[0] || '/placeholder.svg';
