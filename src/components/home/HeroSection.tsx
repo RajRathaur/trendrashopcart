@@ -58,31 +58,36 @@ export const HeroSection = () => {
       >
         <motion.div
           variants={itemVariants}
-          className="inline-flex items-center px-4 py-1.5 rounded-full bg-card border border-white/10 text-[11px] font-semibold tracking-[0.2em] uppercase"
+          className="inline-flex items-center px-4 py-1.5 bg-card text-[11px] font-semibold tracking-[0.2em] uppercase"
           style={{ color: 'hsl(var(--primary))' }}
         >
-          Trendra Shopkart
+          ✦ Trendra Premium Shopkart ✦
         </motion.div>
 
         <motion.h1
           variants={itemVariants}
           className="mt-8 text-5xl sm:text-6xl md:text-8xl font-bold tracking-tight leading-[1.05] text-balance text-foreground"
         >
-          Future of{' '}
-          <span
-            className="text-transparent bg-clip-text"
-            style={{ backgroundImage: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)' }}
+          Luxury Redefined.{' '}
+          <motion.span
+            className="text-transparent bg-clip-text inline-block"
+            style={{
+              backgroundImage: 'linear-gradient(120deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 50%, hsl(var(--primary)) 100%)',
+              backgroundSize: '200% 100%',
+            }}
+            animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
           >
-            Indian Commerce.
-          </span>
+            Crafted for India.
+          </motion.span>
         </motion.h1>
 
         <motion.p
           variants={itemVariants}
           className="mt-7 text-base md:text-xl text-foreground/60 max-w-2xl font-light leading-relaxed"
         >
-          Experience a curated marketplace where premium global aesthetics meet the heart of India.
-          Shop, earn rewards, and redefine your lifestyle.
+          A curated marketplace where premium global aesthetics meet the heart of India.
+          Shop the finest, earn rewards, and elevate every moment.
         </motion.p>
 
         <motion.div
@@ -94,7 +99,7 @@ export const HeroSection = () => {
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-              className="px-8 py-4 font-semibold rounded-2xl text-primary-foreground glow-purple transition-shadow duration-300 hover:shadow-[0_0_60px_-10px_hsl(var(--primary)/0.7)]"
+              className="px-8 py-4 font-semibold text-primary-foreground glow-purple transition-shadow duration-300 hover:shadow-[0_0_60px_-10px_hsl(var(--primary)/0.7)]"
               style={{ background: 'hsl(var(--primary))' }}
             >
               Shop Collection
@@ -105,7 +110,7 @@ export const HeroSection = () => {
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-              className="px-8 py-4 font-semibold rounded-2xl bg-card border border-white/10 text-foreground backdrop-blur-xl transition-colors duration-300 hover:border-[hsl(var(--accent)/0.5)] hover:text-[hsl(var(--accent))]"
+              className="px-8 py-4 font-semibold bg-card text-foreground backdrop-blur-xl transition-colors duration-300 hover:text-[hsl(var(--accent))]"
             >
               Play &amp; Earn
             </motion.button>
@@ -115,8 +120,9 @@ export const HeroSection = () => {
         {/* Trust stats */}
         <motion.div
           variants={itemVariants}
-          className="mt-20 pt-12 w-full grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/5"
+          className="mt-20 pt-12 w-full grid grid-cols-2 md:grid-cols-4 gap-8"
         >
+
           {stats.map((s) => (
             <div key={s.label} className="flex flex-col gap-1 items-center md:items-start">
               <span className="text-3xl md:text-4xl font-bold text-foreground">{s.value}</span>
