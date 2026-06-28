@@ -40,6 +40,7 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
   const imageUrl = product.images?.[0] || '/placeholder.svg';
 
   return (
+    <>
     <Link
       to={`/product/${product.id}`}
       className={cn('product-card block group', className)}
