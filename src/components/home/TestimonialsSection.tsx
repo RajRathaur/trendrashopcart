@@ -34,34 +34,18 @@ export const TestimonialsSection = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const { data } = await supabase
-          .from('product_reviews')
-          .select('id, rating, comment, created_at, user_id')
-          .gte('rating', 4)
-          .not('comment', 'is', null)
-          .order('created_at', { ascending: false })
-          .limit(6);
+        const { data } = await (supabase as any).rpc('get_recent_reviews', { _limit: 6 });
 
         if (!data || data.length === 0) {
           setReviews([]);
           return;
         }
 
-        const userIds = Array.from(new Set(data.map((r: any) => r.user_id))).filter(Boolean);
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('user_id, full_name')
-          .in('user_id', userIds as string[]);
-
-        const nameMap = new Map<string, string>(
-          (profiles || []).map((p: any) => [p.user_id, p.full_name || 'Trendra Customer'])
-        );
-
         setReviews(
-          (data as ReviewRow[])
+          (data as any[])
             .filter((r) => r.comment && r.comment.trim().length > 0)
             .slice(0, 3)
-            .map((r) => ({ ...r, name: nameMap.get(r.user_id) || 'Trendra Customer' }))
+            .map((r) => ({ ...r, name: r.reviewer_name || 'Trendra Customer' }))
         );
       } catch (e) {
         console.error('Failed to load reviews', e);

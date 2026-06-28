@@ -947,6 +947,29 @@ export type Database = {
     }
     Functions: {
       add_coins: { Args: { _coins: number }; Returns: number }
+      get_product_reviews: {
+        Args: { _limit?: number; _product_id: string }
+        Returns: {
+          comment: string
+          created_at: string
+          id: string
+          is_verified_purchase: boolean
+          product_id: string
+          rating: number
+          reviewer_name: string
+          title: string
+        }[]
+      }
+      get_recent_reviews: {
+        Args: { _limit?: number }
+        Returns: {
+          comment: string
+          created_at: string
+          id: string
+          rating: number
+          reviewer_name: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -967,6 +990,16 @@ export type Database = {
       request_redeem: {
         Args: { _coins: number; _email: string }
         Returns: string
+      }
+      validate_coupon: {
+        Args: { _code: string; _order_amount: number }
+        Returns: {
+          code: string
+          discount_type: string
+          discount_value: number
+          max_discount_amount: number
+          min_order_amount: number
+        }[]
       }
     }
     Enums: {

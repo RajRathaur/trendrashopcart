@@ -14,9 +14,8 @@ interface Review {
   title: string | null;
   comment: string | null;
   created_at: string;
-  user_id: string;
   is_verified_purchase: boolean | null;
-  profile?: { full_name: string | null };
+  reviewer_name: string;
 }
 
 interface ProductReviewsProps {
@@ -42,21 +41,13 @@ export const ProductReviews = ({ productId, productRating, reviewCount }: Produc
 
   const fetchReviews = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('product_reviews')
-      .select('*')
-      .eq('product_id', productId)
-      .order('created_at', { ascending: false })
-      .limit(20);
+    const { data, error } = await (supabase as any).rpc('get_product_reviews', {
+      _product_id: productId,
+      _limit: 20,
+    });
 
     if (!error && data) {
-      // Fetch only safe display fields via security-definer function
-      const userIds = [...new Set(data.map(r => r.user_id))];
-      const { data: profiles } = await (supabase as any)
-        .rpc('get_public_profiles', { _user_ids: userIds });
-
-      const profileMap = new Map(((profiles as any[]) || []).map((p: any) => [p.user_id, p]));
-      setReviews(data.map(r => ({ ...r, profile: profileMap.get(r.user_id) || null })) as Review[]);
+      setReviews(data as Review[]);
     }
     setLoading(false);
   };
@@ -197,7 +188,7 @@ export const ProductReviews = ({ productId, productRating, reviewCount }: Produc
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <User className="h-3 w-3" />
-                  {review.profile?.full_name || 'Anonymous'}
+                  {review.reviewer_name || 'Anonymous'}
                 </span>
                 {review.is_verified_purchase && (
                   <span className="text-green-600 font-medium">✓ Verified Purchase</span>
