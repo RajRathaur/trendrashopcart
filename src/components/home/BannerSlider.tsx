@@ -41,9 +41,9 @@ export const BannerSlider = ({
   if (banners.length === 0) {
     return (
       <ScrollReveal variant="scale">
-        <div className="banner-gradient aspect-[21/9] md:aspect-[4/1] rounded-lg flex items-center justify-center">
+        <div className="banner-gradient aspect-[21/9] md:aspect-[4/1] flex items-center justify-center">
           <div className="text-center text-primary-foreground">
-            <h2 className="text-2xl md:text-4xl font-bold mb-2">Welcome to ShopKart</h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-2">Welcome to Trendra</h2>
             <p className="text-lg opacity-90">Best deals, best prices!</p>
           </div>
         </div>
@@ -53,7 +53,8 @@ export const BannerSlider = ({
 
   return (
     <ScrollReveal variant="scale">
-      <div className="relative overflow-hidden rounded-lg">
+      <div className="relative overflow-hidden">
+
         <div 
           className="flex transition-transform duration-500 ease-out" 
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
