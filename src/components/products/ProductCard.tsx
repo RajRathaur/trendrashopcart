@@ -149,5 +149,13 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
         </div>
       </div>
     </Link>
+    <BuyNowDialog
+      open={buyNowOpen}
+      onOpenChange={setBuyNowOpen}
+      productId={product.id}
+      productName={product.name}
+      amount={product.price}
+    />
+    </>
   );
 };
