@@ -13,15 +13,14 @@ export const ADMIN_CONFIG = {
     support: 'trendra.care.ac.in@gmail.com',
   },
   phone: {
-    tollFree: '1800-123-4567',
     mobile: '+91 9125442370',
   },
   address: {
     company: 'Trendra India Pvt. Ltd.',
-    street: '123 Commerce Street',
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    pincode: '560001',
+    street: 'Kalpi',
+    city: 'Jalaun',
+    state: 'Uttar Pradesh',
+    pincode: '285204',
     country: 'India',
   },
   businessHours: {
@@ -29,10 +28,10 @@ export const ADMIN_CONFIG = {
     time: '9:00 AM - 8:00 PM IST',
   },
   social: {
-    facebook: 'https://facebook.com/trendra',
-    twitter: 'https://twitter.com/trendra',
-    instagram: 'https://instagram.com/trendra',
-    youtube: 'https://youtube.com/trendra',
+    facebook: 'https://www.facebook.com/share/1D1EDDmpQY/',
+    twitter: 'https://x.com/trendrastore',
+    instagram: 'https://instagram.com/trendrastore',
+    youtube: 'https://youtube.com/@Trendrastore',
   },
   // Admin emails with full access
   adminEmails: [
@@ -86,6 +85,5 @@ Delivery Address: ${data.deliveryAddress}`;
 
 // Helper function to open WhatsApp (works on both mobile and desktop)
 export const openWhatsApp = (url: string) => {
-  // Use window.open for both mobile and desktop compatibility
   window.open(url, '_blank', 'noopener,noreferrer');
 };
