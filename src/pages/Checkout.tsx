@@ -71,33 +71,19 @@ const CheckoutPage = () => {
     }
     setCouponLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('coupons' as any)
-        .select('*')
-        .eq('code', couponCode.trim().toUpperCase())
-        .eq('is_active', true)
-        .maybeSingle();
+      const { data, error } = await (supabase as any).rpc('validate_coupon', {
+        _code: couponCode.trim().toUpperCase(),
+        _order_amount: totalAmount,
+      });
 
-      if (error) throw error;
-      if (!data) {
+      if (error) {
+        toast.error(error.message || 'Invalid coupon code');
+        setCouponLoading(false);
+        return;
+      }
+      const coupon = Array.isArray(data) ? data[0] : data;
+      if (!coupon) {
         toast.error('Invalid coupon code');
-        setCouponLoading(false);
-        return;
-      }
-
-      const coupon = data as any;
-      if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
-        toast.error('This coupon has expired');
-        setCouponLoading(false);
-        return;
-      }
-      if (coupon.usage_limit && coupon.used_count >= coupon.usage_limit) {
-        toast.error('This coupon has reached its usage limit');
-        setCouponLoading(false);
-        return;
-      }
-      if (coupon.min_order_amount && totalAmount < coupon.min_order_amount) {
-        toast.error(`Minimum order amount is ₹${coupon.min_order_amount}`);
         setCouponLoading(false);
         return;
       }
