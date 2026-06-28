@@ -1,48 +1,119 @@
 import { Link } from 'react-router-dom';
-import { Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby } from 'lucide-react';
-import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
-const categories = [
-  { name: 'Fashion', slug: 'fashion', icon: Shirt, gradient: 'from-pink-500 to-rose-500', bg: 'bg-pink-50' },
-  { name: 'Electronics', slug: 'electronics', icon: Smartphone, gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-50' },
-  { name: 'Home & Kitchen', slug: 'home-kitchen', icon: Home, gradient: 'from-amber-500 to-orange-500', bg: 'bg-amber-50' },
-  { name: 'Beauty', slug: 'beauty', icon: Sparkles, gradient: 'from-purple-500 to-pink-500', bg: 'bg-purple-50' },
-  { name: 'Grocery', slug: 'grocery', icon: ShoppingBasket, gradient: 'from-green-500 to-emerald-500', bg: 'bg-green-50' },
-  { name: 'Laptops', slug: 'laptops', icon: Laptop, gradient: 'from-slate-500 to-gray-600', bg: 'bg-slate-50' },
-  { name: 'Watches', slug: 'watches', icon: Watch, gradient: 'from-orange-500 to-red-500', bg: 'bg-orange-50' },
-  { name: 'Kids', slug: 'kids', icon: Baby, gradient: 'from-cyan-500 to-blue-500', bg: 'bg-cyan-50' },
+type CardTone = 'purple' | 'gold';
+
+const categories: Array<{
+  slug: string;
+  eyebrow: string;
+  title: string;
+  desc: string;
+  tone: CardTone;
+}> = [
+  {
+    slug: 'electronics',
+    eyebrow: 'Tech & Audio',
+    title: 'Sonic Series',
+    desc: 'Next-gen immersive audio equipment.',
+    tone: 'purple',
+  },
+  {
+    slug: 'fashion',
+    eyebrow: 'Premium Fashion',
+    title: 'Heritage Modern',
+    desc: 'Timeless silhouettes for the new era.',
+    tone: 'gold',
+  },
+  {
+    slug: 'home-kitchen',
+    eyebrow: 'Smart Home',
+    title: 'Luxe Living',
+    desc: 'Automation meets high-end design.',
+    tone: 'purple',
+  },
 ];
 
 export const CategoryGrid = () => {
   return (
-    <section className="py-8">
-      <ScrollReveal variant="fadeUp">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="section-title">Shop by Category</h2>
-          <Link to="/products" className="text-sm font-medium text-primary hover:underline">
-            View All
-          </Link>
+    <section className="w-full py-16">
+      {/* Section header */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="flex justify-between items-end mb-10 md:mb-12"
+      >
+        <div className="space-y-2">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Curated Categories</h2>
+          <p className="text-foreground/50">Handpicked selection for the modern Indian home.</p>
         </div>
-      </ScrollReveal>
-      <StaggerContainer className="grid grid-cols-4 md:grid-cols-8 gap-4" staggerDelay={0.08}>
-        {categories.map((category) => (
-          <StaggerItem key={category.slug}>
-            <Link
-              to={`/products?category=${category.slug}`}
-              className="category-card group"
+        <Link
+          to="/products"
+          className="hidden sm:inline-flex font-semibold items-center gap-2 hover:gap-3 transition-all duration-300"
+          style={{ color: 'hsl(var(--primary))' }}
+        >
+          Explore All
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {categories.map((cat, i) => {
+          const tone = cat.tone === 'purple' ? 'hsl(var(--primary))' : 'hsl(var(--accent))';
+          return (
+            <motion.div
+              key={cat.slug}
+              initial={{ opacity: 0, y: 32, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -6 }}
             >
-              <div className={`p-4 rounded-2xl ${category.bg} mb-3 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
-                <div className={`p-2 rounded-xl bg-gradient-to-br ${category.gradient} shadow-md`}>
-                  <category.icon className="h-6 w-6 text-white" />
+              <Link
+                to={`/products?category=${cat.slug}`}
+                className="group relative block aspect-[4/5] rounded-[32px] overflow-hidden cursor-pointer glass-card transition-all duration-500"
+                style={{ borderColor: 'hsl(0 0% 100% / 0.06)' }}
+              >
+                {/* Gradient veil */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60 pointer-events-none" />
+                {/* Tone wash */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      cat.tone === 'purple'
+                        ? 'radial-gradient(circle at top right, hsl(var(--primary) / 0.18), transparent 55%)'
+                        : 'radial-gradient(circle at bottom left, hsl(var(--accent) / 0.18), transparent 55%)',
+                  }}
+                />
+                {/* Hover glow ring */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    boxShadow: `inset 0 0 0 1px ${tone}50, 0 30px 80px -30px ${tone}90`,
+                    borderRadius: 32,
+                  }}
+                />
+
+                <div className="absolute bottom-8 left-8 right-8 space-y-2">
+                  <p
+                    className="text-xs font-bold tracking-widest uppercase"
+                    style={{ color: tone }}
+                  >
+                    {cat.eyebrow}
+                  </p>
+                  <h3 className="text-2xl md:text-3xl font-bold text-foreground">{cat.title}</h3>
+                  <p className="text-sm text-foreground/50 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+                    {cat.desc}
+                  </p>
                 </div>
-              </div>
-              <span className="text-xs font-semibold text-foreground text-center group-hover:text-primary transition-colors duration-300">
-                {category.name}
-              </span>
-            </Link>
-          </StaggerItem>
-        ))}
-      </StaggerContainer>
+              </Link>
+            </motion.div>
+          );
+        })}
+      </div>
     </section>
   );
 };
