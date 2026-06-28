@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Store, Mail, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
+import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -49,10 +50,8 @@ const ForgotPasswordPage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="w-full max-w-md text-center">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-              <Store className="h-7 w-7 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold text-primary">ShopKart</span>
+            <img src={trendraLogo} alt="Trendra" className="w-12 h-12 rounded-xl object-cover" />
+            <span className="text-2xl font-bold text-primary">Trendra</span>
           </div>
 
           <div className="bg-card rounded-xl shadow-lg p-8">
@@ -80,10 +79,8 @@ const ForgotPasswordPage = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-            <Store className="h-7 w-7 text-primary-foreground" />
-          </div>
-          <span className="text-2xl font-bold text-primary">ShopKart</span>
+          <img src={trendraLogo} alt="Trendra" className="w-12 h-12 rounded-xl object-cover" />
+          <span className="text-2xl font-bold text-primary">Trendra</span>
         </div>
 
         <div className="bg-card rounded-xl shadow-lg p-8">

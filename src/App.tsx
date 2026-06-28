@@ -31,6 +31,8 @@ import ShippingPolicy from "./pages/ShippingPolicy";
 import FruitGame from "./pages/FruitGame";
 import Redeem from "./pages/Redeem";
 import Assistant from "./pages/Assistant";
+import CodCheckout from "./pages/CodCheckout";
+import ResetPassword from "./pages/ResetPassword";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -61,6 +63,8 @@ const App = () => (
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/cod-checkout" element={<CodCheckout />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/orders" element={<Orders />} />

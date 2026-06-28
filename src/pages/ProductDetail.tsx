@@ -13,6 +13,7 @@ import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Seo } from '@/components/Seo';
+import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -121,9 +122,10 @@ const ProductDetail = () => {
     addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
   };
 
+  const [buyNowOpen, setBuyNowOpen] = useState(false);
+
   const handleBuyNow = async () => {
     if (!product) return;
-    
     if (product.sizes?.length && !selectedSize) {
       toast.error('Please select a size');
       return;
@@ -132,22 +134,7 @@ const ProductDetail = () => {
       toast.error('Please select a color');
       return;
     }
-
-    setBuyNowLoading(true);
-
-    const totalPrice = product.price * quantity;
-    const upiLink = `upi://pay?pa=9125442370@ybl&pn=Trendra%20Shopcart&am=${totalPrice}&cu=INR`;
-
-    toast.info('Redirecting to secure UPI payment...', { duration: 3000 });
-
-    // Open UPI app
-    window.location.href = upiLink;
-
-    // After a short delay, redirect to confirmation page
-    setTimeout(() => {
-      navigate(`/confirm-payment?product=${encodeURIComponent(product.name)}&amount=${totalPrice}&productId=${product.id}`);
-      setBuyNowLoading(false);
-    }, 3000);
+    setBuyNowOpen(true);
   };
 
   if (loading) {
@@ -509,6 +496,13 @@ const ProductDetail = () => {
           />
         </div>
       </div>
+      <BuyNowDialog
+        open={buyNowOpen}
+        onOpenChange={setBuyNowOpen}
+        productId={product.id}
+        productName={product.name}
+        amount={product.price * quantity}
+      />
     </Layout>
   );
 };
