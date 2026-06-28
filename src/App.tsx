@@ -43,6 +43,7 @@ import AdminBanners from "./pages/admin/AdminBanners";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminRedeems from "./pages/admin/AdminRedeems";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
+import AdminContactMessages from "./pages/admin/AdminContactMessages";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
                 <Route path="/admin/categories" element={<AdminCategories />} />
                 <Route path="/admin/redeems" element={<AdminRedeems />} />
                 <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
+                <Route path="/admin/messages" element={<AdminContactMessages />} />
                 {/* Redirect common paths */}
                 <Route path="/track-order" element={<Orders />} />
                 <Route path="/returns" element={<Help />} />

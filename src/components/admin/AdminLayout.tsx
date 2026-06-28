@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, CreditCard, Image, FolderTree, Gift, Shield } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, CreditCard, Image, FolderTree, Gift, Shield, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
@@ -17,6 +17,7 @@ const navItems = [
   { href: '/admin/payments', label: 'Payments', icon: CreditCard },
   { href: '/admin/banners', label: 'Banners', icon: Image },
   { href: '/admin/redeems', label: 'Redeems', icon: Gift },
+  { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/audit-logs', label: 'Audit Logs', icon: Shield },
 ];
 
