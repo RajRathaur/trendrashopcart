@@ -488,4 +488,9 @@
   .img-zoom:hover img {
     transform: scale(1.05);
   }
+
+  @keyframes progressFill {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
 }

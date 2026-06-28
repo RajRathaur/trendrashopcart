@@ -131,7 +131,7 @@ export const BannerSlider = ({
               variant="secondary"
               size="icon"
               aria-label="Previous banner"
-              className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100"
+              className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 opacity-80 hover:opacity-100 rounded-none"
               onClick={goToPrevious}
             >
               <ChevronLeft className="h-5 w-5" />
@@ -140,7 +140,7 @@ export const BannerSlider = ({
               variant="secondary"
               size="icon"
               aria-label="Next banner"
-              className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100"
+              className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 opacity-80 hover:opacity-100 rounded-none"
               onClick={goToNext}
             >
               <ChevronRight className="h-5 w-5" />
@@ -148,19 +148,35 @@ export const BannerSlider = ({
           </>
         )}
 
-        {/* Dots */}
+        {/* Progress bar */}
+        {banners.length > 1 && !isPaused && (
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-primary-foreground/10">
+            <div
+              key={currentIndex}
+              className="h-full bg-accent origin-left"
+              style={{
+                animation: `progressFill ${autoPlayInterval}ms linear forwards`,
+              }}
+            />
+          </div>
+        )}
+
+        {/* Tappable Pagination Dots */}
         {banners.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3 px-3 py-1.5 bg-black/30 backdrop-blur-sm">
             {banners.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
+                type="button"
+                onClick={() => {
+                  setCurrentIndex(index);
+                }}
                 aria-label={`Go to banner ${index + 1}`}
                 className={cn(
-                  'h-2 rounded-full transition-all',
+                  'h-2.5 md:h-3 transition-all duration-300 cursor-pointer',
                   index === currentIndex
-                    ? 'bg-primary-foreground w-6'
-                    : 'bg-primary-foreground/50 hover:bg-primary-foreground/70 w-2'
+                    ? 'bg-accent w-6 md:w-8'
+                    : 'bg-primary-foreground/40 hover:bg-primary-foreground/70 w-2.5 md:w-3'
                 )}
               />
             ))}
