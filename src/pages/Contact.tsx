@@ -8,6 +8,7 @@ import { Mail, Phone, MapPin, Clock, Send, MessageSquare, MessageCircle } from '
 import { toast } from 'sonner';
 import { ADMIN_CONFIG, getWhatsAppLink } from '@/config/admin';
 import { Seo } from '@/components/Seo';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactPage = () => {
   const [loading, setLoading] = useState(false);
@@ -42,13 +43,23 @@ const ContactPage = () => {
     }
 
     setLoading(true);
-
-    // Simulate API call (demo only)
-    setTimeout(() => {
+    try {
+      const { error } = await (supabase as any).from('contact_messages').insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
+        subject: formData.subject.trim() || null,
+        message: formData.message.trim(),
+      });
+      if (error) throw error;
       toast.success('Thank you! Your message has been sent. We will get back to you soon.');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (err: any) {
+      console.error('Contact submit failed:', err);
+      toast.error(err?.message || 'Failed to send message. Please try again.');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -83,7 +94,6 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="font-medium">Phone</h3>
-                    <p className="text-sm text-muted-foreground">{ADMIN_CONFIG.phone.tollFree}</p>
                     <p className="text-sm text-muted-foreground">{ADMIN_CONFIG.phone.mobile}</p>
                   </div>
                 </div>

@@ -76,7 +76,7 @@ export const Footer = () => {
             <ul className="space-y-3 text-xs">
               <li className="flex items-center gap-2">
                 <Phone className="h-3.5 w-3.5 shrink-0" />
-                {ADMIN_CONFIG.phone.tollFree}
+                {ADMIN_CONFIG.phone.mobile}
               </li>
               <li>
                 <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-400 transition-colors">

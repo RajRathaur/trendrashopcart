@@ -6,7 +6,6 @@ import { HeroSection } from '@/components/home/HeroSection';
 import { FlashSaleTimer } from '@/components/home/FlashSaleTimer';
 import { FloatingPromo } from '@/components/home/FloatingPromo';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
-import { BrandsMarquee } from '@/components/home/BrandsMarquee';
 import { GamePromoBanner } from '@/components/home/GamePromoBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
@@ -56,143 +55,8 @@ const Index = () => {
     fetchData();
   }, []);
 
-  // Demo products if database is empty
-  const demoProducts: Product[] = products.length > 0 ? products : [
-    {
-      id: '1',
-      seller_id: '1',
-      name: 'Men\'s Premium Cotton T-Shirt',
-      slug: 'mens-premium-cotton-tshirt',
-      description: 'High quality cotton t-shirt',
-      price: 499,
-      mrp: 999,
-      discount_percent: 50,
-      stock: 100,
-      images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400'],
-      sizes: ['S', 'M', 'L', 'XL'],
-      colors: ['White', 'Black', 'Blue'],
-      specifications: {},
-      rating: 4.2,
-      review_count: 1523,
-      is_active: true,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      category: { id: '1', name: 'Fashion', slug: 'fashion', is_active: true, created_at: '' },
-    },
-    {
-      id: '2',
-      seller_id: '1',
-      name: 'Wireless Bluetooth Earbuds Pro',
-      slug: 'wireless-bluetooth-earbuds',
-      description: 'Premium sound quality',
-      price: 1299,
-      mrp: 2999,
-      discount_percent: 57,
-      stock: 50,
-      images: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400'],
-      sizes: [],
-      colors: ['Black', 'White'],
-      specifications: {},
-      rating: 4.5,
-      review_count: 3421,
-      is_active: true,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      category: { id: '2', name: 'Electronics', slug: 'electronics', is_active: true, created_at: '' },
-    },
-    {
-      id: '3',
-      seller_id: '1',
-      name: 'Women\'s Ethnic Kurti Set',
-      slug: 'womens-ethnic-kurti-set',
-      description: 'Beautiful ethnic wear',
-      price: 799,
-      mrp: 1599,
-      discount_percent: 50,
-      stock: 75,
-      images: ['https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400'],
-      sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-      colors: ['Red', 'Blue', 'Green'],
-      specifications: {},
-      rating: 4.3,
-      review_count: 892,
-      is_active: true,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      category: { id: '1', name: 'Fashion', slug: 'fashion', is_active: true, created_at: '' },
-    },
-    {
-      id: '4',
-      seller_id: '1',
-      name: 'Smart Watch Fitness Tracker',
-      slug: 'smart-watch-fitness-tracker',
-      description: 'Track your health',
-      price: 1999,
-      mrp: 4999,
-      discount_percent: 60,
-      stock: 30,
-      images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'],
-      sizes: [],
-      colors: ['Black', 'Rose Gold'],
-      specifications: {},
-      rating: 4.1,
-      review_count: 2156,
-      is_active: true,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      category: { id: '2', name: 'Electronics', slug: 'electronics', is_active: true, created_at: '' },
-    },
-    {
-      id: '5',
-      seller_id: '1',
-      name: 'Non-Stick Cookware Set (5 Pcs)',
-      slug: 'non-stick-cookware-set',
-      description: 'Premium kitchen essentials',
-      price: 1499,
-      mrp: 3499,
-      discount_percent: 57,
-      stock: 40,
-      images: ['https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'],
-      sizes: [],
-      colors: ['Black', 'Red'],
-      specifications: {},
-      rating: 4.4,
-      review_count: 756,
-      is_active: true,
-      is_featured: false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      category: { id: '3', name: 'Home & Kitchen', slug: 'home-kitchen', is_active: true, created_at: '' },
-    },
-    {
-      id: '6',
-      seller_id: '1',
-      name: 'Organic Face Care Kit',
-      slug: 'organic-face-care-kit',
-      description: 'Natural skincare',
-      price: 599,
-      mrp: 1299,
-      discount_percent: 54,
-      stock: 60,
-      images: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'],
-      sizes: [],
-      colors: [],
-      specifications: {},
-      rating: 4.6,
-      review_count: 1834,
-      is_active: true,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      category: { id: '4', name: 'Beauty', slug: 'beauty', is_active: true, created_at: '' },
-    },
-  ];
-
-  const demoBanners = banners.length > 0 ? banners : [];
+  const demoProducts: Product[] = products;
+  const demoBanners = banners;
 
   return (
     <Layout>
@@ -247,11 +111,6 @@ const Index = () => {
       </div>
 
       <div className="section-separator" />
-
-      {/* Brands Marquee */}
-      <div className="container mx-auto px-3 py-3">
-        <BrandsMarquee />
-      </div>
 
       {/* Game Promo */}
       <div className="container mx-auto px-3">

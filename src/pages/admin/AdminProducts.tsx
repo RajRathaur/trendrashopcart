@@ -180,6 +180,27 @@ const AdminProducts = () => {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (products.length === 0) return;
+    const confirmation = prompt(
+      `This will permanently delete ALL ${products.length} products and their reviews/wishlist/cart entries. Type DELETE to confirm.`
+    );
+    if (confirmation !== 'DELETE') return;
+    try {
+      // Best-effort: remove dependents first (ignore errors if cascade exists)
+      await supabase.from('product_reviews').delete().not('id', 'is', null);
+      await supabase.from('wishlist_items').delete().not('id', 'is', null);
+      await supabase.from('cart_items').delete().not('id', 'is', null);
+      const { error } = await supabase.from('products').delete().not('id', 'is', null);
+      if (error) throw error;
+      toast.success('All products deleted');
+      fetchProducts();
+    } catch (err: any) {
+      console.error('Bulk delete failed:', err);
+      toast.error(err?.message || 'Failed to delete all products');
+    }
+  };
+
   if (authLoading || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -191,9 +212,18 @@ const AdminProducts = () => {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <h1 className="text-3xl font-bold">Products</h1>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="destructive"
+              onClick={handleDeleteAll}
+              disabled={products.length === 0}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete All
+            </Button>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button onClick={() => {
                 setEditingProduct(null);
@@ -292,6 +322,7 @@ const AdminProducts = () => {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         {loading ? (
