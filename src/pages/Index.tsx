@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/home/HeroSection';
 import { FlashSaleTimer } from '@/components/home/FlashSaleTimer';
 import { FloatingPromo } from '@/components/home/FloatingPromo';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
+import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { GamePromoBanner } from '@/components/home/GamePromoBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
@@ -72,6 +73,12 @@ const Index = () => {
       <div className="container mx-auto px-3 pt-3">
         <HeroSection />
       </div>
+
+      {/* Curated Categories — featured glass grid */}
+      <div className="container mx-auto px-4 md:px-6">
+        <CategoryGrid />
+      </div>
+
 
       {/* Banner Slider */}
       {demoBanners.length > 0 && (
