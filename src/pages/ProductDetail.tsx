@@ -496,6 +496,13 @@ const ProductDetail = () => {
           />
         </div>
       </div>
+      <BuyNowDialog
+        open={buyNowOpen}
+        onOpenChange={setBuyNowOpen}
+        productId={product.id}
+        productName={product.name}
+        amount={product.price * quantity}
+      />
     </Layout>
   );
 };
