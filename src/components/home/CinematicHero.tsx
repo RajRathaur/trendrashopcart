@@ -118,7 +118,7 @@ export const CinematicHero = () => {
         <span className="text-[#deff9a] tracking-[0.4em] text-xs md:text-sm font-bold uppercase">
           {c.brand}
         </span>
-        <span className="hidden md:block text-white/50 text-xs uppercase tracking-[0.3em]">
+        <span className="hidden md:block text-white/75 text-xs uppercase tracking-[0.3em]">
           {c.tagline}
         </span>
       </div>
@@ -226,7 +226,7 @@ export const CinematicHero = () => {
 
       {/* Scroll cue */}
       <div className="absolute bottom-5 inset-x-0 z-40 flex justify-center pointer-events-none">
-        <span className="text-white/40 text-[10px] tracking-[0.4em] uppercase animate-pulse">
+        <span className="text-white/70 text-[10px] tracking-[0.4em] uppercase animate-pulse">
           Scroll
         </span>
       </div>
