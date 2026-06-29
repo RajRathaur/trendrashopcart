@@ -118,7 +118,7 @@ export const CinematicHero = () => {
         <span className="text-[#deff9a] tracking-[0.4em] text-xs md:text-sm font-bold uppercase">
           {c.brand}
         </span>
-        <span className="hidden md:block text-white/50 text-xs uppercase tracking-[0.3em]">
+        <span className="hidden md:block text-white/75 text-xs uppercase tracking-[0.3em]">
           {c.tagline}
         </span>
       </div>
@@ -134,8 +134,11 @@ export const CinematicHero = () => {
         <img
           src={c.female.image}
           alt={c.female.title}
+          width={1920}
+          height={1080}
           className="absolute inset-0 w-full h-full object-cover object-center"
           fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/10 to-black/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
@@ -168,8 +171,11 @@ export const CinematicHero = () => {
           <img
             src={c.male.image}
             alt={c.male.title}
+            width={1920}
+            height={1080}
             className="absolute inset-0 w-full h-full object-cover object-center"
             loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/10 to-black/60" />
@@ -220,7 +226,7 @@ export const CinematicHero = () => {
 
       {/* Scroll cue */}
       <div className="absolute bottom-5 inset-x-0 z-40 flex justify-center pointer-events-none">
-        <span className="text-white/40 text-[10px] tracking-[0.4em] uppercase animate-pulse">
+        <span className="text-white/70 text-[10px] tracking-[0.4em] uppercase animate-pulse">
           Scroll
         </span>
       </div>
