@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
+import { SiteContentProvider } from "@/hooks/useSiteContent";
 
 import Index from "./pages/Index";
 import Products from "./pages/Products";
@@ -44,6 +45,7 @@ import AdminCategories from "./pages/admin/AdminCategories";
 import AdminRedeems from "./pages/admin/AdminRedeems";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import AdminContactMessages from "./pages/admin/AdminContactMessages";
+import AdminBroadcast from "./pages/admin/AdminBroadcast";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +55,7 @@ const App = () => (
       <AuthProvider>
         <CartProvider>
           <WishlistProvider>
+            <SiteContentProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
@@ -94,6 +97,7 @@ const App = () => (
                 <Route path="/admin/redeems" element={<AdminRedeems />} />
                 <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
                 <Route path="/admin/messages" element={<AdminContactMessages />} />
+                <Route path="/admin/broadcast" element={<AdminBroadcast />} />
                 {/* Redirect common paths */}
                 <Route path="/track-order" element={<Orders />} />
                 <Route path="/returns" element={<Help />} />
@@ -102,6 +106,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
+            </SiteContentProvider>
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>
