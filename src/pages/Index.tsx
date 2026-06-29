@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
 import { Seo } from '@/components/Seo';
+import { EditableText } from '@/components/EditableText';
 
 const Index = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
