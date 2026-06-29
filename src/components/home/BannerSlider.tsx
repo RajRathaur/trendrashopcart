@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 interface Banner {
   id: string;
