@@ -15,8 +15,8 @@ export const contentConfig = {
   female: {
     image: femaleImg,
     label: 'Edit · Femme Noir',
-    title: 'She Wears The Night',
-    subtitle: 'Sculpted silhouettes. Liquid silks. Heels that walk like poetry.',
+    title: 'She Owns The Night',
+    subtitle: 'Sharp tailoring. Structured power. Silence that commands every room.',
     price: '₹ 12,499',
     cta: { label: 'Shop Femme', href: '/products?gender=women' },
   },
