@@ -223,11 +223,14 @@ export const CinematicHero = () => {
       </div>
 
       {/* Scroll cue */}
-      <div className="absolute bottom-5 inset-x-0 z-40 flex justify-center pointer-events-none">
+      <div className="absolute bottom-8 inset-x-0 z-40 flex justify-center pointer-events-none">
         <span className="text-white/70 text-[10px] tracking-[0.4em] uppercase animate-pulse">
           Scroll
         </span>
       </div>
+
+      {/* Bottom fade into page background for seamless transition to categories */}
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-background to-transparent z-30 pointer-events-none" />
     </section>
   );
 };
