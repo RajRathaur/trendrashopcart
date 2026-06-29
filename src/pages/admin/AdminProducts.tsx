@@ -55,7 +55,19 @@ const AdminProducts = () => {
     description: '',
     imageUrl: '',
     isFeatured: false,
+    productType: '',
+    sizes: '',
+    colors: '',
   });
+
+  const PRODUCT_TYPES = [
+    'Shirt', 'T-Shirt', 'Pant', 'Jeans', 'Kurta', 'Dress', 'Top',
+    'Shoes', 'Sneakers', 'Sandals', 'Accessory', 'Electronics', 'Home', 'Beauty', 'Other',
+  ];
+  const emptyForm = {
+    name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '',
+    isFeatured: false, productType: '', sizes: '', colors: '',
+  };
 
   useEffect(() => {
     if (!authLoading) {
@@ -96,7 +108,11 @@ const AdminProducts = () => {
     try {
       const slug = formData.name.toLowerCase().replace(/\s+/g, '-');
       const images = formData.imageUrl ? [formData.imageUrl] : [];
-      
+      const sizesArr = formData.sizes
+        .split(',').map((s) => s.trim()).filter(Boolean);
+      const colorsArr = formData.colors
+        .split(',').map((s) => s.trim()).filter(Boolean);
+
       if (editingProduct) {
         const { error } = await supabase
           .from('products')
@@ -108,13 +124,15 @@ const AdminProducts = () => {
             slug,
             images,
             is_featured: formData.isFeatured,
+            product_type: formData.productType || null,
+            sizes: sizesArr.length ? sizesArr : null,
+            colors: colorsArr.length ? colorsArr : null,
           })
           .eq('id', editingProduct.id);
 
         if (error) throw error;
         toast.success('Product updated successfully');
       } else {
-        // Get first seller for demo purposes
         const { data: sellers } = await supabase
           .from('sellers')
           .select('id')
@@ -136,6 +154,9 @@ const AdminProducts = () => {
           description: formData.description,
           images,
           is_featured: formData.isFeatured,
+          product_type: formData.productType || null,
+          sizes: sizesArr.length ? sizesArr : null,
+          colors: colorsArr.length ? colorsArr : null,
         });
 
         if (error) throw error;
@@ -144,7 +165,7 @@ const AdminProducts = () => {
 
       setDialogOpen(false);
       setEditingProduct(null);
-      setFormData({ name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', isFeatured: false });
+      setFormData(emptyForm);
       fetchProducts();
     } catch (error: any) {
       console.error('Error saving product:', error);
@@ -152,7 +173,7 @@ const AdminProducts = () => {
     }
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: any) => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
@@ -162,9 +183,13 @@ const AdminProducts = () => {
       description: '',
       imageUrl: product.images?.[0] || '',
       isFeatured: product.is_featured || false,
+      productType: product.product_type || '',
+      sizes: (product.sizes || []).join(', '),
+      colors: (product.colors || []).join(', '),
     });
     setDialogOpen(true);
   };
+
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
@@ -227,7 +252,7 @@ const AdminProducts = () => {
             <DialogTrigger asChild>
               <Button onClick={() => {
                 setEditingProduct(null);
-                setFormData({ name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', isFeatured: false });
+                setFormData(emptyForm);
               }}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Product
@@ -287,6 +312,43 @@ const AdminProducts = () => {
                     required
                   />
                 </div>
+
+                <div>
+                  <Label htmlFor="productType">Product Type</Label>
+                  <select
+                    id="productType"
+                    value={formData.productType}
+                    onChange={(e) => setFormData({ ...formData, productType: e.target.value })}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="">Select type…</option>
+                    {PRODUCT_TYPES.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="sizes">Sizes (comma-separated)</Label>
+                    <Input
+                      id="sizes"
+                      placeholder="S, M, L, XL  or  7, 8, 9, 10"
+                      value={formData.sizes}
+                      onChange={(e) => setFormData({ ...formData, sizes: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="colors">Colors (comma-separated)</Label>
+                    <Input
+                      id="colors"
+                      placeholder="Black, White, Navy"
+                      value={formData.colors}
+                      onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
+                    />
+                  </div>
+                </div>
+
                 {!editingProduct && (
                   <div>
                     <Label htmlFor="description">Description</Label>
