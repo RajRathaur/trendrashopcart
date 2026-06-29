@@ -891,6 +891,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content: {
+        Row: {
+          content_key: string
+          content_value: string
+          created_at: string
+          description: string | null
+          id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content_key: string
+          content_value?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content_key?: string
+          content_value?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -947,6 +977,10 @@ export type Database = {
     }
     Functions: {
       add_coins: { Args: { _coins: number }; Returns: number }
+      broadcast_notification: {
+        Args: { _message: string; _title: string; _type?: string }
+        Returns: number
+      }
       get_product_reviews: {
         Args: { _limit?: number; _product_id: string }
         Returns: {
