@@ -1,0 +1,5 @@
+UPDATE public.payment_confirmations SET product_id = NULL WHERE product_id IN (SELECT id FROM public.products WHERE name ILIKE '%trial%' AND (images IS NULL OR array_length(images, 1) IS NULL));
+DELETE FROM public.cart_items WHERE product_id IN (SELECT id FROM public.products WHERE name ILIKE '%trial%' AND (images IS NULL OR array_length(images, 1) IS NULL));
+DELETE FROM public.wishlist_items WHERE product_id IN (SELECT id FROM public.products WHERE name ILIKE '%trial%' AND (images IS NULL OR array_length(images, 1) IS NULL));
+DELETE FROM public.product_reviews WHERE product_id IN (SELECT id FROM public.products WHERE name ILIKE '%trial%' AND (images IS NULL OR array_length(images, 1) IS NULL));
+DELETE FROM public.products WHERE name ILIKE '%trial%' AND (images IS NULL OR array_length(images, 1) IS NULL);
