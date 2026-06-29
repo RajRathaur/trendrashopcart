@@ -136,21 +136,21 @@ export const CinematicHero = () => {
           alt={c.female.title}
           width={1024}
           height={1536}
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-top"
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/10 to-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
 
-        <div className="fem-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center px-6 md:px-16 pb-24 md:pb-0 max-w-2xl">
+        <div className="fem-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center px-6 md:px-16 pb-32 md:pb-0 max-w-2xl">
           <span className="text-[#deff9a] text-[10px] md:text-xs tracking-[0.5em] uppercase font-bold">
             {c.female.label}
           </span>
-          <h1 className="mt-4 text-white text-5xl md:text-8xl font-black uppercase leading-[0.95] tracking-tight">
+          <h1 className="mt-4 text-white text-5xl md:text-8xl font-black uppercase leading-[0.95] tracking-tight drop-shadow-lg">
             {c.female.title}
           </h1>
-          <p className="mt-5 text-white/70 text-sm md:text-lg max-w-md font-light">
+          <p className="mt-5 text-white/80 text-sm md:text-lg max-w-md font-light drop-shadow">
             {c.female.subtitle}
           </p>
           <div className="mt-6">
@@ -223,11 +223,14 @@ export const CinematicHero = () => {
       </div>
 
       {/* Scroll cue */}
-      <div className="absolute bottom-5 inset-x-0 z-40 flex justify-center pointer-events-none">
+      <div className="absolute bottom-8 inset-x-0 z-40 flex justify-center pointer-events-none">
         <span className="text-white/70 text-[10px] tracking-[0.4em] uppercase animate-pulse">
           Scroll
         </span>
       </div>
+
+      {/* Bottom fade into page background for seamless transition to categories */}
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-background to-transparent z-30 pointer-events-none" />
     </section>
   );
 };
