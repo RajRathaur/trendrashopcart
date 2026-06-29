@@ -51,19 +51,6 @@ export const CinematicHero = () => {
 
       const tl = gsap.timeline({
         defaults: { ease: 'power3.inOut' },
-        repeat: -1,
-        repeatDelay: 1.2,
-        onRepeat: () => {
-          gsap.set('.cine-female', { xPercent: 100, scale: 1.2, filter: 'blur(12px)' });
-          gsap.set('.cine-female-zoom', { scale: 1 });
-          gsap.set('.cine-male', { xPercent: 100, scale: 1.2, filter: 'blur(12px)' });
-          gsap.set('.cine-male-zoom', { scale: 1 });
-          gsap.set('.cine-finale', { autoAlpha: 0, scale: 0.92 });
-          gsap.set('.fem-copy', { autoAlpha: 1 });
-          gsap.set('.fem-copy > *', { y: 40, autoAlpha: 0 });
-          gsap.set('.male-copy', { autoAlpha: 1 });
-          gsap.set('.male-copy > *', { y: 40, autoAlpha: 0 });
-        },
       });
 
       tl.to('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power2.inOut' })
