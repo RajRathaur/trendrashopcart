@@ -3,6 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { BannerSlider } from '@/components/home/BannerSlider';
 import { DealsSection } from '@/components/home/DealsSection';
 import { HeroSection } from '@/components/home/HeroSection';
+import { CinematicHero } from '@/components/home/CinematicHero';
 import { FlashSaleTimer } from '@/components/home/FlashSaleTimer';
 import { FloatingPromo } from '@/components/home/FloatingPromo';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
@@ -68,6 +69,9 @@ const Index = () => {
       />
       {/* Floating Promo */}
       <FloatingPromo />
+
+      {/* Cinematic edge-to-edge hero */}
+      <CinematicHero />
 
       {/* Hero Section */}
       <div className="container mx-auto px-3 pt-3">
