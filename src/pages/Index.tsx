@@ -73,11 +73,6 @@ const Index = () => {
       {/* Cinematic edge-to-edge hero */}
       <CinematicHero />
 
-      {/* Hero Section */}
-      <div className="container mx-auto px-3 pt-3">
-        <HeroSection />
-      </div>
-
       {/* Curated Categories — featured glass grid */}
       <div className="container mx-auto px-4 md:px-6">
         <CategoryGrid />
