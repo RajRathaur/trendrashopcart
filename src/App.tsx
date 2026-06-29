@@ -45,6 +45,7 @@ import AdminCategories from "./pages/admin/AdminCategories";
 import AdminRedeems from "./pages/admin/AdminRedeems";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import AdminContactMessages from "./pages/admin/AdminContactMessages";
+import AdminBroadcast from "./pages/admin/AdminBroadcast";
 
 const queryClient = new QueryClient();
 
