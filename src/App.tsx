@@ -55,6 +55,7 @@ const App = () => (
       <AuthProvider>
         <CartProvider>
           <WishlistProvider>
+            <SiteContentProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
