@@ -134,8 +134,8 @@ export const CinematicHero = () => {
         <img
           src={c.female.image}
           alt={c.female.title}
-          width={1920}
-          height={1080}
+          width={1024}
+          height={1536}
           className="absolute inset-0 w-full h-full object-cover object-center"
           fetchPriority="high"
           decoding="async"
@@ -153,11 +153,10 @@ export const CinematicHero = () => {
           <p className="mt-5 text-white/70 text-sm md:text-lg max-w-md font-light">
             {c.female.subtitle}
           </p>
-          <div className="mt-6 flex items-center gap-5">
-            <span className="text-[#deff9a] text-xl md:text-2xl font-bold">{c.female.price}</span>
+          <div className="mt-6">
             <Link
               to={c.female.cta.href}
-              className="px-6 py-3 bg-[#deff9a] text-black text-xs md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
+              className="inline-block px-6 py-3 bg-[#deff9a] text-black text-xs md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
             >
               {c.female.cta.label}
             </Link>
@@ -192,11 +191,10 @@ export const CinematicHero = () => {
             <p className="mt-5 text-white/70 text-sm md:text-lg max-w-md md:ml-auto font-light">
               {c.male.subtitle}
             </p>
-            <div className="mt-6 flex items-center gap-5 md:justify-end">
-              <span className="text-[#deff9a] text-xl md:text-2xl font-bold">{c.male.price}</span>
+            <div className="mt-6 md:text-right">
               <Link
                 to={c.male.cta.href}
-                className="px-6 py-3 bg-[#deff9a] text-black text-xs md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
+                className="inline-block px-6 py-3 bg-[#deff9a] text-black text-xs md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
               >
                 {c.male.cta.label}
               </Link>
