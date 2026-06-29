@@ -18,6 +18,7 @@ const navItems = [
   { href: '/admin/banners', label: 'Banners', icon: Image },
   { href: '/admin/redeems', label: 'Redeems', icon: Gift },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
+  { href: '/admin/broadcast', label: 'Broadcast', icon: Megaphone },
   { href: '/admin/audit-logs', label: 'Audit Logs', icon: Shield },
 ];
 
