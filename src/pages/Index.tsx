@@ -70,6 +70,9 @@ const Index = () => {
       {/* Floating Promo */}
       <FloatingPromo />
 
+      {/* Cinematic edge-to-edge hero */}
+      <CinematicHero />
+
       {/* Hero Section */}
       <div className="container mx-auto px-3 pt-3">
         <HeroSection />
