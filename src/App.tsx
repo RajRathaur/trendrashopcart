@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
+import { SiteContentProvider } from "@/hooks/useSiteContent";
 
 import Index from "./pages/Index";
 import Products from "./pages/Products";
