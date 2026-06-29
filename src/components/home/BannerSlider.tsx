@@ -151,7 +151,7 @@ export const BannerSlider = ({
         )}
 
         {/* Progress bar */}
-        {banners.length > 1 && !isPaused && (
+        {banners.length > 1 && !isPaused && !prefersReducedMotion && (
           <div className="absolute bottom-0 left-0 w-full h-1 bg-primary-foreground/10">
             <div
               key={currentIndex}
