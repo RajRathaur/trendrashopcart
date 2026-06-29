@@ -50,7 +50,21 @@ export const CinematicHero = () => {
       gsap.set('.fem-copy > *', { y: 40, autoAlpha: 0 });
       gsap.set('.male-copy > *', { y: 40, autoAlpha: 0 });
 
-      const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.inOut' },
+        repeat: -1,
+        repeatDelay: 1.2,
+        onRepeat: () => {
+          gsap.set('.cine-female', { xPercent: 0, scale: 1.45, filter: 'blur(24px) saturate(0.6)', clipPath: 'inset(40% 30% 40% 30%)' });
+          gsap.set('.cine-male', { xPercent: 100, scale: 1.2, filter: 'blur(12px)' });
+          gsap.set('.cine-male-zoom', { scale: 1 });
+          gsap.set('.cine-finale', { autoAlpha: 0, scale: 0.92 });
+          gsap.set('.fem-copy', { xPercent: 0, autoAlpha: 1 });
+          gsap.set('.fem-copy > *', { y: 40, autoAlpha: 0 });
+          gsap.set('.male-copy', { autoAlpha: 1 });
+          gsap.set('.male-copy > *', { y: 40, autoAlpha: 0 });
+        },
+      });
 
       // STEP 1 — Female liquid reveal + zoom out
       tl.to('.cine-female', {
