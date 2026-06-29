@@ -17,7 +17,7 @@ export const contentConfig = {
     label: 'Edit · Femme Noir',
     title: 'She Owns The Night',
     subtitle: 'Sharp tailoring. Structured power. Silence that commands every room.',
-    price: '₹ 12,499',
+    // price removed by request
     cta: { label: 'Shop Femme', href: '/products?gender=women' },
   },
   male: {
@@ -25,7 +25,7 @@ export const contentConfig = {
     label: 'Edit · Monsieur Noir',
     title: 'He Walks In Shadows',
     subtitle: 'Tailored bombers. Cargo lines. Sneakers cut from quiet luxury.',
-    price: '₹ 9,999',
+    // price removed by request
     cta: { label: 'Shop Monsieur', href: '/products?gender=men' },
   },
   finale: {
