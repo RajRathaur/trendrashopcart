@@ -1,5 +1,6 @@
 import { motion, useInView, Variants } from 'framer-motion';
 import { useRef, ReactNode } from 'react';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -47,6 +48,11 @@ export const ScrollReveal = ({
 }: ScrollRevealProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, margin: '-50px' });
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -79,6 +85,11 @@ export const StaggerContainer = ({
 }: StaggerContainerProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -107,6 +118,12 @@ export const StaggerItem = ({
   children: ReactNode;
   className?: string;
 }) => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       variants={{
