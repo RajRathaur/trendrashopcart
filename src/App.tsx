@@ -51,69 +51,79 @@ import AdminBroadcast from "./pages/admin/AdminBroadcast";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <SiteContentProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/cod-checkout" element={<CodCheckout />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/order/:id" element={<OrderDetail />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/help" element={<Help />} />
-                <Route path="/become-seller" element={<BecomeSeller />} />
-                <Route path="/confirm-payment" element={<ConfirmPayment />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/refund-policy" element={<RefundPolicy />} />
-                <Route path="/shipping-policy" element={<ShippingPolicy />} />
-                <Route path="/coin-game" element={<FruitGame />} />
-                <Route path="/fruit-game" element={<FruitGame />} />
-                <Route path="/redeem" element={<Redeem />} />
-                <Route path="/assistant" element={<Assistant />} />
-                <Route path="/assistant/:threadId" element={<Assistant />} />
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/admin/products" element={<AdminProducts />} />
-                <Route path="/admin/orders" element={<AdminOrders />} />
-                <Route path="/admin/payments" element={<AdminPayments />} />
-                <Route path="/admin/banners" element={<AdminBanners />} />
-                <Route path="/admin/categories" element={<AdminCategories />} />
-                <Route path="/admin/redeems" element={<AdminRedeems />} />
-                <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
-                <Route path="/admin/messages" element={<AdminContactMessages />} />
-                <Route path="/admin/broadcast" element={<AdminBroadcast />} />
-                {/* Redirect common paths */}
-                <Route path="/track-order" element={<Orders />} />
-                <Route path="/returns" element={<Help />} />
-                <Route path="/shipping" element={<Help />} />
-                <Route path="/careers" element={<About />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-            </SiteContentProvider>
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+const AppRoutes = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/products" element={<Products />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/wishlist" element={<Wishlist />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/cod-checkout" element={<CodCheckout />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/order-success" element={<OrderSuccess />} />
+      <Route path="/orders" element={<Orders />} />
+      <Route path="/order/:id" element={<OrderDetail />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/help" element={<Help />} />
+      <Route path="/become-seller" element={<BecomeSeller />} />
+      <Route path="/confirm-payment" element={<ConfirmPayment />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/refund-policy" element={<RefundPolicy />} />
+      <Route path="/shipping-policy" element={<ShippingPolicy />} />
+      <Route path="/coin-game" element={<FruitGame />} />
+      <Route path="/fruit-game" element={<FruitGame />} />
+      <Route path="/redeem" element={<Redeem />} />
+      <Route path="/assistant" element={<Assistant />} />
+      <Route path="/assistant/:threadId" element={<Assistant />} />
+      {/* Admin Routes */}
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/products" element={<AdminProducts />} />
+      <Route path="/admin/orders" element={<AdminOrders />} />
+      <Route path="/admin/payments" element={<AdminPayments />} />
+      <Route path="/admin/banners" element={<AdminBanners />} />
+      <Route path="/admin/categories" element={<AdminCategories />} />
+      <Route path="/admin/redeems" element={<AdminRedeems />} />
+      <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
+      <Route path="/admin/messages" element={<AdminContactMessages />} />
+      <Route path="/admin/broadcast" element={<AdminBroadcast />} />
+      {/* Redirect common paths */}
+      <Route path="/track-order" element={<Orders />} />
+      <Route path="/returns" element={<Help />} />
+      <Route path="/shipping" element={<Help />} />
+      <Route path="/careers" element={<About />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </BrowserRouter>
 );
+
+const App = () => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <SiteContentProvider>
+                <MotionConfig reducedMotion={prefersReducedMotion ? "always" : "user"}>
+                  <Toaster />
+                  <Sonner />
+                  <AppRoutes />
+                </MotionConfig>
+              </SiteContentProvider>
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
