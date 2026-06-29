@@ -252,7 +252,7 @@ const AdminProducts = () => {
             <DialogTrigger asChild>
               <Button onClick={() => {
                 setEditingProduct(null);
-                setFormData({ name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', isFeatured: false });
+                setFormData(emptyForm);
               }}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Product
