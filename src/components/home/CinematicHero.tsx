@@ -137,15 +137,17 @@ export const CinematicHero = () => {
 
       {/* FEMALE LAYER */}
       <div className="cine-female absolute inset-0 will-change-transform">
-        <img
-          src={c.female.image}
-          alt={c.female.title}
-          width={1024}
-          height={1536}
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          fetchPriority="high"
-          decoding="async"
-        />
+        <div className="cine-female-zoom absolute inset-0 will-change-transform">
+          <img
+            src={c.female.image}
+            alt={c.female.title}
+            width={1024}
+            height={1536}
+            className="absolute inset-0 w-full h-full object-cover object-top"
+            fetchPriority="high"
+            decoding="async"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
 
