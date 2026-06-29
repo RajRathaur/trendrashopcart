@@ -55,7 +55,19 @@ const AdminProducts = () => {
     description: '',
     imageUrl: '',
     isFeatured: false,
+    productType: '',
+    sizes: '',
+    colors: '',
   });
+
+  const PRODUCT_TYPES = [
+    'Shirt', 'T-Shirt', 'Pant', 'Jeans', 'Kurta', 'Dress', 'Top',
+    'Shoes', 'Sneakers', 'Sandals', 'Accessory', 'Electronics', 'Home', 'Beauty', 'Other',
+  ];
+  const emptyForm = {
+    name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '',
+    isFeatured: false, productType: '', sizes: '', colors: '',
+  };
 
   useEffect(() => {
     if (!authLoading) {
