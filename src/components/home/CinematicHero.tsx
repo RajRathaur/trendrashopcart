@@ -37,6 +37,7 @@ export const contentConfig = {
 
 export const CinematicHero = () => {
   const root = useRef<HTMLDivElement>(null);
+  const c = contentConfig;
   const reduceMotion = typeof window !== 'undefined' &&
     window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
