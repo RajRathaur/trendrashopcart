@@ -68,26 +68,30 @@ export const CinematicHero = () => {
         },
       });
 
-      // STEP 1 — Female liquid reveal + zoom out
+      // STEP 1 — Female slides in from right
       tl.to('.cine-female', {
+        xPercent: 0,
         scale: 1,
-        filter: 'blur(0px) saturate(1)',
-        clipPath: 'inset(0% 0% 0% 0%)',
-        duration: 2.2,
+        filter: 'blur(0px)',
+        duration: 1.6,
+        ease: 'power2.inOut',
       })
-        .to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.12 }, '-=1.2')
-        .to({}, { duration: 1.1 }) // hold
+        .to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.12 }, '-=0.6')
+        .to({}, { duration: 1 }) // hold
 
-        // STEP 2 — Cinematic horizontal pan to male
+        // STEP 2 — Zoom into female detail
+        .to('.cine-female-zoom', { scale: 1.8, duration: 1.8, ease: 'power2.inOut' })
+        .to('.fem-copy', { autoAlpha: 0, duration: 0.6 }, '<')
+
+        // STEP 3 — Cinematic horizontal pan to male
         .to('.cine-female', { xPercent: -100, scale: 1.1, duration: 1.6, ease: 'power2.inOut' })
-        .to('.fem-copy', { xPercent: -100, autoAlpha: 0, duration: 1.6, ease: 'power2.inOut' }, '<')
         .to('.cine-male', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power2.inOut' }, '<')
 
-        // STEP 3 — Male copy reveal
+        // STEP 4 — Male copy reveal
         .to('.male-copy > *', { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.12 }, '-=0.6')
         .to({}, { duration: 1 })
 
-        // STEP 4 — Zoom into sneakers
+        // STEP 5 — Zoom into sneakers
         .to('.cine-male-zoom', { scale: 1.8, duration: 1.8, ease: 'power2.inOut' })
         .to('.male-copy', { autoAlpha: 0, duration: 0.6 }, '<')
         .to('.cine-finale', { autoAlpha: 1, scale: 1, duration: 1.2 }, '-=0.6');
