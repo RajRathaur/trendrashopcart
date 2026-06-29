@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, CreditCard, Image, FolderTree, Gift, Shield, Mail } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, CreditCard, Image, FolderTree, Gift, Shield, Mail, Megaphone } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
