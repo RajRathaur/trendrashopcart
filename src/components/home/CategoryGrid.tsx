@@ -80,9 +80,21 @@ export const CategoryGrid = () => {
             >
               <Link
                 to={`/products?category=${cat.slug}`}
-                className="group relative block aspect-[4/5] rounded-[32px] overflow-hidden cursor-pointer glass-card transition-all duration-500"
+                className="group relative block aspect-[4/5] overflow-hidden cursor-pointer glass-card transition-all duration-500"
                 style={{ borderColor: 'hsl(0 0% 100% / 0.06)' }}
               >
+                {/* Background image */}
+                <img
+                  src={cat.image}
+                  alt={cat.title}
+                  width={1024}
+                  height={1280}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                {/* Dark overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
                 {/* Gradient veil */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60 pointer-events-none" />
                 {/* Tone wash */}
@@ -100,7 +112,6 @@ export const CategoryGrid = () => {
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
                     boxShadow: `inset 0 0 0 1px ${tone}50, 0 30px 80px -30px ${tone}90`,
-                    borderRadius: 32,
                   }}
                 />
 
@@ -111,8 +122,8 @@ export const CategoryGrid = () => {
                   >
                     {cat.eyebrow}
                   </p>
-                  <h3 className="text-2xl md:text-3xl font-bold text-foreground">{cat.title}</h3>
-                  <p className="text-sm text-foreground/50 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white">{cat.title}</h3>
+                  <p className="text-sm text-white/70 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                     {cat.desc}
                   </p>
                 </div>
