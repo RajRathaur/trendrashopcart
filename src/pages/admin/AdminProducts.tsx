@@ -24,7 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Loader2, Plus, Pencil, Trash2, Flame } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Flame, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Product {
@@ -40,13 +40,35 @@ interface Product {
   images: string[];
 }
 
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+// Suggested size presets per category type (admin can still add custom ones)
+const FOOTWEAR_PRESETS = ['5', '6', '7', '8', '9', '10', '11', '12'];
+const APPAREL_PRESETS = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+const NUMERIC_APPAREL_PRESETS = ['28', '30', '32', '34', '36', '38', '40', '42'];
+
+function detectCategoryKind(slug: string): 'footwear' | 'apparel' | 'pants' | 'none' {
+  const s = (slug || '').toLowerCase();
+  if (s.includes('footwear') || s.includes('shoe') || s.includes('sneaker') || s.includes('sandal')) return 'footwear';
+  if (s.includes('pant') || s.includes('jean') || s.includes('trouser')) return 'pants';
+  if (s.includes('shirt') || s.includes('tshirt') || s.includes('t-shirt') || s.includes('kurta') || s.includes('dress') || s.includes('top')) return 'apparel';
+  return 'none';
+}
+
 const AdminProducts = () => {
   const { user, isLoading: authLoading, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [sizeInput, setSizeInput] = useState('');
+  const [colorInput, setColorInput] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -55,19 +77,27 @@ const AdminProducts = () => {
     description: '',
     imageUrl: '',
     isFeatured: false,
-    productType: '',
-    sizes: '',
-    colors: '',
+    categoryId: '',
+    sizes: [] as string[],
+    colors: [] as string[],
   });
 
-  const PRODUCT_TYPES = [
-    'Shirt', 'T-Shirt', 'Pant', 'Jeans', 'Kurta', 'Dress', 'Top',
-    'Shoes', 'Sneakers', 'Sandals', 'Accessory', 'Electronics', 'Home', 'Beauty', 'Other',
-  ];
   const emptyForm = {
     name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '',
-    isFeatured: false, productType: '', sizes: '', colors: '',
+    isFeatured: false, categoryId: '', sizes: [] as string[], colors: [] as string[],
   };
+
+  const selectedCategory = categories.find((c) => c.id === formData.categoryId);
+  const categoryKind = selectedCategory ? detectCategoryKind(selectedCategory.slug) : 'none';
+  const sizePresets =
+    categoryKind === 'footwear' ? FOOTWEAR_PRESETS :
+    categoryKind === 'pants' ? NUMERIC_APPAREL_PRESETS :
+    categoryKind === 'apparel' ? APPAREL_PRESETS : [];
+  const sizeLabel =
+    categoryKind === 'footwear' ? 'Shoe Sizes (UK/IND)' :
+    categoryKind === 'pants' ? 'Waist Sizes (inches)' :
+    categoryKind === 'apparel' ? 'Clothing Sizes' :
+    'Sizes';
 
   useEffect(() => {
     if (!authLoading) {
@@ -82,8 +112,18 @@ const AdminProducts = () => {
   useEffect(() => {
     if (isAdmin) {
       fetchProducts();
+      fetchCategories();
     }
   }, [isAdmin]);
+
+  const fetchCategories = async () => {
+    const { data } = await supabase
+      .from('categories')
+      .select('id, name, slug')
+      .eq('is_active', true)
+      .order('name');
+    setCategories((data as Category[]) || []);
+  };
 
   const fetchProducts = async () => {
     try {
@@ -102,34 +142,52 @@ const AdminProducts = () => {
     }
   };
 
+  const addSize = (val: string) => {
+    const v = val.trim();
+    if (!v) return;
+    if (formData.sizes.includes(v)) return;
+    setFormData({ ...formData, sizes: [...formData.sizes, v] });
+    setSizeInput('');
+  };
+  const removeSize = (val: string) =>
+    setFormData({ ...formData, sizes: formData.sizes.filter((s) => s !== val) });
+
+  const addColor = (val: string) => {
+    const v = val.trim();
+    if (!v) return;
+    if (formData.colors.includes(v)) return;
+    setFormData({ ...formData, colors: [...formData.colors, v] });
+    setColorInput('');
+  };
+  const removeColor = (val: string) =>
+    setFormData({ ...formData, colors: formData.colors.filter((c) => c !== val) });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       const slug = formData.name.toLowerCase().replace(/\s+/g, '-');
       const images = formData.imageUrl ? [formData.imageUrl] : [];
-      const sizesArr = formData.sizes
-        .split(',').map((s) => s.trim()).filter(Boolean);
-      const colorsArr = formData.colors
-        .split(',').map((s) => s.trim()).filter(Boolean);
+
+      const payload: any = {
+        name: formData.name,
+        price: parseFloat(formData.price),
+        mrp: parseFloat(formData.mrp),
+        stock: parseInt(formData.stock),
+        slug,
+        images,
+        is_featured: formData.isFeatured,
+        category_id: formData.categoryId || null,
+        product_type: selectedCategory?.name || null,
+        sizes: formData.sizes.length ? formData.sizes : null,
+        colors: formData.colors.length ? formData.colors : null,
+      };
 
       if (editingProduct) {
         const { error } = await supabase
           .from('products')
-          .update({
-            name: formData.name,
-            price: parseFloat(formData.price),
-            mrp: parseFloat(formData.mrp),
-            stock: parseInt(formData.stock),
-            slug,
-            images,
-            is_featured: formData.isFeatured,
-            product_type: formData.productType || null,
-            sizes: sizesArr.length ? sizesArr : null,
-            colors: colorsArr.length ? colorsArr : null,
-          })
+          .update(payload)
           .eq('id', editingProduct.id);
-
         if (error) throw error;
         toast.success('Product updated successfully');
       } else {
@@ -145,20 +203,10 @@ const AdminProducts = () => {
         }
 
         const { error } = await supabase.from('products').insert({
-          name: formData.name,
-          price: parseFloat(formData.price),
-          mrp: parseFloat(formData.mrp),
-          stock: parseInt(formData.stock),
-          slug,
+          ...payload,
           seller_id: sellers.id,
           description: formData.description,
-          images,
-          is_featured: formData.isFeatured,
-          product_type: formData.productType || null,
-          sizes: sizesArr.length ? sizesArr : null,
-          colors: colorsArr.length ? colorsArr : null,
         });
-
         if (error) throw error;
         toast.success('Product created successfully');
       }
@@ -183,17 +231,15 @@ const AdminProducts = () => {
       description: '',
       imageUrl: product.images?.[0] || '',
       isFeatured: product.is_featured || false,
-      productType: product.product_type || '',
-      sizes: (product.sizes || []).join(', '),
-      colors: (product.colors || []).join(', '),
+      categoryId: product.category_id || '',
+      sizes: product.sizes || [],
+      colors: product.colors || [],
     });
     setDialogOpen(true);
   };
 
-
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
-
     try {
       const { error } = await supabase.from('products').delete().eq('id', id);
       if (error) throw error;
@@ -212,7 +258,6 @@ const AdminProducts = () => {
     );
     if (confirmation !== 'DELETE') return;
     try {
-      // Best-effort: remove dependents first (ignore errors if cascade exists)
       await supabase.from('product_reviews').delete().not('id', 'is', null);
       await supabase.from('wishlist_items').delete().not('id', 'is', null);
       await supabase.from('cart_items').delete().not('id', 'is', null);
@@ -241,6 +286,12 @@ const AdminProducts = () => {
           <h1 className="text-3xl font-bold">Products</h1>
           <div className="flex items-center gap-2">
             <Button
+              variant="outline"
+              onClick={() => navigate('/admin/categories')}
+            >
+              Manage Categories
+            </Button>
+            <Button
               variant="destructive"
               onClick={handleDeleteAll}
               disabled={products.length === 0}
@@ -253,6 +304,8 @@ const AdminProducts = () => {
               <Button onClick={() => {
                 setEditingProduct(null);
                 setFormData(emptyForm);
+                setSizeInput('');
+                setColorInput('');
               }}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Product
@@ -265,7 +318,6 @@ const AdminProducts = () => {
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                {/* Image Upload */}
                 <ProductImageUpload
                   imageUrl={formData.imageUrl}
                   onImageChange={(url) => setFormData({ ...formData, imageUrl: url })}
@@ -280,73 +332,127 @@ const AdminProducts = () => {
                     required
                   />
                 </div>
+
+                <div>
+                  <Label htmlFor="category">Product Type / Category *</Label>
+                  <select
+                    id="category"
+                    value={formData.categoryId}
+                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value, sizes: [] })}
+                    className="flex h-10 w-full border border-input bg-background px-3 py-2 text-sm"
+                    required
+                  >
+                    <option value="">Select category…</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                  {categories.length === 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      No categories yet. Add them in Manage Categories.
+                    </p>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="price">Price (₹)</Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      required
-                    />
+                    <Input id="price" type="number" value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })} required />
                   </div>
                   <div>
                     <Label htmlFor="mrp">MRP (₹)</Label>
-                    <Input
-                      id="mrp"
-                      type="number"
-                      value={formData.mrp}
-                      onChange={(e) => setFormData({ ...formData, mrp: e.target.value })}
-                      required
-                    />
+                    <Input id="mrp" type="number" value={formData.mrp}
+                      onChange={(e) => setFormData({ ...formData, mrp: e.target.value })} required />
                   </div>
                 </div>
                 <div>
                   <Label htmlFor="stock">Stock</Label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    required
-                  />
+                  <Input id="stock" type="number" value={formData.stock}
+                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })} required />
                 </div>
 
+                {/* Sizes — chip input, enabled once a category is picked */}
+                {formData.categoryId && categoryKind !== 'none' && (
+                  <div>
+                    <Label>{sizeLabel}</Label>
+                    {sizePresets.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-1 mb-2">
+                        {sizePresets.map((s) => (
+                          <button
+                            type="button"
+                            key={s}
+                            onClick={() => addSize(s)}
+                            disabled={formData.sizes.includes(s)}
+                            className="px-2.5 py-1 text-xs border border-input disabled:opacity-40 hover:bg-accent"
+                          >
+                            + {s}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Add custom size and press Enter"
+                        value={sizeInput}
+                        onChange={(e) => setSizeInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addSize(sizeInput);
+                          }
+                        }}
+                      />
+                      <Button type="button" variant="outline" onClick={() => addSize(sizeInput)}>
+                        Add
+                      </Button>
+                    </div>
+                    {formData.sizes.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {formData.sizes.map((s) => (
+                          <span key={s} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-primary text-primary-foreground">
+                            {s}
+                            <button type="button" onClick={() => removeSize(s)}>
+                              <X className="h-3 w-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Colors — chip input */}
                 <div>
-                  <Label htmlFor="productType">Product Type</Label>
-                  <select
-                    id="productType"
-                    value={formData.productType}
-                    onChange={(e) => setFormData({ ...formData, productType: e.target.value })}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Select type…</option>
-                    {PRODUCT_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="sizes">Sizes (comma-separated)</Label>
+                  <Label>Colors</Label>
+                  <div className="flex gap-2">
                     <Input
-                      id="sizes"
-                      placeholder="S, M, L, XL  or  7, 8, 9, 10"
-                      value={formData.sizes}
-                      onChange={(e) => setFormData({ ...formData, sizes: e.target.value })}
+                      placeholder="Add a color and press Enter (e.g. Black)"
+                      value={colorInput}
+                      onChange={(e) => setColorInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addColor(colorInput);
+                        }
+                      }}
                     />
+                    <Button type="button" variant="outline" onClick={() => addColor(colorInput)}>
+                      Add
+                    </Button>
                   </div>
-                  <div>
-                    <Label htmlFor="colors">Colors (comma-separated)</Label>
-                    <Input
-                      id="colors"
-                      placeholder="Black, White, Navy"
-                      value={formData.colors}
-                      onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
-                    />
-                  </div>
+                  {formData.colors.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {formData.colors.map((c) => (
+                        <span key={c} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-input">
+                          {c}
+                          <button type="button" onClick={() => removeColor(c)}>
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {!editingProduct && (
@@ -360,19 +466,15 @@ const AdminProducts = () => {
                   </div>
                 )}
 
-                {/* High Discount / Sale Checkbox */}
                 <div className="flex items-center space-x-2 py-2">
                   <Checkbox
                     id="isFeatured"
                     checked={formData.isFeatured}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       setFormData({ ...formData, isFeatured: checked === true })
                     }
                   />
-                  <Label 
-                    htmlFor="isFeatured" 
-                    className="flex items-center gap-2 cursor-pointer font-normal"
-                  >
+                  <Label htmlFor="isFeatured" className="flex items-center gap-2 cursor-pointer font-normal">
                     <Flame className="h-4 w-4 text-destructive" />
                     Mark as High Discount / Sale
                   </Label>
@@ -418,8 +520,8 @@ const AdminProducts = () => {
                       <TableCell>
                         <div className="w-12 h-12 rounded overflow-hidden bg-muted">
                           {product.images?.[0] ? (
-                            <img 
-                              src={product.images[0]} 
+                            <img
+                              src={product.images[0]}
                               alt={product.name}
                               className="w-full h-full object-cover"
                             />
@@ -454,18 +556,10 @@ const AdminProducts = () => {
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(product)}
-                        >
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(product)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(product.id)}
-                        >
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </TableCell>
