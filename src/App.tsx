@@ -97,6 +97,7 @@ const App = () => (
                 <Route path="/admin/redeems" element={<AdminRedeems />} />
                 <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
                 <Route path="/admin/messages" element={<AdminContactMessages />} />
+                <Route path="/admin/broadcast" element={<AdminBroadcast />} />
                 {/* Redirect common paths */}
                 <Route path="/track-order" element={<Orders />} />
                 <Route path="/returns" element={<Help />} />
@@ -105,6 +106,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
+            </SiteContentProvider>
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>
