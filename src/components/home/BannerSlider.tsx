@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 interface Banner {
   id: string;
@@ -26,6 +27,7 @@ export const BannerSlider = ({
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchDeltaX = useRef(0);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const goToPrevious = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
@@ -35,12 +37,12 @@ export const BannerSlider = ({
     setCurrentIndex((prev) => (prev + 1) % banners.length);
   }, [banners.length]);
 
-  // Autoplay with pause support
+  // Autoplay with pause support (disabled for reduced motion)
   useEffect(() => {
-    if (banners.length <= 1 || isPaused) return;
+    if (banners.length <= 1 || isPaused || prefersReducedMotion) return;
     const interval = setInterval(goToNext, autoPlayInterval);
     return () => clearInterval(interval);
-  }, [banners.length, autoPlayInterval, isPaused, goToNext]);
+  }, [banners.length, autoPlayInterval, isPaused, goToNext, prefersReducedMotion]);
 
   // Pause when tab is hidden
   useEffect(() => {
@@ -149,7 +151,7 @@ export const BannerSlider = ({
         )}
 
         {/* Progress bar */}
-        {banners.length > 1 && !isPaused && (
+        {banners.length > 1 && !isPaused && !prefersReducedMotion && (
           <div className="absolute bottom-0 left-0 w-full h-1 bg-primary-foreground/10">
             <div
               key={currentIndex}
