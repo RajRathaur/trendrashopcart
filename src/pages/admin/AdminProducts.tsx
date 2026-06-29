@@ -312,6 +312,43 @@ const AdminProducts = () => {
                     required
                   />
                 </div>
+
+                <div>
+                  <Label htmlFor="productType">Product Type</Label>
+                  <select
+                    id="productType"
+                    value={formData.productType}
+                    onChange={(e) => setFormData({ ...formData, productType: e.target.value })}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="">Select type…</option>
+                    {PRODUCT_TYPES.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="sizes">Sizes (comma-separated)</Label>
+                    <Input
+                      id="sizes"
+                      placeholder="S, M, L, XL  or  7, 8, 9, 10"
+                      value={formData.sizes}
+                      onChange={(e) => setFormData({ ...formData, sizes: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="colors">Colors (comma-separated)</Label>
+                    <Input
+                      id="colors"
+                      placeholder="Black, White, Navy"
+                      value={formData.colors}
+                      onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
+                    />
+                  </div>
+                </div>
+
                 {!editingProduct && (
                   <div>
                     <Label htmlFor="description">Description</Label>
