@@ -171,8 +171,11 @@ export const CinematicHero = () => {
           <img
             src={c.male.image}
             alt={c.male.title}
+            width={1920}
+            height={1080}
             className="absolute inset-0 w-full h-full object-cover object-center"
             loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/10 to-black/60" />
