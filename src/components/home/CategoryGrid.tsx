@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import electronicsImg from '@/assets/category-electronics.jpg';
+import fashionImg from '@/assets/category-fashion.jpg';
+import homeImg from '@/assets/category-home.jpg';
 
 type CardTone = 'purple' | 'gold';
 
@@ -10,6 +13,7 @@ const categories: Array<{
   title: string;
   desc: string;
   tone: CardTone;
+  image: string;
 }> = [
   {
     slug: 'electronics',
@@ -17,6 +21,7 @@ const categories: Array<{
     title: 'Sonic Series',
     desc: 'Next-gen immersive audio equipment.',
     tone: 'purple',
+    image: electronicsImg,
   },
   {
     slug: 'fashion',
@@ -24,6 +29,7 @@ const categories: Array<{
     title: 'Heritage Modern',
     desc: 'Timeless silhouettes for the new era.',
     tone: 'gold',
+    image: fashionImg,
   },
   {
     slug: 'home-kitchen',
@@ -31,6 +37,7 @@ const categories: Array<{
     title: 'Luxe Living',
     desc: 'Automation meets high-end design.',
     tone: 'purple',
+    image: homeImg,
   },
 ];
 
