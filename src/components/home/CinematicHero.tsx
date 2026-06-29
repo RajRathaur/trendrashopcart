@@ -205,8 +205,6 @@ export const CinematicHero = () => {
     );
   }
 
-  const c = contentConfig;
-
   return (
     <section
       ref={root}
