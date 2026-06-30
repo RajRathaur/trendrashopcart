@@ -135,9 +135,9 @@ export const CinematicHero = () => {
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
-        <div className="fem-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center px-6 md:px-16 pb-32 md:pb-0 max-w-2xl">
-          <span className="text-[#deff9a] text-[10px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.female.label}</span>
-          <h1 className="mt-4 text-white text-5xl md:text-8xl font-black uppercase leading-[0.95] tracking-tight drop-shadow-lg">
+        <div className="fem-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center px-4 md:px-16 pb-4 md:pb-0 max-w-2xl">
+          <span className="text-[#deff9a] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.female.label}</span>
+          <h1 className="mt-1 md:mt-4 text-white text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight drop-shadow-lg">
             {c.female.title}
           </h1>
           <p className="mt-5 text-white/80 text-sm md:text-lg max-w-md font-light drop-shadow">{c.female.subtitle}</p>
