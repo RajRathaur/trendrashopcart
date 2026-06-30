@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Sellers can update their own data" ON public.sellers;
