@@ -140,11 +140,11 @@ export const CinematicHero = () => {
           <h1 className="mt-1 md:mt-4 text-white text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight drop-shadow-lg">
             {c.female.title}
           </h1>
-          <p className="mt-5 text-white/80 text-sm md:text-lg max-w-md font-light drop-shadow">{c.female.subtitle}</p>
-          <div className="mt-6">
+          <p className="mt-1 md:mt-5 text-white/80 text-[10px] md:text-lg max-w-md font-light drop-shadow line-clamp-2">{c.female.subtitle}</p>
+          <div className="mt-2 md:mt-6">
             <Link
               to={c.female.cta.href}
-              className="inline-block px-6 py-3 bg-[#deff9a] text-black text-xs md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
+              className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#deff9a] text-black text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
             >
               {c.female.cta.label}
             </Link>
