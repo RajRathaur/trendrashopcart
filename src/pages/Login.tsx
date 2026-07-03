@@ -253,19 +253,27 @@ const LoginPage = () => {
               onClick={async () => {
                 try {
                   setLoading(true);
-                  const { supabase } = await import("@/integrations/supabase/client");
-                  const { error } = await supabase.auth.signInWithOAuth({
-                    provider: "google",
-                    options: {
-                      redirectTo: window.location.origin + redirect,
-                    },
-                  });
-                  if (error) {
-                    toast.error(error.message || "Google sign-in failed");
+                  // Save intended destination for post-auth redirect
+                  if (redirect && redirect !== "/") {
+                    sessionStorage.setItem("post_login_redirect", redirect);
                   }
+                  const { lovable } = await import("@/integrations/lovable");
+                  const result = await lovable.auth.signInWithOAuth("google", {
+                    redirect_uri: window.location.origin,
+                  });
+                  if (result.error) {
+                    toast.error(result.error.message || "Google sign-in failed");
+                    setLoading(false);
+                    return;
+                  }
+                  if (result.redirected) {
+                    // Browser will redirect to Google
+                    return;
+                  }
+                  // Popup flow succeeded — session set, useEffect handles nav
+                  toast.success("Signed in with Google");
                 } catch (e: any) {
                   toast.error(e?.message || "Google sign-in failed");
-                } finally {
                   setLoading(false);
                 }
               }}
