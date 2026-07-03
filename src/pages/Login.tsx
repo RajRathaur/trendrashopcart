@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { toast } from 'sonner';
+import { lovable } from '@/integrations/lovable';
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
