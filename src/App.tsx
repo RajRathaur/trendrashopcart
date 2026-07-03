@@ -36,6 +36,8 @@ import Redeem from "./pages/Redeem";
 import Assistant from "./pages/Assistant";
 import CodCheckout from "./pages/CodCheckout";
 import ResetPassword from "./pages/ResetPassword";
+import OAuthInitiate from "./pages/OAuthInitiate";
+import AuthCallback from "./pages/AuthCallback";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -63,6 +65,8 @@ const AppRoutes = () => (
       <Route path="/cart" element={<Cart />} />
       <Route path="/wishlist" element={<Wishlist />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/~oauth/initiate" element={<OAuthInitiate />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/cod-checkout" element={<CodCheckout />} />
