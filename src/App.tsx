@@ -36,8 +36,6 @@ import Redeem from "./pages/Redeem";
 import Assistant from "./pages/Assistant";
 import CodCheckout from "./pages/CodCheckout";
 import ResetPassword from "./pages/ResetPassword";
-import OAuthInitiate from "./pages/OAuthInitiate";
-import AuthCallback from "./pages/AuthCallback";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
