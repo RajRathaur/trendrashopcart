@@ -24,22 +24,11 @@ const LoginPage = () => {
   const redirect = searchParams.get('redirect') || '/';
 
   const getGoogleRedirectUri = () => {
-    const callbackPath = "/auth/callback";
-    const { hostname, origin } = window.location;
-    const isLovableHosted =
-      hostname.endsWith(".lovable.app") ||
-      hostname.endsWith(".lovableproject.com") ||
-      hostname === "localhost" ||
-      hostname === "127.0.0.1";
-
-    if (isLovableHosted) {
-      return `${origin}${callbackPath}`;
-    }
-
-    const bridge = new URL(callbackPath, "https://trendrashopcart.lovable.app");
-    bridge.searchParams.set("next_origin", origin);
-    return bridge.toString();
+    // Managed OAuth broker works on custom domains too. Always return to the
+    // same origin the user started from — never bridge through lovable.app.
+    return `${window.location.origin}/auth/callback`;
   };
+
 
   // Redirect if already logged in
   useEffect(() => {
