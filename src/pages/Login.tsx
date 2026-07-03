@@ -26,7 +26,12 @@ const LoginPage = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user) {
-      // If user is admin and no specific redirect, go to admin dashboard
+      const saved = sessionStorage.getItem("post_login_redirect");
+      if (saved && saved.startsWith("/") && !saved.startsWith("//")) {
+        sessionStorage.removeItem("post_login_redirect");
+        navigate(saved, { replace: true });
+        return;
+      }
       if (isAdmin && redirect === '/') {
         navigate('/admin', { replace: true });
       } else {
@@ -34,6 +39,7 @@ const LoginPage = () => {
       }
     }
   }, [user, isAdmin, authLoading, navigate, redirect]);
+
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
