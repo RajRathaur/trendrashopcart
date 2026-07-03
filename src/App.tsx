@@ -51,11 +51,8 @@ import AdminBroadcast from "./pages/admin/AdminBroadcast";
 
 const queryClient = new QueryClient();
 
-import PostLoginRedirect from "./components/PostLoginRedirect";
-
 const AppRoutes = () => (
   <BrowserRouter>
-    <PostLoginRedirect />
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/products" element={<Products />} />
