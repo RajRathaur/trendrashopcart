@@ -24,10 +24,11 @@ const LoginPage = () => {
   const redirect = searchParams.get('redirect') || '/';
 
   const getGoogleRedirectUri = () => {
-    // Managed OAuth broker works on custom domains too. Always return to the
-    // same origin the user started from — never bridge through lovable.app.
-    return `${window.location.origin}/auth/callback`;
+    // Managed OAuth broker allow-lists the app origin automatically for
+    // Lovable-hosted domains and active custom domains.
+    return window.location.origin;
   };
+
 
 
   // Redirect if already logged in
