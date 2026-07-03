@@ -23,6 +23,24 @@ const LoginPage = () => {
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
 
+  const getGoogleRedirectUri = () => {
+    const callbackPath = "/auth/callback";
+    const { hostname, origin } = window.location;
+    const isLovableHosted =
+      hostname.endsWith(".lovable.app") ||
+      hostname.endsWith(".lovableproject.com") ||
+      hostname === "localhost" ||
+      hostname === "127.0.0.1";
+
+    if (isLovableHosted) {
+      return `${origin}${callbackPath}`;
+    }
+
+    const bridge = new URL(callbackPath, "https://trendrashopcart.lovable.app");
+    bridge.searchParams.set("next_origin", origin);
+    return bridge.toString();
+  };
+
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user) {
@@ -265,7 +283,7 @@ const LoginPage = () => {
                   }
                   const { lovable } = await import("@/integrations/lovable");
                   const result = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: window.location.origin,
+                    redirect_uri: getGoogleRedirectUri(),
                   });
                   if (result.error) {
                     toast.error(result.error.message || "Google sign-in failed");
