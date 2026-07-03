@@ -8,6 +8,7 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react
 import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { toast } from 'sonner';
 import { lovable } from '@/integrations/lovable';
+import { supabase } from '@/integrations/supabase/client';
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
