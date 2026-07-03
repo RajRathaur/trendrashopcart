@@ -23,23 +23,9 @@ const LoginPage = () => {
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
 
-  const getGoogleRedirectUri = () => {
-    // Managed OAuth broker allow-lists the app origin automatically for
-    // Lovable-hosted domains and active custom domains.
-    return window.location.origin;
-  };
-
-
-
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user) {
-      const saved = sessionStorage.getItem("post_login_redirect");
-      if (saved && saved.startsWith("/") && !saved.startsWith("//")) {
-        sessionStorage.removeItem("post_login_redirect");
-        navigate(saved, { replace: true });
-        return;
-      }
       if (isAdmin && redirect === '/') {
         navigate('/admin', { replace: true });
       } else {
@@ -47,6 +33,7 @@ const LoginPage = () => {
       }
     }
   }, [user, isAdmin, authLoading, navigate, redirect]);
+
 
 
   const validateEmail = (email: string) => {
