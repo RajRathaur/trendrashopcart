@@ -15,7 +15,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:smoke": "playwright test",
+    "test:smoke:staging": "SMOKE_BASE_URL=https://trendra.store playwright test"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.211",
