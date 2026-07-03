@@ -63,8 +63,7 @@ const AppRoutes = () => (
       <Route path="/cart" element={<Cart />} />
       <Route path="/wishlist" element={<Wishlist />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/~oauth/initiate" element={<OAuthInitiate />} />
-      <Route path="/auth/callback" element={<AuthCallback />} />
+
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/cod-checkout" element={<CodCheckout />} />
