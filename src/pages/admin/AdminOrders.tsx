@@ -30,12 +30,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Loader2, Trash2, Eye, MessageCircle } from 'lucide-react';
+import { Loader2, Trash2, Eye, MessageCircle, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
 import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
 import { logAdminAction, maskPhone, addressSnippet } from '@/lib/auditLog';
+import { generateTaxInvoice } from '@/lib/invoice';
 
 type OrderStatus = Database['public']['Enums']['order_status'];
 
@@ -225,6 +226,50 @@ const AdminOrders = () => {
     openWhatsApp(url);
   };
 
+  const downloadInvoice = async (order: Order) => {
+    try {
+      let items = orderItems[order.id];
+      if (!items) {
+        const { data, error } = await supabase
+          .from('order_items')
+          .select('*')
+          .eq('order_id', order.id);
+        if (error) throw error;
+        items = data || [];
+        setOrderItems(prev => ({ ...prev, [order.id]: items }));
+      }
+
+      if (items.length === 0) {
+        toast.error('Invoice items not found for this order');
+        return;
+      }
+
+      generateTaxInvoice({
+        order_number: order.order_number,
+        order_date: order.created_at,
+        customer_name: 'Customer',
+        shipping_address: order.shipping_address,
+        shipping_city: order.shipping_city,
+        shipping_state: order.shipping_state,
+        shipping_pincode: order.shipping_pincode,
+        shipping_phone: order.shipping_phone,
+        payment_method: order.payment_method || 'N/A',
+        seller_name: 'Trendra',
+        seller_address: 'trendra.store',
+        items: items.map((item) => ({
+          product_name: item.product_name,
+          quantity: item.quantity,
+          price: Number(item.price),
+          size: item.size,
+          color: item.color,
+        })),
+      });
+    } catch (error) {
+      console.error('Error generating invoice:', error);
+      toast.error('Failed to generate invoice');
+    }
+  };
+
   const handleDeleteOrder = async (orderId: string) => {
     try {
       const orderSnapshot = orders.find(o => o.id === orderId);
@@ -337,6 +382,14 @@ const AdminOrders = () => {
                               className="text-green-600 hover:text-green-700"
                             >
                               <MessageCircle className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => downloadInvoice(order)}
+                              title="Download invoice"
+                            >
+                              <FileText className="h-4 w-4" />
                             </Button>
                             <Select
                               value={order.status}
