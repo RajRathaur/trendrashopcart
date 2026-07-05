@@ -128,6 +128,7 @@ const AdminUsers = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Role</TableHead>
@@ -139,12 +140,15 @@ const AdminUsers = () => {
             </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">No users found.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">No users found.</TableCell></TableRow>
               ) : filtered.map((u) => {
-                const r = roles[u.user_id] || ['user'];
+                const r = u.roles && u.roles.length ? u.roles : ['user'];
                 return (
-                  <TableRow key={u.id}>
+                  <TableRow key={u.user_id}>
                     <TableCell className="font-medium">{u.full_name || 'Unnamed'}</TableCell>
+                    <TableCell className="text-sm">
+                      {u.email ? <a href={`mailto:${u.email}`} className="hover:underline">{u.email}</a> : '—'}
+                    </TableCell>
                     <TableCell className="text-sm">{u.phone || '—'}</TableCell>
                     <TableCell className="text-sm">{[u.city, u.state].filter(Boolean).join(', ') || '—'}</TableCell>
                     <TableCell>
@@ -155,8 +159,8 @@ const AdminUsers = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-sm">
-                      {u.orderCount}
-                      {u.lastOrder && <div className="text-xs text-muted-foreground">last {new Date(u.lastOrder).toLocaleDateString()}</div>}
+                      {u.order_count}
+                      {u.last_order_at && <div className="text-xs text-muted-foreground">last {new Date(u.last_order_at).toLocaleDateString()}</div>}
                     </TableCell>
                     <TableCell className="text-xs">{new Date(u.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>
