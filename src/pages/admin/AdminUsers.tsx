@@ -153,8 +153,19 @@ const AdminUsers = () => {
                     <TableCell className="text-sm">
                       {u.email ? <a href={`mailto:${u.email}`} className="hover:underline">{u.email}</a> : '—'}
                     </TableCell>
-                    <TableCell className="text-sm">{u.phone || '—'}</TableCell>
-                    <TableCell className="text-sm">{[u.city, u.state].filter(Boolean).join(', ') || '—'}</TableCell>
+                    <TableCell className="text-sm">
+                      {u.phone ? <a href={`tel:${u.phone}`} className="hover:underline">{u.phone}</a> : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="text-sm max-w-[220px]">
+                      {u.address || u.city || u.state || u.pincode ? (
+                        <div>
+                          {u.address && <div className="truncate" title={u.address}>{u.address}</div>}
+                          <div className="text-xs text-muted-foreground">
+                            {[u.city, u.state, u.pincode].filter(Boolean).join(', ') || '—'}
+                          </div>
+                        </div>
+                      ) : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {r.map((role) => (
@@ -166,7 +177,10 @@ const AdminUsers = () => {
                       {u.order_count}
                       {u.last_order_at && <div className="text-xs text-muted-foreground">last {new Date(u.last_order_at).toLocaleDateString()}</div>}
                     </TableCell>
-                    <TableCell className="text-xs">{new Date(u.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-xs">
+                      <div>{new Date(u.created_at).toLocaleDateString()}</div>
+                      {u.last_sign_in_at && <div className="text-muted-foreground">seen {new Date(u.last_sign_in_at).toLocaleDateString()}</div>}
+                    </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {u.is_blocked && <Badge variant="destructive" className="text-xs">Blocked</Badge>}
