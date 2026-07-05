@@ -41,8 +41,7 @@ const ProductDetail = () => {
           .from('products')
           .select(`
             *,
-            category:categories(*),
-            seller:sellers(*)
+            category:categories(*)
           `)
           .eq('id', id)
           .single();

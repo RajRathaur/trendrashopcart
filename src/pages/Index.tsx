@@ -39,8 +39,7 @@ const Index = () => {
           .from('products')
           .select(`
             *,
-            category:categories(*),
-            seller:sellers(*)
+            category:categories(*)
           `)
           .eq('is_active', true)
           .limit(24);
