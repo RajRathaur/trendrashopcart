@@ -4,9 +4,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Megaphone, Send } from 'lucide-react';
+
+const PRESETS: Record<string, { title: string; message: string }> = {
+  site_live: {
+    title: '🎉 Trendra is Live!',
+    message: 'Great news! Trendra is now live and ready for you. Explore trending products, exclusive deals and fast delivery. Shop now and enjoy special launch offers!',
+  },
+  new_product: {
+    title: '🆕 New Product Just Landed!',
+    message: 'Fresh arrivals are here on Trendra. Check out our latest product added today — limited stock available. Grab yours before it sells out!',
+  },
+  flash_sale: {
+    title: '⚡ Flash Sale — Up to 70% OFF',
+    message: 'Hurry! A massive flash sale is now live on Trendra. Discounts up to 70% on top categories. Sale ends soon — shop now!',
+  },
+  restock: {
+    title: '🔁 Back in Stock',
+    message: 'Your favourite items are back in stock on Trendra. Order now before they run out again!',
+  },
+  order_update: {
+    title: '📦 Delivery Update',
+    message: 'We have improved our delivery experience on Trendra. Faster shipping, better tracking, and reliable support — every order, every time.',
+  },
+  festival: {
+    title: '🪔 Festive Offers on Trendra',
+    message: 'Celebrate the season with amazing festive offers on Trendra. Extra discounts, free shipping and gift coupons — only for a limited time!',
+  },
+  custom: { title: '', message: '' },
+};
+
 
 const AdminBroadcast = () => {
   const [title, setTitle] = useState('');
@@ -60,6 +90,30 @@ const AdminBroadcast = () => {
         </div>
 
         <Card className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Quick Template</label>
+            <Select
+              onValueChange={(v) => {
+                const preset = PRESETS[v];
+                if (preset) {
+                  setTitle(preset.title);
+                  setMessage(preset.message);
+                }
+              }}
+            >
+              <SelectTrigger><SelectValue placeholder="Choose a ready-made message…" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="site_live">🎉 Website is Live</SelectItem>
+                <SelectItem value="new_product">🆕 New Product Added</SelectItem>
+                <SelectItem value="flash_sale">⚡ Flash Sale</SelectItem>
+                <SelectItem value="restock">🔁 Back in Stock</SelectItem>
+                <SelectItem value="order_update">📦 Delivery Update</SelectItem>
+                <SelectItem value="festival">🪔 Festive Offers</SelectItem>
+                <SelectItem value="custom">✍️ Custom (blank)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground mt-1">Pick a preset then edit as needed. Feel free to change anything before sending.</p>
+          </div>
           <div>
             <label className="block text-sm font-medium mb-1">Title</label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Big sale tomorrow!" maxLength={120} />
