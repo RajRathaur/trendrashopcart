@@ -267,17 +267,14 @@ const LoginPage = () => {
                 setLoading(true);
                 try {
                   sessionStorage.setItem('trendra_google_redirect', redirect);
-                  const result = await lovable.auth.signInWithOAuth('google', {
-                    redirect_uri: `${window.location.origin}/login?redirect=${encodeURIComponent(redirect)}`,
-                    extraParams: {
-                      prompt: 'select_account',
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                      redirectTo: `${window.location.origin}/login?redirect=${encodeURIComponent(redirect)}`,
+                      queryParams: { prompt: 'select_account' },
                     },
                   });
-
-                  if (result.error) throw result.error;
-                  if (result.redirected) return;
-
-                  navigate(redirect, { replace: true });
+                  if (error) throw error;
                 } catch (err: any) {
                   console.error('[GoogleOAuth] exception', err);
                   toast.error(err?.message || 'Google sign-in failed', { duration: 8000 });
