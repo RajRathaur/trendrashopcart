@@ -25,6 +25,11 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Help from "./pages/Help";
 import BecomeSeller from "./pages/BecomeSeller";
+import SellerDashboard from "./pages/seller/SellerDashboard";
+import SellerProducts from "./pages/seller/SellerProducts";
+import SellerOrders from "./pages/seller/SellerOrders";
+import SellerPayments from "./pages/seller/SellerPayments";
+import AdminSellers from "./pages/admin/AdminSellers";
 import NotFound from "./pages/NotFound";
 import ConfirmPayment from "./pages/ConfirmPayment";
 import OrderDetail from "./pages/OrderDetail";
@@ -82,12 +87,18 @@ const AppRoutes = () => (
       <Route path="/redeem" element={<Redeem />} />
       <Route path="/assistant" element={<Assistant />} />
       <Route path="/assistant/:threadId" element={<Assistant />} />
+      {/* Seller Routes */}
+      <Route path="/seller" element={<SellerDashboard />} />
+      <Route path="/seller/products" element={<SellerProducts />} />
+      <Route path="/seller/orders" element={<SellerOrders />} />
+      <Route path="/seller/payments" element={<SellerPayments />} />
       {/* Admin Routes */}
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/products" element={<AdminProducts />} />
       <Route path="/admin/orders" element={<AdminOrders />} />
       <Route path="/admin/payments" element={<AdminPayments />} />
       <Route path="/admin/banners" element={<AdminBanners />} />
+      <Route path="/admin/sellers" element={<AdminSellers />} />
       <Route path="/admin/categories" element={<AdminCategories />} />
       <Route path="/admin/redeems" element={<AdminRedeems />} />
       <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
