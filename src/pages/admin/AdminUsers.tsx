@@ -80,7 +80,6 @@ const AdminUsers = () => {
       if (!term) return true;
       return (
         (u.full_name || '').toLowerCase().includes(term) ||
-        (u.full_name || '').toLowerCase().includes(term) ||
         (u.email || '').toLowerCase().includes(term) ||
         (u.phone || '').toLowerCase().includes(term) ||
         (u.city || '').toLowerCase().includes(term)
