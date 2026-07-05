@@ -1044,7 +1044,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_order_owner: {
+        Args: { _order_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_order_seller: {
+        Args: { _order_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_seller: { Args: { _user_id: string }; Returns: boolean }
+      is_seller_order_item: {
+        Args: { _seller_id: string; _user_id: string }
+        Returns: boolean
+      }
       log_admin_action: {
         Args: {
           _action: string

@@ -24,26 +24,43 @@ interface OrderRow {
 }
 
 const SellerOrders = () => {
-  const { seller } = useAuth();
+  const { seller, isLoading: authLoading } = useAuth();
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!seller?.id) return;
+    if (authLoading) return;
+    if (!seller?.id) {
+      setOrders([]);
+      setLoading(false);
+      return;
+    }
     (async () => {
       setLoading(true);
       // Get all order_items for this seller
-      const { data: items } = await supabase
+      const { data: items, error: itemsError } = await supabase
         .from('order_items')
         .select('order_id, product_name, quantity, price, size, color')
         .eq('seller_id', seller.id);
+      if (itemsError) {
+        toast.error(`Orders load failed: ${itemsError.message}`);
+        setOrders([]);
+        setLoading(false);
+        return;
+      }
       if (!items || items.length === 0) { setOrders([]); setLoading(false); return; }
       const orderIds = [...new Set(items.map((i) => i.order_id))];
-      const { data: ords } = await supabase
+      const { data: ords, error: ordersError } = await supabase
         .from('orders')
         .select('id, order_number, status, created_at, payment_method, shipping_address, shipping_city, shipping_state, shipping_pincode, shipping_phone')
         .in('id', orderIds)
         .order('created_at', { ascending: false });
+      if (ordersError) {
+        toast.error(`Orders load failed: ${ordersError.message}`);
+        setOrders([]);
+        setLoading(false);
+        return;
+      }
       // profiles for customer name
       const rows: OrderRow[] = (ords || []).map((o: any) => {
         const oItems = items.filter((i) => i.order_id === o.id);
@@ -56,7 +73,7 @@ const SellerOrders = () => {
       setOrders(rows);
       setLoading(false);
     })();
-  }, [seller?.id]);
+  }, [authLoading, seller?.id]);
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase.from('orders').update({ status: status as any }).eq('id', id);

@@ -33,39 +33,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUserData = async (userId: string) => {
     try {
-      // Fetch profile
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-      
-      if (profileData) {
-        setProfile(profileData as Profile);
-      }
+      const [profileResult, rolesResult, sellerResult] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle(),
+        supabase
+          .from('user_roles')
+          .select('*')
+          .eq('user_id', userId),
+        supabase
+          .from('sellers')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle(),
+      ]);
 
-      // Fetch roles
-      const { data: rolesData } = await supabase
-        .from('user_roles')
-        .select('*')
-        .eq('user_id', userId);
-      
-      if (rolesData) {
-        setRoles(rolesData as UserRole[]);
-      }
+      if (profileResult.error) throw profileResult.error;
+      if (rolesResult.error) throw rolesResult.error;
+      if (sellerResult.error) throw sellerResult.error;
 
-      // Fetch seller data
-      const { data: sellerData } = await supabase
-        .from('sellers')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-      
-      if (sellerData) {
-        setSeller(sellerData as Seller);
-      }
+      setProfile((profileResult.data as Profile) || null);
+      setRoles((rolesResult.data as UserRole[]) || []);
+      setSeller((sellerResult.data as Seller) || null);
     } catch (error) {
       console.error('Error fetching user data:', error);
+      setProfile(null);
+      setRoles([]);
+      setSeller(null);
     }
   };
 
@@ -79,28 +75,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
+        setIsLoading(true);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
 
         if (currentSession?.user) {
           // Use setTimeout to avoid potential deadlock
-          setTimeout(() => fetchUserData(currentSession.user.id), 0);
+          setTimeout(async () => {
+            await fetchUserData(currentSession.user.id);
+            setIsLoading(false);
+          }, 0);
         } else {
           setProfile(null);
           setRoles([]);
           setSeller(null);
+          setIsLoading(false);
         }
-        setIsLoading(false);
       }
     );
 
     // Then get initial session
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+    supabase.auth.getSession().then(async ({ data: { session: initialSession } }) => {
       setSession(initialSession);
       setUser(initialSession?.user ?? null);
       
       if (initialSession?.user) {
-        fetchUserData(initialSession.user.id);
+        await fetchUserData(initialSession.user.id);
+      } else {
+        setProfile(null);
+        setRoles([]);
+        setSeller(null);
       }
       setIsLoading(false);
     });
