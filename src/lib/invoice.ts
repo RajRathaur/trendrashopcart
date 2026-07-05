@@ -30,8 +30,8 @@ function drawWatermark(doc: jsPDF) {
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   doc.saveGraphicsState();
-  // @ts-expect-error - GState typing
-  doc.setGState(new (doc as any).GState({ opacity: 0.08 }));
+  // @ts-ignore - GState typing
+  (doc as any).setGState(new (doc as any).GState({ opacity: 0.08 }));
   doc.setTextColor(120, 120, 120);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
