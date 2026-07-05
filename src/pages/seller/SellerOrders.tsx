@@ -82,8 +82,8 @@ const SellerOrders = () => {
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
   };
 
-  const downloadInvoice = (o: OrderRow) => {
-    generateTaxInvoice({
+  const downloadInvoice = async (o: OrderRow) => {
+    await generateTaxInvoice({
       order_number: o.order_number,
       order_date: o.created_at,
       customer_name: 'Customer',
