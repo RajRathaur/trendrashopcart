@@ -115,7 +115,7 @@ const AdminUsers = () => {
       </div>
 
       <div className="flex gap-2 mb-4">
-        <Input placeholder="Search by name, phone, city..." value={q} onChange={(e) => setQ(e.target.value)} className="max-w-sm" />
+        <Input placeholder="Search by name, email, phone, city..." value={q} onChange={(e) => setQ(e.target.value)} className="max-w-sm" />
         {filter !== 'all' && (
           <Button variant="outline" size="sm" onClick={() => setFilter('all')}>Clear filter</Button>
         )}
