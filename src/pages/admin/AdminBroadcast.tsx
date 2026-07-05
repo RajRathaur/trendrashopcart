@@ -91,6 +91,30 @@ const AdminBroadcast = () => {
 
         <Card className="p-6 space-y-4">
           <div>
+            <label className="block text-sm font-medium mb-1">Quick Template</label>
+            <Select
+              onValueChange={(v) => {
+                const preset = PRESETS[v];
+                if (preset) {
+                  setTitle(preset.title);
+                  setMessage(preset.message);
+                }
+              }}
+            >
+              <SelectTrigger><SelectValue placeholder="Choose a ready-made message…" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="site_live">🎉 Website is Live</SelectItem>
+                <SelectItem value="new_product">🆕 New Product Added</SelectItem>
+                <SelectItem value="flash_sale">⚡ Flash Sale</SelectItem>
+                <SelectItem value="restock">🔁 Back in Stock</SelectItem>
+                <SelectItem value="order_update">📦 Delivery Update</SelectItem>
+                <SelectItem value="festival">🪔 Festive Offers</SelectItem>
+                <SelectItem value="custom">✍️ Custom (blank)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground mt-1">Pick a preset then edit as needed. Feel free to change anything before sending.</p>
+          </div>
+          <div>
             <label className="block text-sm font-medium mb-1">Title</label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Big sale tomorrow!" maxLength={120} />
           </div>
