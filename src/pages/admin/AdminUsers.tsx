@@ -11,15 +11,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Loader2, Ban, Undo2, Users as UsersIcon, UserPlus, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface ProfileRow {
-  id: string;
+interface UserRow {
   user_id: string;
+  email: string | null;
   full_name: string | null;
   phone: string | null;
   city: string | null;
   state: string | null;
   is_blocked: boolean;
   created_at: string;
+  roles: string[];
+  order_count: number;
+  last_order_at: string | null;
 }
 
 type Filter = 'all' | 'new' | 'active' | 'inactive' | 'blocked';
@@ -29,9 +32,7 @@ const DAY = 24 * 60 * 60 * 1000;
 const AdminUsers = () => {
   const { isAdmin, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [profiles, setProfiles] = useState<ProfileRow[]>([]);
-  const [roles, setRoles] = useState<Record<string, string[]>>({});
-  const [orderStats, setOrderStats] = useState<Record<string, { count: number; last: string | null }>>({});
+  const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
@@ -42,31 +43,13 @@ const AdminUsers = () => {
 
   const load = async () => {
     setLoading(true);
-    const [{ data: profs }, { data: rolesData }, { data: orders }] = await Promise.all([
-      supabase
-        .from('profiles')
-        .select('id,user_id,full_name,phone,city,state,is_blocked,created_at')
-        .order('created_at', { ascending: false }),
-      supabase.from('user_roles').select('user_id,role'),
-      supabase.from('orders').select('user_id,created_at'),
-    ]);
-
-    const rMap: Record<string, string[]> = {};
-    (rolesData || []).forEach((r: any) => {
-      rMap[r.user_id] = [...(rMap[r.user_id] || []), r.role];
-    });
-
-    const oMap: Record<string, { count: number; last: string | null }> = {};
-    (orders || []).forEach((o: any) => {
-      const cur = oMap[o.user_id] || { count: 0, last: null };
-      cur.count += 1;
-      if (!cur.last || new Date(o.created_at) > new Date(cur.last)) cur.last = o.created_at;
-      oMap[o.user_id] = cur;
-    });
-
-    setProfiles((profs as ProfileRow[]) || []);
-    setRoles(rMap);
-    setOrderStats(oMap);
+    const { data, error } = await supabase.rpc('get_admin_users_overview');
+    if (error) {
+      toast.error(error.message);
+      setUsers([]);
+    } else {
+      setUsers((data as UserRow[]) || []);
+    }
     setLoading(false);
   };
 
@@ -77,15 +60,15 @@ const AdminUsers = () => {
   const now = Date.now();
 
   const enriched = useMemo(() => {
-    return profiles.map((p) => {
+    return users.map((p) => {
       const created = new Date(p.created_at).getTime();
       const isNew = now - created < 7 * DAY;
-      const stat = orderStats[p.user_id];
-      const lastOrder = stat?.last ? new Date(stat.last).getTime() : 0;
+      const lastOrder = p.last_order_at ? new Date(p.last_order_at).getTime() : 0;
       const isActive = lastOrder > 0 && now - lastOrder < 30 * DAY;
-      return { ...p, isNew, isActive, orderCount: stat?.count || 0, lastOrder: stat?.last || null };
+      return { ...p, isNew, isActive };
     });
-  }, [profiles, orderStats, now]);
+  }, [users, now]);
+
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
