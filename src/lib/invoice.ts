@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf';
+import QRCode from 'qrcode';
 
 export interface InvoiceItem {
   product_name: string;
@@ -64,7 +65,11 @@ function drawBarcode(doc: jsPDF, text: string, x: number, y: number, w: number, 
   doc.text(text, x + w / 2, y + h + 3.5, { align: 'center' });
 }
 
-function drawShippingLabel(doc: jsPDF, data: InvoiceData) {
+async function generateQrDataUrl(text: string): Promise<string> {
+  return QRCode.toDataURL(text, { margin: 1, width: 256, errorCorrectionLevel: 'M' });
+}
+
+function drawShippingLabel(doc: jsPDF, data: InvoiceData, qrDataUrl: string) {
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   drawWatermark(doc);
@@ -139,14 +144,24 @@ function drawShippingLabel(doc: jsPDF, data: InvoiceData) {
   doc.line(marginX, y, pageW - marginX, y);
   y += 6;
 
-  // Order info + barcode
+  // Order info + barcode + tracking QR
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.text(`Order #: ${data.order_number}`, marginX + 3, y);
   doc.text(`Date: ${new Date(data.order_date).toLocaleDateString('en-IN')}`, pageW - marginX - 3, y, { align: 'right' });
   y += 3;
-  drawBarcode(doc, data.order_number, marginX + 3, y, boxW - 6, 12);
-  y += 20;
+  const qrSize = 28;
+  const barcodeW = boxW - 6 - qrSize - 6;
+  drawBarcode(doc, data.order_number, marginX + 3, y, barcodeW, 12);
+  // QR (right)
+  const qrX = pageW - marginX - qrSize - 3;
+  doc.addImage(qrDataUrl, 'PNG', qrX, y - 2, qrSize, qrSize);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(80, 80, 80);
+  doc.text('Scan to track', qrX + qrSize / 2, y + qrSize + 1, { align: 'center' });
+  doc.setTextColor(0, 0, 0);
+  y += qrSize + 2;
 
   // Divider
   doc.line(marginX, y, pageW - marginX, y);
@@ -197,12 +212,15 @@ function drawShippingLabel(doc: jsPDF, data: InvoiceData) {
   doc.setTextColor(0, 0, 0);
 }
 
-export function generateTaxInvoice(data: InvoiceData) {
+export async function generateTaxInvoice(data: InvoiceData) {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
 
+  const trackUrl = `https://trendra.store/orders?number=${encodeURIComponent(data.order_number)}`;
+  const qrDataUrl = await generateQrDataUrl(trackUrl);
+
   // Page 1: Shipping label
-  drawShippingLabel(doc, data);
+  drawShippingLabel(doc, data, qrDataUrl);
 
   // Page 2: Tax Invoice
   doc.addPage();
@@ -303,6 +321,12 @@ export function generateTaxInvoice(data: InvoiceData) {
   doc.text(`Payment Method: ${data.payment_method}`, 15, y);
 
   const pageH = doc.internal.pageSize.getHeight();
+  // Tracking QR on invoice
+  const qrSize2 = 24;
+  doc.addImage(qrDataUrl, 'PNG', pageW - 15 - qrSize2, pageH - 40, qrSize2, qrSize2);
+  doc.setFontSize(7);
+  doc.setTextColor(80, 80, 80);
+  doc.text('Scan to track order', pageW - 15 - qrSize2 / 2, pageH - 14, { align: 'center' });
   doc.setFontSize(8);
   doc.setTextColor(120, 120, 120);
   doc.text('This is a computer-generated invoice. For support: support@trendra.store', pageW / 2, pageH - 10, { align: 'center' });

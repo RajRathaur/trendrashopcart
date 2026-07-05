@@ -244,7 +244,7 @@ const AdminOrders = () => {
         return;
       }
 
-      generateTaxInvoice({
+      await generateTaxInvoice({
         order_number: order.order_number,
         order_date: order.created_at,
         customer_name: 'Customer',
