@@ -212,12 +212,15 @@ function drawShippingLabel(doc: jsPDF, data: InvoiceData, qrDataUrl: string) {
   doc.setTextColor(0, 0, 0);
 }
 
-export function generateTaxInvoice(data: InvoiceData) {
+export async function generateTaxInvoice(data: InvoiceData) {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
 
+  const trackUrl = `https://trendra.store/orders?number=${encodeURIComponent(data.order_number)}`;
+  const qrDataUrl = await generateQrDataUrl(trackUrl);
+
   // Page 1: Shipping label
-  drawShippingLabel(doc, data);
+  drawShippingLabel(doc, data, qrDataUrl);
 
   // Page 2: Tax Invoice
   doc.addPage();
