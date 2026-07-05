@@ -156,6 +156,7 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
       productId={product.id}
       productName={product.name}
       amount={product.price}
+      quantity={1}
     />
     </>
   );
