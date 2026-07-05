@@ -16,9 +16,14 @@ const ConfirmPayment = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const productName = searchParams.get('product') || searchParams.get('order') || '';
+  const orderId = searchParams.get('orderId') || '';
+  const orderNumber = searchParams.get('order') || '';
+  const productId = searchParams.get('productId') || '';
+  const productName = searchParams.get('product') || orderNumber || '';
   const productPrice = searchParams.get('amount') || '';
-  const productId = searchParams.get('productId') || searchParams.get('orderId') || '';
+  const quantity = Math.max(1, Number(searchParams.get('quantity')) || 1);
+  const selectedSize = searchParams.get('size');
+  const selectedColor = searchParams.get('color');
 
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
@@ -73,17 +78,72 @@ const ConfirmPayment = () => {
 
       if (uploadError) throw uploadError;
 
+      let linkedProductId: string | null = productId || null;
+      let adminNotes: string | null = orderId ? `Payment confirmation for order: ${orderNumber || productName}` : null;
+      let confirmedProductName = productName || 'Unknown Product';
+      const paymentAmount = parseFloat(productPrice) || 0;
+
+      if (!orderId && productId) {
+        const { data: product, error: productError } = await supabase
+          .from('products')
+          .select('id, name, price, images, seller_id')
+          .eq('id', productId)
+          .single();
+
+        if (productError) throw productError;
+
+        confirmedProductName = product?.name || confirmedProductName;
+        const totalAmount = paymentAmount || Number(product?.price || 0) * quantity;
+
+        const { data: order, error: orderError } = await supabase
+          .from('orders')
+          .insert({
+            user_id: user.id,
+            order_number: `ORD${Date.now()}`,
+            total_amount: totalAmount,
+            shipping_address: address.trim(),
+            shipping_city: 'Not provided',
+            shipping_state: 'Not provided',
+            shipping_pincode: '000000',
+            shipping_phone: phone.trim(),
+            payment_method: 'online',
+            notes: `Online Buy Now customer: ${customerName.trim()}`,
+          })
+          .select()
+          .single();
+
+        if (orderError) throw orderError;
+
+        const { error: itemError } = await supabase
+          .from('order_items')
+          .insert({
+            order_id: order.id,
+            product_id: productId,
+            seller_id: product?.seller_id || null,
+            product_name: confirmedProductName,
+            product_image: product?.images?.[0] || null,
+            quantity,
+            price: quantity > 0 ? totalAmount / quantity : totalAmount,
+            size: selectedSize,
+            color: selectedColor,
+          });
+
+        if (itemError) throw itemError;
+        adminNotes = `Payment confirmation for order: ${order.order_number}`;
+      }
+
       const { error: insertError } = await supabase
         .from('payment_confirmations' as any)
         .insert({
           customer_name: customerName.trim(),
           phone_number: phone.trim(),
           delivery_address: address.trim(),
-          product_name: productName || 'Unknown Product',
-          payment_amount: parseFloat(productPrice) || 0,
+          product_name: confirmedProductName,
+          payment_amount: paymentAmount,
           screenshot_url: filePath,
-          product_id: productId || null,
+          product_id: linkedProductId,
           user_id: user.id,
+          admin_notes: adminNotes,
         } as any);
 
       if (insertError) throw insertError;
@@ -94,7 +154,7 @@ const ConfirmPayment = () => {
           phoneNumber: phone.trim(),
           deliveryAddress: address.trim(),
           productName: productName || 'Unknown Product',
-          paymentAmount: parseFloat(productPrice) || 0,
+              paymentAmount,
           screenshotPath: filePath,
         },
       }).catch((err) => console.error('Admin notification error:', err));

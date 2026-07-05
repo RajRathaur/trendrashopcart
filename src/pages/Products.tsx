@@ -43,8 +43,7 @@ const ProductsPage = () => {
           .from('products')
           .select(`
             *,
-            category:categories(*),
-            seller:sellers(*)
+            category:categories(*)
           `)
           .eq('is_active', true)
           .gte('price', priceRange[0])
