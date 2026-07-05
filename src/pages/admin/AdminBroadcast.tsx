@@ -4,9 +4,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Megaphone, Send } from 'lucide-react';
+
+const PRESETS: Record<string, { title: string; message: string }> = {
+  site_live: {
+    title: '🎉 Trendra is Live!',
+    message: 'Great news! Trendra is now live and ready for you. Explore trending products, exclusive deals and fast delivery. Shop now and enjoy special launch offers!',
+  },
+  new_product: {
+    title: '🆕 New Product Just Landed!',
+    message: 'Fresh arrivals are here on Trendra. Check out our latest product added today — limited stock available. Grab yours before it sells out!',
+  },
+  flash_sale: {
+    title: '⚡ Flash Sale — Up to 70% OFF',
+    message: 'Hurry! A massive flash sale is now live on Trendra. Discounts up to 70% on top categories. Sale ends soon — shop now!',
+  },
+  restock: {
+    title: '🔁 Back in Stock',
+    message: 'Your favourite items are back in stock on Trendra. Order now before they run out again!',
+  },
+  order_update: {
+    title: '📦 Delivery Update',
+    message: 'We have improved our delivery experience on Trendra. Faster shipping, better tracking, and reliable support — every order, every time.',
+  },
+  festival: {
+    title: '🪔 Festive Offers on Trendra',
+    message: 'Celebrate the season with amazing festive offers on Trendra. Extra discounts, free shipping and gift coupons — only for a limited time!',
+  },
+  custom: { title: '', message: '' },
+};
+
 
 const AdminBroadcast = () => {
   const [title, setTitle] = useState('');
