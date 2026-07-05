@@ -7,8 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { toast } from 'sonner';
-import { lovable } from '@/integrations/lovable';
 import { supabase } from '@/integrations/supabase/client';
+
+const getSafeRedirectPath = (value: string | null) => {
+  if (!value || !value.startsWith('/') || value.startsWith('//')) return '/';
+  return value;
+};
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -23,15 +27,19 @@ const LoginPage = () => {
   const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/';
+  const redirect = getSafeRedirectPath(searchParams.get('redirect'));
 
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user) {
-      if (isAdmin && redirect === '/') {
+      const googleRedirect = getSafeRedirectPath(sessionStorage.getItem('trendra_google_redirect'));
+      sessionStorage.removeItem('trendra_google_redirect');
+      const destination = googleRedirect !== '/' ? googleRedirect : redirect;
+
+      if (isAdmin && destination === '/') {
         navigate('/admin', { replace: true });
       } else {
-        navigate(redirect, { replace: true });
+        navigate(destination, { replace: true });
       }
     }
   }, [user, isAdmin, authLoading, navigate, redirect]);
@@ -258,10 +266,14 @@ const LoginPage = () => {
               onClick={async () => {
                 setLoading(true);
                 try {
+                  sessionStorage.setItem('trendra_google_redirect', redirect);
                   const { error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                      redirectTo: `${window.location.origin}${redirect}`,
+                      redirectTo: window.location.origin,
+                      queryParams: {
+                        prompt: 'select_account',
+                      },
                     },
                   });
                   if (error) throw error;
