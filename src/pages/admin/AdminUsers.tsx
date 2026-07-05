@@ -16,10 +16,13 @@ interface UserRow {
   email: string | null;
   full_name: string | null;
   phone: string | null;
+  address: string | null;
   city: string | null;
   state: string | null;
+  pincode: string | null;
   is_blocked: boolean;
   created_at: string;
+  last_sign_in_at: string | null;
   roles: string[];
   order_count: number;
   last_order_at: string | null;
