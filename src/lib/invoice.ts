@@ -321,6 +321,12 @@ export async function generateTaxInvoice(data: InvoiceData) {
   doc.text(`Payment Method: ${data.payment_method}`, 15, y);
 
   const pageH = doc.internal.pageSize.getHeight();
+  // Tracking QR on invoice
+  const qrSize2 = 24;
+  doc.addImage(qrDataUrl, 'PNG', pageW - 15 - qrSize2, pageH - 40, qrSize2, qrSize2);
+  doc.setFontSize(7);
+  doc.setTextColor(80, 80, 80);
+  doc.text('Scan to track order', pageW - 15 - qrSize2 / 2, pageH - 14, { align: 'center' });
   doc.setFontSize(8);
   doc.setTextColor(120, 120, 120);
   doc.text('This is a computer-generated invoice. For support: support@trendra.store', pageW / 2, pageH - 10, { align: 'center' });
