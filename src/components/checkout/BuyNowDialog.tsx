@@ -9,10 +9,27 @@ interface BuyNowDialogProps {
   productId: string;
   productName: string;
   amount: number;
+  quantity: number;
+  size?: string | null;
+  color?: string | null;
 }
 
-export const BuyNowDialog = ({ open, onOpenChange, productId, productName, amount }: BuyNowDialogProps) => {
+export const BuyNowDialog = ({ open, onOpenChange, productId, productName, amount, quantity, size, color }: BuyNowDialogProps) => {
   const navigate = useNavigate();
+
+  const buildCheckoutUrl = (path: string) => {
+    const params = new URLSearchParams({
+      product: productName,
+      amount: String(amount),
+      productId,
+      quantity: String(quantity),
+    });
+
+    if (size) params.set('size', size);
+    if (color) params.set('color', color);
+
+    return `${path}?${params.toString()}`;
+  };
 
   const handleOnline = () => {
     onOpenChange(false);
@@ -20,17 +37,13 @@ export const BuyNowDialog = ({ open, onOpenChange, productId, productName, amoun
     toast.info('Redirecting to UPI payment...');
     window.location.href = upiLink;
     setTimeout(() => {
-      navigate(
-        `/confirm-payment?product=${encodeURIComponent(productName)}&amount=${amount}&productId=${productId}`
-      );
+      navigate(buildCheckoutUrl('/confirm-payment'));
     }, 2500);
   };
 
   const handleCOD = () => {
     onOpenChange(false);
-    navigate(
-      `/cod-checkout?product=${encodeURIComponent(productName)}&amount=${amount}&productId=${productId}`
-    );
+    navigate(buildCheckoutUrl('/cod-checkout'));
   };
 
   return (

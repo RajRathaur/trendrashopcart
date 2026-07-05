@@ -19,6 +19,9 @@ const CodCheckout = () => {
   const productName = searchParams.get('product') || '';
   const amount = searchParams.get('amount') || '0';
   const productId = searchParams.get('productId') || '';
+  const quantity = Math.max(1, Number(searchParams.get('quantity')) || 1);
+  const selectedSize = searchParams.get('size');
+  const selectedColor = searchParams.get('color');
 
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
@@ -44,19 +47,75 @@ const CodCheckout = () => {
 
     setSubmitting(true);
     try {
+      if (!user) {
+        toast.error('Please log in to place order');
+        navigate(`/login?redirect=${encodeURIComponent(`/cod-checkout?${searchParams.toString()}`)}`);
+        return;
+      }
+
+      let product: any = null;
+      if (productId) {
+        const { data, error: productError } = await supabase
+          .from('products')
+          .select('id, name, price, images, seller_id')
+          .eq('id', productId)
+          .single();
+        if (productError) throw productError;
+        product = data;
+      }
+
+      const totalAmount = parseFloat(amount) || Number(product?.price || 0) * quantity;
+      const addressParts = address.trim().split(',').map((part) => part.trim()).filter(Boolean);
+      const shippingCity = addressParts.length >= 2 ? addressParts[addressParts.length - 1] : 'Not provided';
+
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          order_number: `ORD${Date.now()}`,
+          total_amount: totalAmount,
+          shipping_address: address.trim(),
+          shipping_city: shippingCity,
+          shipping_state: 'Not provided',
+          shipping_pincode: pincode,
+          shipping_phone: phone.trim(),
+          payment_method: 'cod',
+          notes: `COD Buy Now customer: ${customerName.trim()}`,
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      const { error: itemError } = await supabase
+        .from('order_items')
+        .insert({
+          order_id: order.id,
+          product_id: productId || null,
+          seller_id: product?.seller_id || null,
+          product_name: product?.name || productName || 'Unknown Product',
+          product_image: product?.images?.[0] || null,
+          quantity,
+          price: quantity > 0 ? totalAmount / quantity : totalAmount,
+          size: selectedSize,
+          color: selectedColor,
+        });
+
+      if (itemError) throw itemError;
+
       const { error } = await supabase
         .from('payment_confirmations' as any)
         .insert({
           customer_name: customerName.trim(),
           phone_number: phone.trim(),
           delivery_address: `${address.trim()}, PIN: ${pincode}`,
-          product_name: `[COD] ${productName || 'Unknown Product'}`,
-          payment_amount: parseFloat(amount) || 0,
+          product_name: `[COD] ${product?.name || productName || 'Unknown Product'}`,
+          payment_amount: totalAmount,
           screenshot_url: 'COD',
           status: 'cod_pending',
-          admin_notes: 'Cash on Delivery order',
+          admin_notes: `Cash on Delivery order: ${order.order_number}`,
           product_id: productId || null,
-          user_id: user?.id || null,
+          user_id: user.id,
         } as any);
 
       if (error) throw error;

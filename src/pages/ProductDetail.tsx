@@ -502,6 +502,9 @@ const ProductDetail = () => {
         productId={product.id}
         productName={product.name}
         amount={product.price * quantity}
+        quantity={quantity}
+        size={selectedSize}
+        color={selectedColor}
       />
     </Layout>
   );
