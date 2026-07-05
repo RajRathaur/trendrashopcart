@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf';
+import QRCode from 'qrcode';
 
 export interface InvoiceItem {
   product_name: string;
