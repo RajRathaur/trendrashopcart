@@ -257,44 +257,18 @@ const LoginPage = () => {
               disabled={loading}
               onClick={async () => {
                 setLoading(true);
-                console.log('[GoogleOAuth] starting sign-in', {
-                  origin: window.location.origin,
-                  inIframe: window.self !== window.top,
-                  ua: navigator.userAgent,
-                });
                 try {
-                  const result = await lovable.auth.signInWithOAuth('google', {
-                    redirect_uri: window.location.origin,
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                      redirectTo: `${window.location.origin}${redirect}`,
+                    },
                   });
-                  console.log('[GoogleOAuth] result', result);
-
-                  if (result?.error) {
-                    const err: any = result.error;
-                    const name = err?.name || err?.code || 'OAuthError';
-                    const msg = err?.message || err?.error_description || err?.error || JSON.stringify(err);
-                    const status = err?.status ? ` (status ${err.status})` : '';
-                    toast.error(`${name}${status}: ${msg}`, { duration: 8000 });
-                    setLoading(false);
-                    return;
-                  }
-
-                  if (result?.redirected) {
-                    toast.info('Redirecting to Google…');
-                    return;
-                  }
-
-                  // Session set — useEffect will navigate away
-                  toast.success('Signed in with Google');
+                  if (error) throw error;
+                  // Browser will redirect to Google directly
                 } catch (err: any) {
                   console.error('[GoogleOAuth] exception', err);
-                  const name = err?.name || 'Error';
-                  const msg = err?.message || String(err);
-                  let hint = '';
-                  if (/popup/i.test(msg)) hint = ' — popup blocked? allow popups for this site.';
-                  else if (/iframe|frame|sandbox|blocked/i.test(msg)) hint = ' — preview iframe blocked the popup; try the published URL.';
-                  else if (/network|fetch/i.test(msg)) hint = ' — network/fetch failed; check connectivity or ad-blockers.';
-                  else if (/closed/i.test(msg)) hint = ' — sign-in window was closed before completing.';
-                  toast.error(`${name}: ${msg}${hint}`, { duration: 10000 });
+                  toast.error(err?.message || 'Google sign-in failed', { duration: 8000 });
                   setLoading(false);
                 }
               }}
