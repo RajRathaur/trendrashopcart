@@ -1017,14 +1017,17 @@ export type Database = {
       get_admin_users_overview: {
         Args: never
         Returns: {
+          address: string
           city: string
           created_at: string
           email: string
           full_name: string
           is_blocked: boolean
           last_order_at: string
+          last_sign_in_at: string
           order_count: number
           phone: string
+          pincode: string
           roles: string[]
           state: string
           user_id: string
