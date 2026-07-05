@@ -1014,6 +1014,22 @@ export type Database = {
         Args: { _message: string; _title: string; _type?: string }
         Returns: number
       }
+      get_admin_users_overview: {
+        Args: never
+        Returns: {
+          city: string
+          created_at: string
+          email: string
+          full_name: string
+          is_blocked: boolean
+          last_order_at: string
+          order_count: number
+          phone: string
+          roles: string[]
+          state: string
+          user_id: string
+        }[]
+      }
       get_product_reviews: {
         Args: { _limit?: number; _product_id: string }
         Returns: {
