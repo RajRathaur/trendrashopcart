@@ -144,14 +144,24 @@ function drawShippingLabel(doc: jsPDF, data: InvoiceData, qrDataUrl: string) {
   doc.line(marginX, y, pageW - marginX, y);
   y += 6;
 
-  // Order info + barcode
+  // Order info + barcode + tracking QR
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.text(`Order #: ${data.order_number}`, marginX + 3, y);
   doc.text(`Date: ${new Date(data.order_date).toLocaleDateString('en-IN')}`, pageW - marginX - 3, y, { align: 'right' });
   y += 3;
-  drawBarcode(doc, data.order_number, marginX + 3, y, boxW - 6, 12);
-  y += 20;
+  const qrSize = 28;
+  const barcodeW = boxW - 6 - qrSize - 6;
+  drawBarcode(doc, data.order_number, marginX + 3, y, barcodeW, 12);
+  // QR (right)
+  const qrX = pageW - marginX - qrSize - 3;
+  doc.addImage(qrDataUrl, 'PNG', qrX, y - 2, qrSize, qrSize);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(80, 80, 80);
+  doc.text('Scan to track', qrX + qrSize / 2, y + qrSize + 1, { align: 'center' });
+  doc.setTextColor(0, 0, 0);
+  y += qrSize + 2;
 
   // Divider
   doc.line(marginX, y, pageW - marginX, y);
