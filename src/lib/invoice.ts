@@ -65,7 +65,11 @@ function drawBarcode(doc: jsPDF, text: string, x: number, y: number, w: number, 
   doc.text(text, x + w / 2, y + h + 3.5, { align: 'center' });
 }
 
-function drawShippingLabel(doc: jsPDF, data: InvoiceData) {
+async function generateQrDataUrl(text: string): Promise<string> {
+  return QRCode.toDataURL(text, { margin: 1, width: 256, errorCorrectionLevel: 'M' });
+}
+
+function drawShippingLabel(doc: jsPDF, data: InvoiceData, qrDataUrl: string) {
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   drawWatermark(doc);
