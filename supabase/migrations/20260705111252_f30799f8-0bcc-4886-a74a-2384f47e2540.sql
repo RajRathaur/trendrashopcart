@@ -1,0 +1,2 @@
+ALTER TABLE public.payment_confirmations DROP CONSTRAINT payment_confirmations_product_id_fkey;
+ALTER TABLE public.payment_confirmations ADD CONSTRAINT payment_confirmations_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE SET NULL;
