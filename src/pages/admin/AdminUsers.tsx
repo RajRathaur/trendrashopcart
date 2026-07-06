@@ -156,7 +156,11 @@ const AdminUsers = () => {
               ) : filtered.map((u) => {
                 const r = u.roles && u.roles.length ? u.roles : ['user'];
                 return (
-                  <TableRow key={u.user_id}>
+                  <TableRow
+                    key={u.user_id}
+                    className="cursor-pointer"
+                    onClick={() => { setSelectedUser(u); setSheetOpen(true); }}
+                  >
                     <TableCell className="font-medium">{u.full_name || 'Unnamed'}</TableCell>
                     <TableCell className="text-sm">
                       {u.email ? <a href={`mailto:${u.email}`} className="hover:underline">{u.email}</a> : '—'}
