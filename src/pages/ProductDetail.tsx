@@ -29,6 +29,8 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState<'available' | 'unavailable' | null>(null);
+  const [pincodeInfo, setPincodeInfo] = useState<{ city: string; state: string; delivery_days: number; is_cod_available: boolean } | null>(null);
+  const [checkingPincode, setCheckingPincode] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
 
   useEffect(() => {
@@ -97,16 +99,54 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
-  const checkPincode = () => {
-    if (pincode.length !== 6) {
+  const checkPincode = async (code?: string) => {
+    const pin = (code ?? pincode).trim();
+    if (pin.length !== 6) {
       toast.error('Please enter a valid 6-digit pincode');
       return;
     }
-
-    // All pincodes are allowed - delivery available everywhere
-    setPincodeStatus('available');
-    toast.success('Delivery available in 3-5 days');
+    setCheckingPincode(true);
+    const { data, error } = await supabase
+      .from('delivery_pincodes')
+      .select('city,state,delivery_days,is_cod_available,is_active')
+      .eq('pincode', pin)
+      .maybeSingle();
+    setCheckingPincode(false);
+    if (error) {
+      toast.error('Could not check delivery. Try again.');
+      return;
+    }
+    if (data && data.is_active) {
+      setPincodeStatus('available');
+      setPincodeInfo({
+        city: data.city,
+        state: data.state,
+        delivery_days: data.delivery_days,
+        is_cod_available: data.is_cod_available,
+      });
+    } else {
+      setPincodeStatus('unavailable');
+      setPincodeInfo(null);
+    }
   };
+
+  // Realtime: re-check active pincode whenever admin updates delivery_pincodes
+  useEffect(() => {
+    if (pincode.length !== 6 || !pincodeStatus) return;
+    const channel = supabase
+      .channel(`delivery-pincode-${pincode}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'delivery_pincodes', filter: `pincode=eq.${pincode}` },
+        () => checkPincode(pincode),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pincode, pincodeStatus]);
+
 
   const handleAddToCart = () => {
     if (!product) return;
