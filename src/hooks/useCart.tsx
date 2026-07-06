@@ -66,30 +66,40 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      // Check if item already exists
-      const { data: existing } = await supabase
+      const normSize = size && size.length > 0 ? size : null;
+      const normColor = color && color.length > 0 ? color : null;
+
+      // Check if item already exists (NULL-safe match on size/color)
+      let query = supabase
         .from('cart_items')
         .select('*')
         .eq('user_id', user.id)
-        .eq('product_id', productId)
-        .eq('size', size || '')
-        .eq('color', color || '')
-        .single();
+        .eq('product_id', productId);
+      query = normSize === null ? query.is('size', null) : query.eq('size', normSize);
+      query = normColor === null ? query.is('color', null) : query.eq('color', normColor);
+
+      const { data: existingRows } = await query;
+      const existing = existingRows && existingRows.length > 0 ? existingRows[0] : null;
 
       if (existing) {
-        // Update quantity
+        // Merge into first row and delete any duplicate rows created previously
+        const totalQty = existingRows!.reduce((s, r: any) => s + (r.quantity || 0), 0) + quantity;
         await supabase
           .from('cart_items')
-          .update({ quantity: existing.quantity + quantity })
+          .update({ quantity: totalQty })
           .eq('id', existing.id);
+        const dupIds = existingRows!.slice(1).map((r: any) => r.id);
+        if (dupIds.length > 0) {
+          await supabase.from('cart_items').delete().in('id', dupIds);
+        }
       } else {
         // Insert new item
         await supabase.from('cart_items').insert({
           user_id: user.id,
           product_id: productId,
           quantity,
-          size: size || null,
-          color: color || null,
+          size: normSize,
+          color: normColor,
         });
       }
 
