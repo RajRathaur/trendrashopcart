@@ -4,7 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2, Phone, KeyRound } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,11 +25,62 @@ const LoginPage = () => {
     email: '',
     password: '',
   });
+  const [authMode, setAuthMode] = useState<'email' | 'phone'>('email');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [phoneLoading, setPhoneLoading] = useState(false);
 
   const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = getSafeRedirectPath(searchParams.get('redirect'));
+
+  const formatPhone = (raw: string) => {
+    const digits = raw.replace(/\D/g, '');
+    if (digits.startsWith('91') && digits.length >= 12) return '+' + digits;
+    if (digits.length === 10) return '+91' + digits;
+    return raw.startsWith('+') ? raw : '+' + digits;
+  };
+
+  const handleSendOtp = async () => {
+    if (!phone.trim() || phone.replace(/\D/g, '').length < 10) {
+      toast.error('Please enter a valid phone number');
+      return;
+    }
+    setPhoneLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ phone: formatPhone(phone) });
+      if (error) throw error;
+      setOtpSent(true);
+      toast.success('OTP sent to your phone');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to send OTP');
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length < 4) {
+      toast.error('Enter the OTP');
+      return;
+    }
+    setPhoneLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone: formatPhone(phone),
+        token: otp,
+        type: 'sms',
+      });
+      if (error) throw error;
+      toast.success('Logged in!');
+    } catch (err: any) {
+      toast.error(err?.message || 'Invalid OTP');
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
 
   // Redirect if already logged in
   useEffect(() => {
@@ -165,89 +217,166 @@ const LoginPage = () => {
                 : 'Sign up to start shopping'}
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
-                <div>
-                  <Label htmlFor="fullName">Full Name</Label>
-                  <div className="relative mt-1">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="fullName"
-                      type="text"
-                      placeholder="Enter your full name"
-                      className="pl-10"
-                      value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      required={!isLogin}
-                    />
+            <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'phone')} className="mb-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" /> Email</TabsTrigger>
+                <TabsTrigger value="phone"><Phone className="h-4 w-4 mr-1" /> Phone</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="email">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {!isLogin && (
+                    <div>
+                      <Label htmlFor="fullName">Full Name</Label>
+                      <div className="relative mt-1">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="fullName"
+                          type="text"
+                          placeholder="Enter your full name"
+                          className="pl-10"
+                          value={formData.fullName}
+                          onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                          required={!isLogin}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <Label htmlFor="email">Email Address</Label>
+                    <div className="relative mt-1">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        className="pl-10"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
 
-              <div>
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative mt-1">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
+                  <div>
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative mt-1">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        className="pl-10 pr-10"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        required
+                        minLength={6}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
 
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <div className="relative mt-1">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                    className="pl-10 pr-10"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    required
-                    minLength={6}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  {isLogin && (
+                    <div className="text-right">
+                      <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                        Forgot Password?
+                      </Link>
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    className="w-full btn-primary-gradient"
+                    size="lg"
+                    disabled={loading}
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
+                    {loading ? 'Please wait...' : (
+                      <>
+                        {isLogin ? 'Login' : 'Create Account'}
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </TabsContent>
 
-              {isLogin && (
-                <div className="text-right">
-                  <Link to="/forgot-password" className="text-sm text-primary hover:underline">
-                    Forgot Password?
-                  </Link>
-                </div>
-              )}
+              <TabsContent value="phone">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <div className="relative mt-1">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="+91 98765 43210"
+                        className="pl-10"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        disabled={otpSent || phoneLoading}
+                      />
+                    </div>
+                  </div>
 
-              <Button
-                type="submit"
-                className="w-full btn-primary-gradient"
-                size="lg"
-                disabled={loading}
-              >
-                {loading ? (
-                  'Please wait...'
-                ) : (
-                  <>
-                    {isLogin ? 'Login' : 'Create Account'}
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </>
-                )}
-              </Button>
-            </form>
+                  {otpSent && (
+                    <div>
+                      <Label htmlFor="otp">Enter OTP</Label>
+                      <div className="relative mt-1">
+                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="otp"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="6-digit code"
+                          className="pl-10 tracking-widest"
+                          value={otp}
+                          onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                          maxLength={6}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {!otpSent ? (
+                    <Button
+                      type="button"
+                      className="w-full btn-primary-gradient"
+                      size="lg"
+                      disabled={phoneLoading}
+                      onClick={handleSendOtp}
+                    >
+                      {phoneLoading ? 'Sending...' : (<>Send OTP <ArrowRight className="h-4 w-4 ml-2" /></>)}
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <Button
+                        type="button"
+                        className="w-full btn-primary-gradient"
+                        size="lg"
+                        disabled={phoneLoading}
+                        onClick={handleVerifyOtp}
+                      >
+                        {phoneLoading ? 'Verifying...' : (<>Verify & Login <ArrowRight className="h-4 w-4 ml-2" /></>)}
+                      </Button>
+                      <button
+                        type="button"
+                        onClick={() => { setOtpSent(false); setOtp(''); }}
+                        className="text-sm text-primary hover:underline w-full text-center"
+                      >
+                        Change number
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
@@ -273,8 +402,6 @@ const LoginPage = () => {
                     extraParams: { prompt: 'select_account' },
                   });
                   if (result.error) throw result.error;
-                  // If redirected=true, the browser will navigate away.
-                  // Otherwise tokens are set and the auth listener will handle routing.
                 } catch (err: any) {
                   console.error('[GoogleOAuth] exception', err);
                   toast.error(err?.message || 'Google sign-in failed', { duration: 8000 });
