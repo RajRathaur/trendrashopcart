@@ -82,7 +82,7 @@ const ResetPassword = () => {
         <div className="bg-card rounded-xl shadow-lg p-8">
           <h2 className="text-2xl font-bold mb-2">Set a New Password</h2>
           <p className="text-muted-foreground mb-6 text-sm">
-            Choose a strong password with at least 8 characters, one uppercase letter and one number.
+            Choose a password with at least 6 characters.
           </p>
 
           {!sessionReady && (
