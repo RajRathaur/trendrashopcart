@@ -183,10 +183,19 @@ const LoginPage = () => {
 
     try {
       if (isLogin) {
+        // Step 1: verify password
         const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
-        toast.success('Welcome back!');
-        // Navigation handled by useEffect
+        // Step 2: immediately sign out and require email OTP verification
+        await supabase.auth.signOut();
+        const { error: otpErr } = await supabase.auth.signInWithOtp({
+          email: formData.email,
+          options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
+        });
+        if (otpErr) throw otpErr;
+        setTwoFAEmail(formData.email);
+        setPending2FA(true);
+        toast.success('Password verified. Enter the OTP sent to your email.');
       } else {
         const { error } = await signUp(formData.email, formData.password, formData.fullName);
         if (error) throw error;
