@@ -25,11 +25,57 @@ const LoginPage = () => {
     email: '',
     password: '',
   });
-  const [authMode, setAuthMode] = useState<'email' | 'phone'>('email');
+  const [authMode, setAuthMode] = useState<'email' | 'phone' | 'emailotp'>('email');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [phoneLoading, setPhoneLoading] = useState(false);
+  const [emailOtpAddr, setEmailOtpAddr] = useState('');
+  const [emailOtp, setEmailOtp] = useState('');
+  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [emailOtpLoading, setEmailOtpLoading] = useState(false);
+
+  const handleSendEmailOtp = async () => {
+    if (!validateEmail(emailOtpAddr)) {
+      toast.error('Please enter a valid email');
+      return;
+    }
+    setEmailOtpLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: emailOtpAddr,
+        options: { shouldCreateUser: true, emailRedirectTo: window.location.origin },
+      });
+      if (error) throw error;
+      setEmailOtpSent(true);
+      toast.success('OTP sent to your email');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to send OTP');
+    } finally {
+      setEmailOtpLoading(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async () => {
+    if (emailOtp.length < 4) {
+      toast.error('Enter the OTP');
+      return;
+    }
+    setEmailOtpLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: emailOtpAddr,
+        token: emailOtp,
+        type: 'email',
+      });
+      if (error) throw error;
+      toast.success('Logged in!');
+    } catch (err: any) {
+      toast.error(err?.message || 'Invalid OTP');
+    } finally {
+      setEmailOtpLoading(false);
+    }
+  };
 
   const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -217,9 +263,10 @@ const LoginPage = () => {
                 : 'Sign up to start shopping'}
             </p>
 
-            <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'phone')} className="mb-4">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" /> Email</TabsTrigger>
+            <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'phone' | 'emailotp')} className="mb-4">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" /> Password</TabsTrigger>
+                <TabsTrigger value="emailotp"><KeyRound className="h-4 w-4 mr-1" /> Email OTP</TabsTrigger>
                 <TabsTrigger value="phone"><Phone className="h-4 w-4 mr-1" /> Phone</TabsTrigger>
               </TabsList>
 
@@ -371,6 +418,79 @@ const LoginPage = () => {
                         className="text-sm text-primary hover:underline w-full text-center"
                       >
                         Change number
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="emailotp">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="emailOtpAddr">Email Address</Label>
+                    <div className="relative mt-1">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="emailOtpAddr"
+                        type="email"
+                        placeholder="you@example.com"
+                        className="pl-10"
+                        value={emailOtpAddr}
+                        onChange={(e) => setEmailOtpAddr(e.target.value)}
+                        disabled={emailOtpSent || emailOtpLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {emailOtpSent && (
+                    <div>
+                      <Label htmlFor="emailOtp">Enter OTP</Label>
+                      <div className="relative mt-1">
+                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="emailOtp"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="6-digit code"
+                          className="pl-10 tracking-widest"
+                          value={emailOtp}
+                          onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, ''))}
+                          maxLength={6}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Check your inbox (and spam folder) for the 6-digit code.
+                      </p>
+                    </div>
+                  )}
+
+                  {!emailOtpSent ? (
+                    <Button
+                      type="button"
+                      className="w-full btn-primary-gradient"
+                      size="lg"
+                      disabled={emailOtpLoading}
+                      onClick={handleSendEmailOtp}
+                    >
+                      {emailOtpLoading ? 'Sending...' : (<>Send OTP <ArrowRight className="h-4 w-4 ml-2" /></>)}
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <Button
+                        type="button"
+                        className="w-full btn-primary-gradient"
+                        size="lg"
+                        disabled={emailOtpLoading}
+                        onClick={handleVerifyEmailOtp}
+                      >
+                        {emailOtpLoading ? 'Verifying...' : (<>Verify & Login <ArrowRight className="h-4 w-4 ml-2" /></>)}
+                      </Button>
+                      <button
+                        type="button"
+                        onClick={() => { setEmailOtpSent(false); setEmailOtp(''); }}
+                        className="text-sm text-primary hover:underline w-full text-center"
+                      >
+                        Change email
                       </button>
                     </div>
                   )}

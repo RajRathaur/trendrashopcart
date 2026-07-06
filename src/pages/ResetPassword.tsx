@@ -33,12 +33,8 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      toast.error('Password must be at least 8 characters');
-      return;
-    }
-    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-      toast.error('Use at least one uppercase letter and one number');
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters');
       return;
     }
     if (password !== confirmPassword) {
@@ -86,7 +82,7 @@ const ResetPassword = () => {
         <div className="bg-card rounded-xl shadow-lg p-8">
           <h2 className="text-2xl font-bold mb-2">Set a New Password</h2>
           <p className="text-muted-foreground mb-6 text-sm">
-            Choose a strong password with at least 8 characters, one uppercase letter and one number.
+            Choose a password with at least 6 characters.
           </p>
 
           {!sessionReady && (
@@ -107,7 +103,7 @@ const ResetPassword = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={8}
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -130,7 +126,7 @@ const ResetPassword = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  minLength={8}
+                  minLength={6}
                 />
               </div>
             </div>
