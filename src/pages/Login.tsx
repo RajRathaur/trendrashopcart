@@ -209,6 +209,44 @@ const LoginPage = () => {
     }
   };
 
+  const handleVerify2FA = async () => {
+    if (twoFAOtp.length < 4) {
+      toast.error('Enter the OTP sent to your email');
+      return;
+    }
+    setTwoFALoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: twoFAEmail,
+        token: twoFAOtp,
+        type: 'email',
+      });
+      if (error) throw error;
+      setPending2FA(false);
+      toast.success('Welcome back!');
+    } catch (err: any) {
+      toast.error(err?.message || 'Invalid OTP');
+    } finally {
+      setTwoFALoading(false);
+    }
+  };
+
+  const handleResend2FA = async () => {
+    setTwoFALoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: twoFAEmail,
+        options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
+      });
+      if (error) throw error;
+      toast.success('OTP resent');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to resend OTP');
+    } finally {
+      setTwoFALoading(false);
+    }
+  };
+
   // Show loading while checking auth
   if (authLoading) {
     return (
