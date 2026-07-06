@@ -133,9 +133,9 @@ const LoginPage = () => {
     }
   };
 
-  // Redirect if already logged in
+  // Redirect if already logged in (skip while awaiting 2FA verification)
   useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && user && !pending2FA) {
       const googleRedirect = getSafeRedirectPath(sessionStorage.getItem('trendra_google_redirect'));
       sessionStorage.removeItem('trendra_google_redirect');
       const destination = googleRedirect !== '/' ? googleRedirect : redirect;
@@ -146,7 +146,7 @@ const LoginPage = () => {
         navigate(destination, { replace: true });
       }
     }
-  }, [user, isAdmin, authLoading, navigate, redirect]);
+  }, [user, isAdmin, authLoading, navigate, redirect, pending2FA]);
 
 
 
