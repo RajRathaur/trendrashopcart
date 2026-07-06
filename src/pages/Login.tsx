@@ -36,7 +36,7 @@ const LoginPage = () => {
   const [emailOtpLoading, setEmailOtpLoading] = useState(false);
 
   const handleSendEmailOtp = async () => {
-    if (!validateEmailStr(emailOtpAddr)) {
+    if (!validateEmail(emailOtpAddr)) {
       toast.error('Please enter a valid email');
       return;
     }
