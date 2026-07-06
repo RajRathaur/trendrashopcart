@@ -423,6 +423,79 @@ const LoginPage = () => {
                   )}
                 </div>
               </TabsContent>
+
+              <TabsContent value="emailotp">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="emailOtpAddr">Email Address</Label>
+                    <div className="relative mt-1">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="emailOtpAddr"
+                        type="email"
+                        placeholder="you@example.com"
+                        className="pl-10"
+                        value={emailOtpAddr}
+                        onChange={(e) => setEmailOtpAddr(e.target.value)}
+                        disabled={emailOtpSent || emailOtpLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {emailOtpSent && (
+                    <div>
+                      <Label htmlFor="emailOtp">Enter OTP</Label>
+                      <div className="relative mt-1">
+                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="emailOtp"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="6-digit code"
+                          className="pl-10 tracking-widest"
+                          value={emailOtp}
+                          onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, ''))}
+                          maxLength={6}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Check your inbox (and spam folder) for the 6-digit code.
+                      </p>
+                    </div>
+                  )}
+
+                  {!emailOtpSent ? (
+                    <Button
+                      type="button"
+                      className="w-full btn-primary-gradient"
+                      size="lg"
+                      disabled={emailOtpLoading}
+                      onClick={handleSendEmailOtp}
+                    >
+                      {emailOtpLoading ? 'Sending...' : (<>Send OTP <ArrowRight className="h-4 w-4 ml-2" /></>)}
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <Button
+                        type="button"
+                        className="w-full btn-primary-gradient"
+                        size="lg"
+                        disabled={emailOtpLoading}
+                        onClick={handleVerifyEmailOtp}
+                      >
+                        {emailOtpLoading ? 'Verifying...' : (<>Verify & Login <ArrowRight className="h-4 w-4 ml-2" /></>)}
+                      </Button>
+                      <button
+                        type="button"
+                        onClick={() => { setEmailOtpSent(false); setEmailOtp(''); }}
+                        className="text-sm text-primary hover:underline w-full text-center"
+                      >
+                        Change email
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
             </Tabs>
 
             <div className="relative my-6">
