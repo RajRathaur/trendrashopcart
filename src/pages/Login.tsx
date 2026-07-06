@@ -256,8 +256,8 @@ const LoginPage = () => {
     );
   }
 
-  // If already logged in, show loading (redirect happening)
-  if (user) {
+  // If already logged in (and no pending 2FA), show loading (redirect happening)
+  if (user && !pending2FA) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
