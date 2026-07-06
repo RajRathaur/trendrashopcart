@@ -365,11 +365,10 @@ const LoginPage = () => {
                 </div>
               </div>
             ) : (
-            <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'phone' | 'emailotp')} className="mb-4">
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs value={authMode === 'phone' ? 'email' : authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'emailotp')} className="mb-4">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" /> Password</TabsTrigger>
                 <TabsTrigger value="emailotp"><KeyRound className="h-4 w-4 mr-1" /> Email OTP</TabsTrigger>
-                <TabsTrigger value="phone"><Phone className="h-4 w-4 mr-1" /> Phone</TabsTrigger>
               </TabsList>
 
               <TabsContent value="email">
@@ -454,76 +453,6 @@ const LoginPage = () => {
                     )}
                   </Button>
                 </form>
-              </TabsContent>
-
-              <TabsContent value="phone">
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <div className="relative mt-1">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="+91 98765 43210"
-                        className="pl-10"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        disabled={otpSent || phoneLoading}
-                      />
-                    </div>
-                  </div>
-
-                  {otpSent && (
-                    <div>
-                      <Label htmlFor="otp">Enter OTP</Label>
-                      <div className="relative mt-1">
-                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="otp"
-                          type="text"
-                          inputMode="numeric"
-                          placeholder="6-digit code"
-                          className="pl-10 tracking-widest"
-                          value={otp}
-                          onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                          maxLength={6}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {!otpSent ? (
-                    <Button
-                      type="button"
-                      className="w-full btn-primary-gradient"
-                      size="lg"
-                      disabled={phoneLoading}
-                      onClick={handleSendOtp}
-                    >
-                      {phoneLoading ? 'Sending...' : (<>Send OTP <ArrowRight className="h-4 w-4 ml-2" /></>)}
-                    </Button>
-                  ) : (
-                    <div className="space-y-2">
-                      <Button
-                        type="button"
-                        className="w-full btn-primary-gradient"
-                        size="lg"
-                        disabled={phoneLoading}
-                        onClick={handleVerifyOtp}
-                      >
-                        {phoneLoading ? 'Verifying...' : (<>Verify & Login <ArrowRight className="h-4 w-4 ml-2" /></>)}
-                      </Button>
-                      <button
-                        type="button"
-                        onClick={() => { setOtpSent(false); setOtp(''); }}
-                        className="text-sm text-primary hover:underline w-full text-center"
-                      >
-                        Change number
-                      </button>
-                    </div>
-                  )}
-                </div>
               </TabsContent>
 
               <TabsContent value="emailotp">
