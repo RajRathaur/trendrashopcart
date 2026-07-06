@@ -55,6 +55,7 @@ import AdminContactMessages from "./pages/admin/AdminContactMessages";
 import AdminBroadcast from "./pages/admin/AdminBroadcast";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminEmailMonitor from "./pages/admin/AdminEmailMonitor";
+import AdminOtpDebug from "./pages/admin/AdminOtpDebug";
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,7 @@ const AppRoutes = () => (
       <Route path="/admin/broadcast" element={<AdminBroadcast />} />
       <Route path="/admin/users" element={<AdminUsers />} />
       <Route path="/admin/email-monitor" element={<AdminEmailMonitor />} />
+      <Route path="/admin/otp-debug" element={<AdminOtpDebug />} />
       {/* Redirect common paths */}
       <Route path="/track-order" element={<Orders />} />
       <Route path="/returns" element={<Help />} />
