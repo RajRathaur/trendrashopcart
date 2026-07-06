@@ -365,11 +365,10 @@ const LoginPage = () => {
                 </div>
               </div>
             ) : (
-            <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'phone' | 'emailotp')} className="mb-4">
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs value={authMode === 'phone' ? 'email' : authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'emailotp')} className="mb-4">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" /> Password</TabsTrigger>
                 <TabsTrigger value="emailotp"><KeyRound className="h-4 w-4 mr-1" /> Email OTP</TabsTrigger>
-                <TabsTrigger value="phone"><Phone className="h-4 w-4 mr-1" /> Phone</TabsTrigger>
               </TabsList>
 
               <TabsContent value="email">
