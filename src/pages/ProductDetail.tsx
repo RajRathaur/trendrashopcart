@@ -473,6 +473,15 @@ const ProductDetail = () => {
                     <Check className="h-4 w-4" />
                     Delivery to <strong>{pincodeInfo.city}, {pincodeInfo.state}</strong> in {pincodeInfo.delivery_days} days
                   </p>
+                  <p className="flex items-center gap-1">
+                    <Truck className="h-4 w-4 text-primary" />
+                    Delivery charge:{' '}
+                    {pincodeInfo.delivery_charge > 0 ? (
+                      <strong>₹{pincodeInfo.delivery_charge}</strong>
+                    ) : (
+                      <strong className="text-green-600">FREE</strong>
+                    )}
+                  </p>
                   <p className="text-muted-foreground">
                     {pincodeInfo.is_cod_available ? '💵 Cash on Delivery available' : 'Prepaid orders only (COD not available)'}
                   </p>
