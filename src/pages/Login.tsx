@@ -25,11 +25,57 @@ const LoginPage = () => {
     email: '',
     password: '',
   });
-  const [authMode, setAuthMode] = useState<'email' | 'phone'>('email');
+  const [authMode, setAuthMode] = useState<'email' | 'phone' | 'emailotp'>('email');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [phoneLoading, setPhoneLoading] = useState(false);
+  const [emailOtpAddr, setEmailOtpAddr] = useState('');
+  const [emailOtp, setEmailOtp] = useState('');
+  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [emailOtpLoading, setEmailOtpLoading] = useState(false);
+
+  const handleSendEmailOtp = async () => {
+    if (!validateEmailStr(emailOtpAddr)) {
+      toast.error('Please enter a valid email');
+      return;
+    }
+    setEmailOtpLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: emailOtpAddr,
+        options: { shouldCreateUser: true, emailRedirectTo: window.location.origin },
+      });
+      if (error) throw error;
+      setEmailOtpSent(true);
+      toast.success('OTP sent to your email');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to send OTP');
+    } finally {
+      setEmailOtpLoading(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async () => {
+    if (emailOtp.length < 4) {
+      toast.error('Enter the OTP');
+      return;
+    }
+    setEmailOtpLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: emailOtpAddr,
+        token: emailOtp,
+        type: 'email',
+      });
+      if (error) throw error;
+      toast.success('Logged in!');
+    } catch (err: any) {
+      toast.error(err?.message || 'Invalid OTP');
+    } finally {
+      setEmailOtpLoading(false);
+    }
+  };
 
   const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
