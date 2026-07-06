@@ -29,7 +29,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState<'available' | 'unavailable' | null>(null);
-  const [pincodeInfo, setPincodeInfo] = useState<{ city: string; state: string; delivery_days: number; is_cod_available: boolean } | null>(null);
+  const [pincodeInfo, setPincodeInfo] = useState<{ city: string; state: string; delivery_days: number; is_cod_available: boolean; delivery_charge: number } | null>(null);
   const [checkingPincode, setCheckingPincode] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
 
@@ -108,7 +108,7 @@ const ProductDetail = () => {
     setCheckingPincode(true);
     const { data, error } = await supabase
       .from('delivery_pincodes')
-      .select('city,state,delivery_days,is_cod_available,is_active')
+      .select('city,state,delivery_days,is_cod_available,is_active,delivery_charge')
       .eq('pincode', pin)
       .maybeSingle();
     setCheckingPincode(false);
@@ -123,6 +123,7 @@ const ProductDetail = () => {
         state: data.state,
         delivery_days: data.delivery_days,
         is_cod_available: data.is_cod_available,
+        delivery_charge: Number(data.delivery_charge ?? 0),
       });
     } else {
       setPincodeStatus('unavailable');
@@ -471,6 +472,15 @@ const ProductDetail = () => {
                   <p className="pincode-available flex items-center gap-1">
                     <Check className="h-4 w-4" />
                     Delivery to <strong>{pincodeInfo.city}, {pincodeInfo.state}</strong> in {pincodeInfo.delivery_days} days
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <Truck className="h-4 w-4 text-primary" />
+                    Delivery charge:{' '}
+                    {pincodeInfo.delivery_charge > 0 ? (
+                      <strong>₹{pincodeInfo.delivery_charge}</strong>
+                    ) : (
+                      <strong className="text-green-600">FREE</strong>
+                    )}
                   </p>
                   <p className="text-muted-foreground">
                     {pincodeInfo.is_cod_available ? '💵 Cash on Delivery available' : 'Prepaid orders only (COD not available)'}

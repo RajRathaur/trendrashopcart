@@ -348,6 +348,7 @@ export type Database = {
         Row: {
           city: string | null
           created_at: string
+          delivery_charge: number
           delivery_days: number | null
           id: string
           is_active: boolean | null
@@ -358,6 +359,7 @@ export type Database = {
         Insert: {
           city?: string | null
           created_at?: string
+          delivery_charge?: number
           delivery_days?: number | null
           id?: string
           is_active?: boolean | null
@@ -368,6 +370,7 @@ export type Database = {
         Update: {
           city?: string | null
           created_at?: string
+          delivery_charge?: number
           delivery_days?: number | null
           id?: string
           is_active?: boolean | null
