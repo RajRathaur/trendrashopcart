@@ -377,6 +377,27 @@ export type Database = {
         }
         Relationships: []
       }
+      email_alert_state: {
+        Row: {
+          id: number
+          last_alert_at: string | null
+          last_alerted_log_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          last_alert_at?: string | null
+          last_alerted_log_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          last_alert_at?: string | null
+          last_alerted_log_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
