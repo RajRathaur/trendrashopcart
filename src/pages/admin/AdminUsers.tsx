@@ -8,8 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Ban, Undo2, Users as UsersIcon, UserPlus, Activity } from 'lucide-react';
+import { Loader2, Ban, Undo2, Users as UsersIcon, UserPlus, Activity, Eye, Phone, MapPin, Clock, ShoppingBag, Mail, User } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 interface UserRow {
   user_id: string;
