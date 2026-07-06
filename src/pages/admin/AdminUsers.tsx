@@ -219,6 +219,118 @@ const AdminUsers = () => {
           </Table>
         </div>
       )}
+
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent className="sm:max-w-md w-full">
+          {selectedUser && (
+            <>
+              <SheetHeader className="pb-4 border-b">
+                <SheetTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5 text-muted-foreground" />
+                  {selectedUser.full_name || 'Unnamed User'}
+                </SheetTitle>
+              </SheetHeader>
+
+              <div className="mt-6 space-y-6">
+                {/* Contact */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Contact</h4>
+                  <div className="space-y-2">
+                    {selectedUser.email && (
+                      <div className="flex items-center gap-3">
+                        <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <a href={`mailto:${selectedUser.email}`} className="text-sm hover:underline">{selectedUser.email}</a>
+                      </div>
+                    )}
+                    {selectedUser.phone && (
+                      <div className="flex items-center gap-3">
+                        <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <a href={`tel:${selectedUser.phone}`} className="text-sm hover:underline">{selectedUser.phone}</a>
+                      </div>
+                    )}
+                    {!selectedUser.email && !selectedUser.phone && (
+                      <p className="text-sm text-muted-foreground">No contact info</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Address */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Address</h4>
+                  {(selectedUser.address || selectedUser.city || selectedUser.state || selectedUser.pincode) ? (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                      <div className="text-sm leading-relaxed">
+                        {selectedUser.address && <div>{selectedUser.address}</div>}
+                        <div className="text-muted-foreground">
+                          {[selectedUser.city, selectedUser.state, selectedUser.pincode].filter(Boolean).join(', ')}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No address on file</p>
+                  )}
+                </div>
+
+                {/* Activity */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Activity</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <ShoppingBag className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <span className="text-sm">
+                        <span className="font-medium">{selectedUser.order_count}</span> orders
+                        {selectedUser.last_order_at && (
+                          <span className="text-muted-foreground"> · last {new Date(selectedUser.last_order_at).toLocaleDateString()}</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <span className="text-sm">
+                        Joined {new Date(selectedUser.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    {selectedUser.last_sign_in_at && (
+                      <div className="flex items-center gap-3">
+                        <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <span className="text-sm text-muted-foreground">
+                          Last seen {new Date(selectedUser.last_sign_in_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Status</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedUser.is_blocked && <Badge variant="destructive">Blocked</Badge>}
+                    {selectedUser.roles.map((role) => (
+                      <Badge key={role} variant={role === 'admin' ? 'default' : role === 'seller' ? 'secondary' : 'outline'} className="capitalize">{role}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="pt-4 border-t flex gap-2">
+                  {selectedUser.email && (
+                    <Button variant="outline" size="sm" className="flex-1" asChild>
+                      <a href={`mailto:${selectedUser.email}`}>Send Email</a>
+                    </Button>
+                  )}
+                  {selectedUser.phone && (
+                    <Button variant="outline" size="sm" className="flex-1" asChild>
+                      <a href={`tel:${selectedUser.phone}`}>Call</a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </AdminLayout>
   );
 };
