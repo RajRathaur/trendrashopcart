@@ -188,14 +188,26 @@ const LoginPage = () => {
         if (error) throw error;
         // Step 2: immediately sign out and require email OTP verification
         await supabase.auth.signOut();
-        const { error: otpErr } = await supabase.auth.signInWithOtp({
-          email: formData.email,
-          options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
-        });
-        if (otpErr) throw otpErr;
-        setTwoFAEmail(formData.email);
-        setPending2FA(true);
-        toast.success('Password verified. Enter the OTP sent to your email.');
+
+        // Skip re-sending if we sent an OTP to this email in the last 60s (rate-limit safe)
+        const lastKey = `trendra_otp_last_${formData.email.toLowerCase()}`;
+        const lastSent = Number(sessionStorage.getItem(lastKey) || 0);
+        const now = Date.now();
+        if (now - lastSent < 60_000) {
+          setTwoFAEmail(formData.email);
+          setPending2FA(true);
+          toast.info('OTP already sent recently. Please check your inbox.');
+        } else {
+          const { error: otpErr } = await supabase.auth.signInWithOtp({
+            email: formData.email,
+            options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
+          });
+          if (otpErr) throw otpErr;
+          sessionStorage.setItem(lastKey, String(now));
+          setTwoFAEmail(formData.email);
+          setPending2FA(true);
+          toast.success('Password verified. Enter the OTP sent to your email.');
+        }
       } else {
         const { error } = await signUp(formData.email, formData.password, formData.fullName);
         if (error) throw error;
@@ -203,7 +215,12 @@ const LoginPage = () => {
         navigate(redirect);
       }
     } catch (error: any) {
-      toast.error(error.message || 'Authentication failed');
+      const msg: string = error?.message || 'Authentication failed';
+      if (/rate limit|too many|429/i.test(msg)) {
+        toast.error('Too many OTP requests. Please wait a minute and try again.');
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -231,7 +248,16 @@ const LoginPage = () => {
     }
   };
 
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setInterval(() => setResendCooldown((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(t);
+  }, [resendCooldown]);
+
   const handleResend2FA = async () => {
+    if (resendCooldown > 0) return;
     setTwoFALoading(true);
     try {
       const { error } = await supabase.auth.signInWithOtp({
@@ -239,9 +265,17 @@ const LoginPage = () => {
         options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
       });
       if (error) throw error;
+      sessionStorage.setItem(`trendra_otp_last_${twoFAEmail.toLowerCase()}`, String(Date.now()));
+      setResendCooldown(60);
       toast.success('OTP resent');
     } catch (err: any) {
-      toast.error(err?.message || 'Failed to resend OTP');
+      const msg: string = err?.message || 'Failed to resend OTP';
+      if (/rate limit|too many|429/i.test(msg)) {
+        toast.error('Email rate limit reached. Wait a minute before requesting another OTP.');
+        setResendCooldown(60);
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setTwoFALoading(false);
     }
