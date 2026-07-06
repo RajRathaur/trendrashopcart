@@ -25,11 +25,62 @@ const LoginPage = () => {
     email: '',
     password: '',
   });
+  const [authMode, setAuthMode] = useState<'email' | 'phone'>('email');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [phoneLoading, setPhoneLoading] = useState(false);
 
   const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = getSafeRedirectPath(searchParams.get('redirect'));
+
+  const formatPhone = (raw: string) => {
+    const digits = raw.replace(/\D/g, '');
+    if (digits.startsWith('91') && digits.length >= 12) return '+' + digits;
+    if (digits.length === 10) return '+91' + digits;
+    return raw.startsWith('+') ? raw : '+' + digits;
+  };
+
+  const handleSendOtp = async () => {
+    if (!phone.trim() || phone.replace(/\D/g, '').length < 10) {
+      toast.error('Please enter a valid phone number');
+      return;
+    }
+    setPhoneLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ phone: formatPhone(phone) });
+      if (error) throw error;
+      setOtpSent(true);
+      toast.success('OTP sent to your phone');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to send OTP');
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length < 4) {
+      toast.error('Enter the OTP');
+      return;
+    }
+    setPhoneLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone: formatPhone(phone),
+        token: otp,
+        type: 'sms',
+      });
+      if (error) throw error;
+      toast.success('Logged in!');
+    } catch (err: any) {
+      toast.error(err?.message || 'Invalid OTP');
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
 
   // Redirect if already logged in
   useEffect(() => {
