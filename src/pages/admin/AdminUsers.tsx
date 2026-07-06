@@ -45,6 +45,8 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
+  const [selectedUser, setSelectedUser] = useState<UserRow | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !isAdmin) navigate('/');
