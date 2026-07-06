@@ -307,14 +307,64 @@ const LoginPage = () => {
 
           <div className="bg-card rounded-xl shadow-lg p-8">
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              {isLogin ? 'Welcome Back!' : 'Create Account'}
+              {pending2FA ? 'Verify it\'s you' : (isLogin ? 'Welcome Back!' : 'Create Account')}
             </h2>
             <p className="text-muted-foreground mb-6">
-              {isLogin
-                ? 'Login to access your account'
-                : 'Sign up to start shopping'}
+              {pending2FA
+                ? `For your security, enter the 6-digit OTP we sent to ${twoFAEmail}.`
+                : (isLogin ? 'Login to access your account' : 'Sign up to start shopping')}
             </p>
 
+            {pending2FA ? (
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="twoFAOtp">Enter OTP</Label>
+                  <div className="relative mt-1">
+                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="twoFAOtp"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="6-digit code"
+                      className="pl-10 tracking-widest"
+                      value={twoFAOtp}
+                      onChange={(e) => setTwoFAOtp(e.target.value.replace(/\D/g, ''))}
+                      maxLength={6}
+                      autoFocus
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Check your inbox (and spam folder) for the code.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  className="w-full btn-primary-gradient"
+                  size="lg"
+                  disabled={twoFALoading}
+                  onClick={handleVerify2FA}
+                >
+                  {twoFALoading ? 'Verifying...' : (<>Verify & Login <ArrowRight className="h-4 w-4 ml-2" /></>)}
+                </Button>
+                <div className="flex items-center justify-between text-sm">
+                  <button
+                    type="button"
+                    onClick={handleResend2FA}
+                    disabled={twoFALoading}
+                    className="text-primary hover:underline"
+                  >
+                    Resend OTP
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setPending2FA(false); setTwoFAOtp(''); setTwoFAEmail(''); }}
+                    className="text-muted-foreground hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
             <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'phone' | 'emailotp')} className="mb-4">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" /> Password</TabsTrigger>
