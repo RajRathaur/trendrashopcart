@@ -34,6 +34,11 @@ const LoginPage = () => {
   const [emailOtp, setEmailOtp] = useState('');
   const [emailOtpSent, setEmailOtpSent] = useState(false);
   const [emailOtpLoading, setEmailOtpLoading] = useState(false);
+  // 2FA: after password login, verify email via OTP before completing session
+  const [pending2FA, setPending2FA] = useState(false);
+  const [twoFAEmail, setTwoFAEmail] = useState('');
+  const [twoFAOtp, setTwoFAOtp] = useState('');
+  const [twoFALoading, setTwoFALoading] = useState(false);
 
   const handleSendEmailOtp = async () => {
     if (!validateEmail(emailOtpAddr)) {
