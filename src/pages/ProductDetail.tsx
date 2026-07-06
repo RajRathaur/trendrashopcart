@@ -29,7 +29,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState<'available' | 'unavailable' | null>(null);
-  const [pincodeInfo, setPincodeInfo] = useState<{ city: string; state: string; delivery_days: number; is_cod_available: boolean } | null>(null);
+  const [pincodeInfo, setPincodeInfo] = useState<{ city: string; state: string; delivery_days: number; is_cod_available: boolean; delivery_charge: number } | null>(null);
   const [checkingPincode, setCheckingPincode] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
 
