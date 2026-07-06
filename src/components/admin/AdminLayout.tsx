@@ -22,6 +22,7 @@ const navItems = [
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/broadcast', label: 'Broadcast', icon: Megaphone },
   { href: '/admin/email-monitor', label: 'Email Monitor', icon: MailCheck },
+  { href: '/admin/otp-debug', label: 'OTP Debug', icon: KeyRound },
   { href: '/admin/audit-logs', label: 'Audit Logs', icon: Shield },
 ];
 
