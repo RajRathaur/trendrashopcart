@@ -55,6 +55,7 @@ import AdminContactMessages from "./pages/admin/AdminContactMessages";
 import AdminBroadcast from "./pages/admin/AdminBroadcast";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminEmailMonitor from "./pages/admin/AdminEmailMonitor";
+import AdminOtpDebug from "./pages/admin/AdminOtpDebug";
 
 const queryClient = new QueryClient();
 
