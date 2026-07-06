@@ -108,7 +108,7 @@ const ProductDetail = () => {
     setCheckingPincode(true);
     const { data, error } = await supabase
       .from('delivery_pincodes')
-      .select('city,state,delivery_days,is_cod_available,is_active')
+      .select('city,state,delivery_days,is_cod_available,is_active,delivery_charge')
       .eq('pincode', pin)
       .maybeSingle();
     setCheckingPincode(false);
@@ -123,6 +123,7 @@ const ProductDetail = () => {
         state: data.state,
         delivery_days: data.delivery_days,
         is_cod_available: data.is_cod_available,
+        delivery_charge: Number(data.delivery_charge ?? 0),
       });
     } else {
       setPincodeStatus('unavailable');
