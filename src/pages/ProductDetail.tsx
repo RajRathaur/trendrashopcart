@@ -462,20 +462,24 @@ const ProductDetail = () => {
                   className="flex-1"
                   maxLength={6}
                 />
-                <Button onClick={checkPincode} variant="secondary">
-                  Check
+                <Button onClick={() => checkPincode()} variant="secondary" disabled={checkingPincode}>
+                  {checkingPincode ? 'Checking…' : 'Check'}
                 </Button>
               </div>
-              {pincodeStatus && (
-                <p className={cn(
-                  'mt-2 flex items-center gap-1',
-                  pincodeStatus === 'available' ? 'pincode-available' : 'pincode-unavailable'
-                )}>
-                  {pincodeStatus === 'available' ? (
-                    <><Check className="h-4 w-4" /> Delivery available</>
-                  ) : (
-                    <><X className="h-4 w-4" /> Not deliverable</>
-                  )}
+              {pincodeStatus === 'available' && pincodeInfo && (
+                <div className="mt-2 space-y-1 text-sm">
+                  <p className="pincode-available flex items-center gap-1">
+                    <Check className="h-4 w-4" />
+                    Delivery to <strong>{pincodeInfo.city}, {pincodeInfo.state}</strong> in {pincodeInfo.delivery_days} days
+                  </p>
+                  <p className="text-muted-foreground">
+                    {pincodeInfo.is_cod_available ? '💵 Cash on Delivery available' : 'Prepaid orders only (COD not available)'}
+                  </p>
+                </div>
+              )}
+              {pincodeStatus === 'unavailable' && (
+                <p className="mt-2 pincode-unavailable flex items-center gap-1 text-sm">
+                  <X className="h-4 w-4" /> Sorry, we don't deliver to this pincode yet.
                 </p>
               )}
             </div>
