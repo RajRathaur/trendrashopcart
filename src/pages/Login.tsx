@@ -384,10 +384,10 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={handleResend2FA}
-                    disabled={twoFALoading}
-                    className="text-primary hover:underline"
+                    disabled={twoFALoading || resendCooldown > 0}
+                    className="text-primary hover:underline disabled:opacity-50 disabled:no-underline"
                   >
-                    Resend OTP
+                    {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend OTP'}
                   </button>
                   <button
                     type="button"
