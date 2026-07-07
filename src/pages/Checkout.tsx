@@ -471,21 +471,6 @@ const CheckoutPage = () => {
                     </div>
                   </div>
 
-                  <div
-                    onClick={() => setPaymentMethod('online')}
-                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'online' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-muted-foreground/50'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${paymentMethod === 'online' ? 'border-primary' : 'border-muted-foreground'}`}>
-                        {paymentMethod === 'online' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
-                      </div>
-                      <div className="flex-1">
-                        <span className="font-semibold text-sm">Online Payment (UPI)</span>
-                        <p className="text-xs text-muted-foreground mt-0.5">Pay via UPI screenshot verification</p>
-                      </div>
-                      <span className="text-2xl">📱</span>
-                    </div>
-                  </div>
 
                   <div
                     onClick={() => setPaymentMethod('razorpay')}
