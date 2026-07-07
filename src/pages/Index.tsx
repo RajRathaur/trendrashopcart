@@ -81,10 +81,11 @@ const Index = () => {
       {/* Delivery road transition */}
       <DeliveryRoad />
 
-      {/* Curated Categories — featured glass grid */}
-      <div className="container mx-auto px-4 md:px-6">
-        <CategoryGrid />
+      {/* Fruit Slicer Game Promo (moved up in place of Curated Categories) */}
+      <div className="container mx-auto px-3">
+        <GamePromoBanner />
       </div>
+
 
 
       {/* Banner Slider */}
@@ -126,10 +127,11 @@ const Index = () => {
 
       <div className="section-separator" />
 
-      {/* Game Promo */}
-      <div className="container mx-auto px-3">
-        <GamePromoBanner />
+      {/* Curated Categories (moved down in place of Game Promo) */}
+      <div className="container mx-auto px-4 md:px-6">
+        <CategoryGrid />
       </div>
+
 
       <div className="section-separator" />
       <div className="container mx-auto px-3">
