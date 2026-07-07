@@ -184,6 +184,10 @@ const AdminProducts = () => {
         product_type: selectedCategory?.name || null,
         sizes: formData.sizes.length ? formData.sizes : null,
         colors: formData.colors.length ? formData.colors : null,
+        free_delivery: formData.freeDelivery,
+        delivery_charge: formData.freeDelivery
+          ? 0
+          : (formData.deliveryCharge.trim() !== '' ? parseFloat(formData.deliveryCharge) : null),
       };
 
       if (editingProduct) {
