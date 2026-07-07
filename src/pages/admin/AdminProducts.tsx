@@ -80,11 +80,14 @@ const AdminProducts = () => {
     categoryId: '',
     sizes: [] as string[],
     colors: [] as string[],
+    deliveryCharge: '',
+    freeDelivery: false,
   });
 
   const emptyForm = {
     name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '',
     isFeatured: false, categoryId: '', sizes: [] as string[], colors: [] as string[],
+    deliveryCharge: '', freeDelivery: false,
   };
 
   const selectedCategory = categories.find((c) => c.id === formData.categoryId);
