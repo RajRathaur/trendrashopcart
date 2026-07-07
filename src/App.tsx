@@ -63,6 +63,8 @@ const AdminBroadcast = lazy(() => import("./pages/admin/AdminBroadcast"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminEmailMonitor = lazy(() => import("./pages/admin/AdminEmailMonitor"));
 const AdminOtpDebug = lazy(() => import("./pages/admin/AdminOtpDebug"));
+const AdminAnimations = lazy(() => import("./pages/admin/AdminAnimations"));
+
 
 const queryClient = new QueryClient();
 
@@ -136,6 +138,8 @@ const AppRoutes = () => (
       <Route path="/admin/users" element={admin(<AdminUsers />)} />
       <Route path="/admin/email-monitor" element={admin(<AdminEmailMonitor />)} />
       <Route path="/admin/otp-debug" element={admin(<AdminOtpDebug />)} />
+      <Route path="/admin/animations" element={admin(<AdminAnimations />)} />
+
 
       {/* Redirect common paths */}
       <Route path="/track-order" element={<Orders />} />

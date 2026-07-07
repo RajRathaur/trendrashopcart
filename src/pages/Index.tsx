@@ -7,6 +7,8 @@ import { HeroSection } from '@/components/home/HeroSection';
 import { CinematicHero } from '@/components/home/CinematicHero';
 import { FlashSaleTimer } from '@/components/home/FlashSaleTimer';
 import { FloatingPromo } from '@/components/home/FloatingPromo';
+import { FloatingStickers } from '@/components/home/FloatingStickers';
+
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { GamePromoBanner } from '@/components/home/GamePromoBanner';
@@ -70,6 +72,8 @@ const Index = () => {
       />
       {/* Floating Promo */}
       <FloatingPromo />
+      <FloatingStickers />
+
 
       {/* Cinematic edge-to-edge hero */}
       <CinematicHero />
