@@ -45,6 +45,7 @@ const SellerProducts = () => {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [form, setForm] = useState({
     name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', categoryId: '',
+    deliveryCharge: '', freeDelivery: false,
   });
 
   const load = async () => {
