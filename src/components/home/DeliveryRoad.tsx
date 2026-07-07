@@ -21,9 +21,12 @@ export const DeliveryRoad = () => {
     return () => mq.removeEventListener('change', update);
   }, []);
 
-  // Slow, calm cruise. Truck is heavier/slower, scooter a bit quicker.
-  const truckDuration = reduced ? '60s' : '22s';
-  const bikeDuration = reduced ? '48s' : '16s';
+  /* Cinematic, gentle cruise
+     - cubic-bezier(0.45, 0.05, 0.55, 0.95) ≈ very subtle ease-in-out
+       (not robotic linear, yet not bouncy) */
+  const truckDuration = reduced ? '70s' : '28s';
+  const bikeDuration  = reduced ? '55s' : '20s';
+  const ease = 'cubic-bezier(0.45, 0.05, 0.55, 0.95)';
 
   return (
     <section
@@ -46,21 +49,24 @@ export const DeliveryRoad = () => {
       {/* Road line */}
       <div className="absolute bottom-5 left-0 right-0 h-[2px] bg-[hsl(240,5%,25%)]" />
 
-      {/* Dashed centre markings */}
+      {/* Dashed centre markings – now scroll for depth */}
       <div
-        className="absolute bottom-[19px] left-0 right-0 h-[1px]"
+        className="absolute bottom-[19px] left-0 right-0 h-[1px] will-change-transform"
         style={{
           backgroundImage:
             'repeating-linear-gradient(90deg, hsl(240,5%,40%) 0px, hsl(240,5%,40%) 12px, transparent 12px, transparent 28px)',
           backgroundRepeat: 'repeat-x',
+          animation: reduced
+            ? undefined
+            : `markings-scroll ${truckDuration} ${ease} infinite`,
         }}
       />
 
-      {/* Delivery truck riding on top of the road */}
+      {/* Delivery truck */}
       <div
         className="absolute bottom-[22px] will-change-transform"
         style={{
-          animation: `drive-across ${truckDuration} linear infinite`,
+          animation: `drive-across ${truckDuration} ${ease} infinite`,
         }}
       >
         <img
@@ -73,17 +79,19 @@ export const DeliveryRoad = () => {
           className="h-14 w-auto select-none"
           draggable={false}
           style={{
-            animation: reduced ? undefined : 'vehicle-bob 1.4s ease-in-out infinite',
+            animation: reduced
+              ? undefined
+              : 'vehicle-bob 1.6s cubic-bezier(0.37, 0, 0.63, 1) infinite',
           }}
         />
       </div>
 
-      {/* Delivery boy on a scooter — slightly quicker, offset start */}
+      {/* Delivery boy on scooter */}
       <div
         className="absolute bottom-[22px] will-change-transform"
         style={{
-          animation: `drive-across ${bikeDuration} linear infinite`,
-          animationDelay: reduced ? '0s' : '-6s',
+          animation: `drive-across ${bikeDuration} ${ease} infinite`,
+          animationDelay: reduced ? '0s' : '-8s',
         }}
       >
         <img
@@ -96,7 +104,9 @@ export const DeliveryRoad = () => {
           className="h-[52px] w-auto select-none"
           draggable={false}
           style={{
-            animation: reduced ? undefined : 'vehicle-bob 0.9s ease-in-out infinite',
+            animation: reduced
+              ? undefined
+              : 'vehicle-bob 1.1s cubic-bezier(0.37, 0, 0.63, 1) infinite',
           }}
         />
       </div>
