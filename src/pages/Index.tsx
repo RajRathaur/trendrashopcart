@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
+import { DeliveryRoad } from '@/components/home/DeliveryRoad';
 import { BannerSlider } from '@/components/home/BannerSlider';
 import { DealsSection } from '@/components/home/DealsSection';
 import { HeroSection } from '@/components/home/HeroSection';
@@ -72,6 +73,9 @@ const Index = () => {
 
       {/* Cinematic edge-to-edge hero */}
       <CinematicHero />
+
+      {/* Delivery road transition */}
+      <DeliveryRoad />
 
       {/* Curated Categories — featured glass grid */}
       <div className="container mx-auto px-4 md:px-6">

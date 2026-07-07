@@ -490,6 +490,15 @@
     from { transform: scaleX(0); }
     to { transform: scaleX(1); }
   }
+
+  @keyframes drive-across {
+    0% {
+      transform: translateX(-60px);
+    }
+    100% {
+      transform: translateX(calc(100vw + 60px));
+    }
+  }
 }
 
 /* Reduced motion fallback — global accessibility */
