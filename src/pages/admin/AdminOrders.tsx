@@ -517,6 +517,52 @@ const AdminOrders = () => {
                                 )}
                               </div>
                             </div>
+
+                            {/* Tracking Details */}
+                            <div className="mt-4 pt-4 border-t">
+                              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                <FileText className="h-4 w-4" /> Shipment Tracking
+                              </h4>
+                              {(() => {
+                                const draft = getDraft(order);
+                                return (
+                                  <div className="grid md:grid-cols-[200px_1fr_auto] gap-2 items-end">
+                                    <div>
+                                      <Label className="text-xs">Courier</Label>
+                                      <Select value={draft.courier} onValueChange={(v) => setDraft(order.id, { courier: v })}>
+                                        <SelectTrigger><SelectValue placeholder="Select courier" /></SelectTrigger>
+                                        <SelectContent>
+                                          {COURIER_OPTIONS.map(c => (
+                                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs">Tracking Number (AWB)</Label>
+                                      <Input
+                                        value={draft.awb}
+                                        onChange={(e) => setDraft(order.id, { awb: e.target.value })}
+                                        placeholder="Paste AWB number"
+                                      />
+                                    </div>
+                                    <Button
+                                      onClick={() => handleSaveTracking(order)}
+                                      disabled={savingTracking === order.id}
+                                    >
+                                      {savingTracking === order.id
+                                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                                        : <><Save className="h-4 w-4 mr-1" /> Save</>}
+                                    </Button>
+                                  </div>
+                                );
+                              })()}
+                              {order.tracking_number && (
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  Current: <span className="font-mono">{order.tracking_number}</span> via {order.courier_name || '—'}
+                                </p>
+                              )}
+                            </div>
                           </TableCell>
                         </TableRow>
                       )}
