@@ -64,15 +64,17 @@ const SellerProducts = () => {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', categoryId: categories[0]?.id || '' });
+    setForm({ name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '', categoryId: categories[0]?.id || '', deliveryCharge: '', freeDelivery: false });
     setDialogOpen(true);
   };
 
-  const openEdit = (p: Product) => {
+  const openEdit = (p: any) => {
     setEditing(p);
     setForm({
       name: p.name, price: String(p.price), mrp: String(p.mrp), stock: String(p.stock),
       description: p.description || '', imageUrl: p.images?.[0] || '', categoryId: p.category_id || '',
+      deliveryCharge: p.delivery_charge != null ? String(p.delivery_charge) : '',
+      freeDelivery: !!p.free_delivery,
     });
     setDialogOpen(true);
   };
