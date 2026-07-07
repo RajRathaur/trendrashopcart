@@ -490,11 +490,22 @@ const CheckoutPage = () => {
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Delivery</span>
+                    <span className="text-muted-foreground">
+                      Delivery Charge
+                      {pincodeChecking && <Loader2 className="inline h-3 w-3 ml-1 animate-spin" />}
+                    </span>
                     <span className={deliveryFee === 0 ? 'text-green-600 font-semibold' : 'font-medium'}>
                       {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
                     </span>
                   </div>
+                  {pincodeInfo?.source === 'pincode' && (
+                    <p className="text-xs text-muted-foreground -mt-1">
+                      For {pincodeInfo.city}{pincodeInfo.days ? ` · ~${pincodeInfo.days} day(s)` : ''}
+                    </p>
+                  )}
+                  {pincodeInfo?.source === 'default' && (
+                    <p className="text-xs text-muted-foreground -mt-1">Default charge (pincode not in serviced list)</p>
+                  )}
 
                   <div className="border-t pt-3">
                     <div className="flex justify-between text-base font-bold">
