@@ -204,61 +204,8 @@ const LoginPage = () => {
     }
   };
 
-  const handleVerify2FA = async () => {
-    if (twoFAOtp.length < 4) {
-      toast.error('Enter the OTP sent to your email');
-      return;
-    }
-    setTwoFALoading(true);
-    try {
-      const { error } = await supabase.auth.verifyOtp({
-        email: twoFAEmail,
-        token: twoFAOtp,
-        type: 'email',
-      });
-      if (error) throw error;
-      localStorage.setItem(`trendra_email_verified_${twoFAEmail.toLowerCase()}`, '1');
-      setPending2FA(false);
-      toast.success('Welcome back!');
-    } catch (err: any) {
-      toast.error(err?.message || 'Invalid OTP');
-    } finally {
-      setTwoFALoading(false);
-    }
-  };
 
-  const [resendCooldown, setResendCooldown] = useState(0);
 
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const t = setInterval(() => setResendCooldown((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [resendCooldown]);
-
-  const handleResend2FA = async () => {
-    if (resendCooldown > 0) return;
-    setTwoFALoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: twoFAEmail,
-        options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
-      });
-      if (error) throw error;
-      sessionStorage.setItem(`trendra_otp_last_${twoFAEmail.toLowerCase()}`, String(Date.now()));
-      setResendCooldown(60);
-      toast.success('OTP resent');
-    } catch (err: any) {
-      const msg: string = err?.message || 'Failed to resend OTP';
-      if (/rate limit|too many|429/i.test(msg)) {
-        toast.error('Email rate limit reached. Wait a minute before requesting another OTP.');
-        setResendCooldown(60);
-      } else {
-        toast.error(msg);
-      }
-    } finally {
-      setTwoFALoading(false);
-    }
-  };
 
   // Show loading while checking auth
   if (authLoading) {
