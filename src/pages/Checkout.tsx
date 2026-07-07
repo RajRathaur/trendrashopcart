@@ -630,6 +630,8 @@ const CheckoutPage = () => {
                     <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Placing Order...</>
                   ) : paymentMethod === 'cod' ? (
                     'Place Order (COD)'
+                  ) : paymentMethod === 'razorpay' ? (
+                    `Pay ₹${finalAmount.toLocaleString('en-IN')} Now`
                   ) : (
                     'Continue to Payment'
                   )}
