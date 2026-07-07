@@ -164,19 +164,19 @@ export const CinematicHero = () => {
             decoding="async"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/10 to-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#f5f0e8]/80 via-transparent to-[#f5f0e8]/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/90 via-transparent to-[#f5f0e8]/40" />
         <div className="male-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center md:items-end px-4 md:px-16 pb-4 md:pb-0">
           <div className="max-w-2xl md:text-right">
-            <span className="text-[#deff9a] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.male.label}</span>
-            <h2 className="mt-1 md:mt-4 text-white text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight">
+            <span className="text-[#7d9b76] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.male.label}</span>
+            <h2 className="mt-1 md:mt-4 text-[#2d2d2d] text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight">
               {c.male.title}
             </h2>
-            <p className="mt-1 md:mt-5 text-white/70 text-[10px] md:text-lg max-w-md md:ml-auto font-light line-clamp-2">{c.male.subtitle}</p>
+            <p className="mt-1 md:mt-5 text-[#2d2d2d]/70 text-[10px] md:text-lg max-w-md md:ml-auto font-light line-clamp-2">{c.male.subtitle}</p>
             <div className="mt-2 md:mt-6 md:text-right">
               <Link
                 to={c.male.cta.href}
-                className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#deff9a] text-black text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
+                className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#7d9b76] text-white text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-[#5a7a54] transition-colors"
               >
                 {c.male.cta.label}
               </Link>
