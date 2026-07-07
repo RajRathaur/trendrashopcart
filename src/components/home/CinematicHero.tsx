@@ -132,18 +132,18 @@ export const CinematicHero = () => {
             decoding="async"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#f5f0e8]/80 via-transparent to-[#f5f0e8]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/90 via-transparent to-[#f5f0e8]/30" />
         <div className="fem-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center px-4 md:px-16 pb-4 md:pb-0 max-w-2xl">
-          <span className="text-[#deff9a] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.female.label}</span>
-          <h1 className="mt-1 md:mt-4 text-white text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight drop-shadow-lg">
+          <span className="text-[#7d9b76] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.female.label}</span>
+          <h1 className="mt-1 md:mt-4 text-[#2d2d2d] text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight">
             {c.female.title}
           </h1>
-          <p className="mt-1 md:mt-5 text-white/80 text-[10px] md:text-lg max-w-md font-light drop-shadow line-clamp-2">{c.female.subtitle}</p>
+          <p className="mt-1 md:mt-5 text-[#2d2d2d]/70 text-[10px] md:text-lg max-w-md font-light line-clamp-2">{c.female.subtitle}</p>
           <div className="mt-2 md:mt-6">
             <Link
               to={c.female.cta.href}
-              className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#deff9a] text-black text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
+              className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#7d9b76] text-white text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-[#5a7a54] transition-colors"
             >
               {c.female.cta.label}
             </Link>
