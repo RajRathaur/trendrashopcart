@@ -1,4 +1,7 @@
+import deliveryBoy from '@/assets/delivery-boy.png';
+import deliveryTruck from '@/assets/delivery-truck.png';
 import { useAnimationSettings, useEffectivePerformance, speedFactor } from '@/lib/animationSettings';
+
 
 const stages = ['Packed', 'Dispatched', 'In Transit', 'Delivered'];
 
