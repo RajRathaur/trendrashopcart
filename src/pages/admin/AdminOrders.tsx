@@ -66,6 +66,8 @@ interface Order {
   payment_method: string | null;
   created_at: string;
   user_id: string;
+  tracking_number: string | null;
+  courier_name: string | null;
 }
 
 const statusOptions: OrderStatus[] = [
