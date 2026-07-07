@@ -110,13 +110,13 @@ export const CinematicHero = () => {
       style={{ fontFamily: '"Urbanist", "Space Grotesk", system-ui, sans-serif' }}
     >
       <div className="absolute top-0 inset-x-0 z-40 flex items-center justify-between px-5 md:px-10 py-5">
-        <span className="text-[#deff9a] tracking-[0.4em] text-xs md:text-sm font-bold uppercase">{c.brand}</span>
-        <span className="hidden md:block text-white/75 text-xs uppercase tracking-[0.3em]">{c.tagline}</span>
+        <span className="text-[#7d9b76] tracking-[0.4em] text-xs md:text-sm font-bold uppercase">{c.brand}</span>
+        <span className="hidden md:block text-[#2d2d2d]/60 text-xs uppercase tracking-[0.3em]">{c.tagline}</span>
       </div>
 
       <div
-        className="cine-glow pointer-events-none absolute -bottom-40 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] rounded-full opacity-30 blur-[140px]"
-        style={{ background: '#deff9a' }}
+        className="cine-glow pointer-events-none absolute -bottom-40 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] rounded-full opacity-20 blur-[140px]"
+        style={{ background: '#a8c0a0' }}
       />
 
       {/* FEMALE LAYER */}
