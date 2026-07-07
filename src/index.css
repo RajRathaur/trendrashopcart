@@ -492,25 +492,23 @@
   }
 
   @keyframes drive-across {
-    0% {
-      transform: translateX(-80px);
-    }
-    100% {
-      transform: translateX(calc(100vw + 80px));
-    }
+    0%   { transform: translate3d(-80px, 0, 0); }
+    100% { transform: translate3d(calc(100vw + 80px), 0, 0); }
   }
 
   @keyframes vehicle-bob {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25%  { transform: translateY(-2px) rotate(0.4deg); }
-    50%  { transform: translateY(-3.5px) rotate(0deg); }
-    75%  { transform: translateY(-2px) rotate(-0.4deg); }
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    25%      { transform: translate3d(0, -2px, 0) rotate(0.4deg); }
+    50%      { transform: translate3d(0, -3.5px, 0) rotate(0deg); }
+    75%      { transform: translate3d(0, -2px, 0) rotate(-0.4deg); }
   }
 
+  /* GPU-friendly scroll: animate transform, not background-position */
   @keyframes markings-scroll {
-    0%   { background-position: 0 0; }
-    100% { background-position: -28px 0; }
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-56px, 0, 0); }
   }
+
 }
 
 /* Reduced motion fallback — global accessibility */
