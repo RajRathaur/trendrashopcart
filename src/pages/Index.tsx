@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
+import { DeliveryRoad } from '@/components/home/DeliveryRoad';
 import { BannerSlider } from '@/components/home/BannerSlider';
 import { DealsSection } from '@/components/home/DealsSection';
 import { HeroSection } from '@/components/home/HeroSection';
