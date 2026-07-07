@@ -95,6 +95,46 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<Record<string, OrderItem[]>>({});
+  const [trackingDrafts, setTrackingDrafts] = useState<Record<string, { courier: string; awb: string }>>({});
+  const [savingTracking, setSavingTracking] = useState<string | null>(null);
+
+  const getDraft = (order: Order) => trackingDrafts[order.id] ?? { courier: order.courier_name ?? '', awb: order.tracking_number ?? '' };
+  const setDraft = (id: string, patch: Partial<{ courier: string; awb: string }>) =>
+    setTrackingDrafts(prev => ({ ...prev, [id]: { ...(prev[id] ?? { courier: '', awb: '' }), ...patch } }));
+
+  const handleSaveTracking = async (order: Order) => {
+    const draft = getDraft(order);
+    setSavingTracking(order.id);
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({
+          tracking_number: draft.awb.trim() || null,
+          courier_name: draft.courier || null,
+        } as any)
+        .eq('id', order.id);
+      if (error) throw error;
+      toast.success('Tracking details saved');
+      setOrders(prev => prev.map(o => o.id === order.id
+        ? { ...o, tracking_number: draft.awb.trim() || null, courier_name: draft.courier || null }
+        : o));
+
+      if (order.user_id && draft.awb.trim() && draft.courier) {
+        await supabase.from('notifications').insert({
+          user_id: order.user_id,
+          title: `Order #${order.order_number} - Tracking added`,
+          message: `Your order has been shipped via ${draft.courier}. AWB: ${draft.awb.trim()}`,
+          type: 'order_update',
+          order_id: order.id,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to save tracking');
+    } finally {
+      setSavingTracking(null);
+    }
+  };
 
   useEffect(() => {
     if (!authLoading) {
