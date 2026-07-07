@@ -74,6 +74,9 @@ const Index = () => {
       {/* Cinematic edge-to-edge hero */}
       <CinematicHero />
 
+      {/* Delivery road transition */}
+      <DeliveryRoad />
+
       {/* Curated Categories — featured glass grid */}
       <div className="container mx-auto px-4 md:px-6">
         <CategoryGrid />
