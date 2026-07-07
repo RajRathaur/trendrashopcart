@@ -11,7 +11,13 @@ const CartPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const deliveryFee = totalAmount >= 499 ? 0 : 40;
+  const allFree = items.length > 0 && items.every((i: any) => i.product?.free_delivery);
+  const perItemMax = items.reduce((m: number, i: any) => {
+    if (i.product?.free_delivery) return m;
+    const c = i.product?.delivery_charge != null ? Number(i.product.delivery_charge) : 40;
+    return Math.max(m, c);
+  }, 0);
+  const deliveryFee = allFree ? 0 : perItemMax;
   const finalAmount = totalAmount + deliveryFee;
   const totalSavings = items.reduce((sum, item) => {
     const mrp = (item.product?.mrp ?? 0) * item.quantity;
