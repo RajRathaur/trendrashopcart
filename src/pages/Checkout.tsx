@@ -490,6 +490,22 @@ const CheckoutPage = () => {
                       <span className="text-2xl">📱</span>
                     </div>
                   </div>
+
+                  <div
+                    onClick={() => setPaymentMethod('razorpay')}
+                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'razorpay' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-muted-foreground/50'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${paymentMethod === 'razorpay' ? 'border-primary' : 'border-muted-foreground'}`}>
+                        {paymentMethod === 'razorpay' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <div className="flex-1">
+                        <span className="font-semibold text-sm">Pay Online (Cards / UPI / Netbanking)</span>
+                        <p className="text-xs text-muted-foreground mt-0.5">Secure instant payment via Razorpay</p>
+                      </div>
+                      <span className="text-2xl">💳</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
 
