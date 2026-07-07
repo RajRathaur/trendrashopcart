@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { Package, ChevronRight, ShoppingBag, Truck, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
+import { Package, ChevronRight, ShoppingBag, Truck, CheckCircle, XCircle, RotateCcw, ExternalLink, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { getTrackingUrl } from '@/lib/tracking';
 
 interface Order {
   id: string;
@@ -17,6 +18,8 @@ interface Order {
   shipping_city: string;
   shipping_state: string;
   payment_method: string;
+  tracking_number: string | null;
+  courier_name: string | null;
 }
 
 interface OrderItem {
