@@ -379,6 +379,7 @@ const AdminOrders = () => {
                   <TableHead>Order #</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount</TableHead>
+                  <TableHead>Payment</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Status</TableHead>
@@ -388,7 +389,7 @@ const AdminOrders = () => {
               <TableBody>
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                       No orders found
                     </TableCell>
                   </TableRow>
