@@ -403,6 +403,26 @@ const AdminOrders = () => {
                         </TableCell>
                         <TableCell>₹{order.total_amount.toLocaleString()}</TableCell>
                         <TableCell>
+                          {(() => {
+                            const method = (order.payment_method || '').toLowerCase();
+                            const isCod = method === 'cod';
+                            const paid = !isCod && order.status !== 'pending' && order.status !== 'cancelled';
+                            const label = isCod ? 'COD' : method === 'razorpay' ? 'Razorpay' : (order.payment_method || '—');
+                            const badge = isCod
+                              ? (order.cod_confirmed ? 'Confirmed' : 'Pending')
+                              : paid ? 'Paid' : 'Pending';
+                            const cls = isCod
+                              ? (order.cod_confirmed ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700')
+                              : paid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
+                            return (
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-medium">{label}</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold w-fit ${cls}`}>{badge}</span>
+                              </div>
+                            );
+                          })()}
+                        </TableCell>
+                        <TableCell>
                           {order.shipping_city}, {order.shipping_state}
                         </TableCell>
                         <TableCell>{order.shipping_phone}</TableCell>
