@@ -37,7 +37,40 @@ const CheckoutPage = () => {
     notes: '',
   });
 
-  const deliveryFee = totalAmount >= 499 ? 0 : 40;
+  const DEFAULT_DELIVERY_FEE = 40;
+  const [deliveryFee, setDeliveryFee] = useState<number>(DEFAULT_DELIVERY_FEE);
+  const [pincodeChecking, setPincodeChecking] = useState(false);
+  const [pincodeInfo, setPincodeInfo] = useState<{ city?: string; days?: number; source: 'default' | 'pincode' } | null>(null);
+
+  useEffect(() => {
+    const pin = formData.pincode.trim();
+    if (pin.length !== 6) {
+      setDeliveryFee(DEFAULT_DELIVERY_FEE);
+      setPincodeInfo(null);
+      return;
+    }
+    let cancelled = false;
+    setPincodeChecking(true);
+    (async () => {
+      const { data } = await supabase
+        .from('delivery_pincodes')
+        .select('delivery_charge, city, delivery_days, is_active')
+        .eq('pincode', pin)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (cancelled) return;
+      if (data && data.delivery_charge != null) {
+        setDeliveryFee(Number(data.delivery_charge));
+        setPincodeInfo({ city: data.city, days: data.delivery_days, source: 'pincode' });
+      } else {
+        setDeliveryFee(DEFAULT_DELIVERY_FEE);
+        setPincodeInfo({ source: 'default' });
+      }
+      setPincodeChecking(false);
+    })();
+    return () => { cancelled = true; };
+  }, [formData.pincode]);
+
   
   let couponDiscount = 0;
   if (appliedCoupon) {
