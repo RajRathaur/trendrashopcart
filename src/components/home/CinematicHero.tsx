@@ -186,15 +186,15 @@ export const CinematicHero = () => {
       </div>
 
       {/* FINALE */}
-      <div className="cine-finale absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6 bg-black/60 backdrop-blur-sm">
-        <span className="text-[#deff9a] text-[10px] md:text-xs tracking-[0.6em] uppercase font-bold">{c.brand}</span>
-        <h3 className="mt-5 text-white text-4xl md:text-7xl font-black uppercase leading-[0.95] tracking-tight max-w-4xl">
+      <div className="cine-finale absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6 bg-[#f5f0e8]/80 backdrop-blur-sm">
+        <span className="text-[#7d9b76] text-[10px] md:text-xs tracking-[0.6em] uppercase font-bold">{c.brand}</span>
+        <h3 className="mt-5 text-[#2d2d2d] text-4xl md:text-7xl font-black uppercase leading-[0.95] tracking-tight max-w-4xl">
           {c.finale.headline}
         </h3>
-        <p className="mt-5 text-white/70 text-sm md:text-lg max-w-xl font-light">{c.finale.sub}</p>
+        <p className="mt-5 text-[#2d2d2d]/70 text-sm md:text-lg max-w-xl font-light">{c.finale.sub}</p>
         <Link
           to={c.finale.cta.href}
-          className="mt-8 px-8 py-4 bg-[#deff9a] text-black text-xs md:text-sm font-bold uppercase tracking-[0.3em] hover:bg-white transition-colors"
+          className="mt-8 px-8 py-4 bg-[#7d9b76] text-white text-xs md:text-sm font-bold uppercase tracking-[0.3em] hover:bg-[#5a7a54] transition-colors"
         >
           {c.finale.cta.label}
         </Link>
