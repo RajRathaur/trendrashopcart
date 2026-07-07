@@ -7,11 +7,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Package, ChevronRight, Truck, CheckCircle, XCircle, 
-  RotateCcw, Clock, MapPin, CreditCard, ArrowLeft, ShoppingBag
+  RotateCcw, Clock, MapPin, CreditCard, ArrowLeft, ShoppingBag, ExternalLink, Loader2
 } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { getTrackingUrl } from '@/lib/tracking';
 
 interface Order {
   id: string;
@@ -27,6 +28,8 @@ interface Order {
   shipping_phone: string;
   payment_method: string;
   notes: string | null;
+  tracking_number: string | null;
+  courier_name: string | null;
 }
 
 interface OrderItem {
