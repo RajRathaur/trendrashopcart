@@ -186,7 +186,17 @@ const LoginPage = () => {
         // Step 1: verify password
         const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
-        // Step 2: immediately sign out and require email OTP verification
+
+        // If this email/device has already completed OTP verification once, skip OTP
+        const verifiedKey = `trendra_email_verified_${formData.email.toLowerCase()}`;
+        const alreadyVerified = localStorage.getItem(verifiedKey) === '1';
+        if (alreadyVerified) {
+          toast.success('Welcome back!');
+          // Session already established by signIn — redirect effect will handle it
+          return;
+        }
+
+        // First-time login on this device: sign out and require email OTP verification
         await supabase.auth.signOut();
 
         // Skip re-sending if we sent an OTP to this email in the last 60s (rate-limit safe)
