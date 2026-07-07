@@ -123,10 +123,12 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
           </div>
         </div>
 
-        {/* Free delivery text */}
-        <p className="text-[11px] text-muted-foreground">
-          Free delivery
-        </p>
+        {/* Delivery info */}
+        {(product as any).free_delivery && (
+          <p className="text-[11px] text-green-600 font-medium">
+            Free delivery
+          </p>
+        )}
 
         {/* Quick Action Buttons - Shows on hover */}
         <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200">

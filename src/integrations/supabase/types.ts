@@ -815,8 +815,10 @@ export type Database = {
           category_id: string | null
           colors: string[] | null
           created_at: string
+          delivery_charge: number | null
           description: string | null
           discount_percent: number | null
+          free_delivery: boolean
           id: string
           images: string[] | null
           is_active: boolean | null
@@ -838,8 +840,10 @@ export type Database = {
           category_id?: string | null
           colors?: string[] | null
           created_at?: string
+          delivery_charge?: number | null
           description?: string | null
           discount_percent?: number | null
+          free_delivery?: boolean
           id?: string
           images?: string[] | null
           is_active?: boolean | null
@@ -861,8 +865,10 @@ export type Database = {
           category_id?: string | null
           colors?: string[] | null
           created_at?: string
+          delivery_charge?: number | null
           description?: string | null
           discount_percent?: number | null
+          free_delivery?: boolean
           id?: string
           images?: string[] | null
           is_active?: boolean | null

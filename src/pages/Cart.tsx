@@ -11,7 +11,13 @@ const CartPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const deliveryFee = totalAmount >= 499 ? 0 : 40;
+  const allFree = items.length > 0 && items.every((i: any) => i.product?.free_delivery);
+  const perItemMax = items.reduce((m: number, i: any) => {
+    if (i.product?.free_delivery) return m;
+    const c = i.product?.delivery_charge != null ? Number(i.product.delivery_charge) : 40;
+    return Math.max(m, c);
+  }, 0);
+  const deliveryFee = allFree ? 0 : perItemMax;
   const finalAmount = totalAmount + deliveryFee;
   const totalSavings = items.reduce((sum, item) => {
     const mrp = (item.product?.mrp ?? 0) * item.quantity;
@@ -220,9 +226,9 @@ const CartPage = () => {
                     {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
                   </span>
                 </div>
-                {deliveryFee > 0 && (
-                  <div className="bg-primary/5 rounded-lg p-2.5 text-xs text-primary">
-                    Add ₹{499 - totalAmount} more for <strong>free delivery</strong>
+                {deliveryFee === 0 && items.length > 0 && (
+                  <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-2.5 text-xs text-green-700 dark:text-green-400">
+                    🎉 Free delivery on all items in your cart
                   </div>
                 )}
 

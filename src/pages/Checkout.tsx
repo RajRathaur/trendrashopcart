@@ -38,14 +38,29 @@ const CheckoutPage = () => {
   });
 
   const DEFAULT_DELIVERY_FEE = 40;
-  const [deliveryFee, setDeliveryFee] = useState<number>(DEFAULT_DELIVERY_FEE);
+  const [pincodeFee, setPincodeFee] = useState<number | null>(null);
   const [pincodeChecking, setPincodeChecking] = useState(false);
   const [pincodeInfo, setPincodeInfo] = useState<{ city?: string; days?: number; source: 'default' | 'pincode' } | null>(null);
+
+  // Per-product delivery: free if all items are free_delivery, else max of item charges
+  const allItemsFree = items.length > 0 && items.every((i: any) => i.product?.free_delivery);
+  const productDeliveryMax = items.reduce((m: number, i: any) => {
+    if (i.product?.free_delivery) return m;
+    const c = i.product?.delivery_charge != null ? Number(i.product.delivery_charge) : null;
+    return c != null ? Math.max(m, c) : m;
+  }, 0);
+  const hasProductCharge = items.some((i: any) => !i.product?.free_delivery && i.product?.delivery_charge != null);
+
+  const deliveryFee = allItemsFree
+    ? 0
+    : hasProductCharge
+      ? productDeliveryMax
+      : (pincodeFee ?? DEFAULT_DELIVERY_FEE);
 
   useEffect(() => {
     const pin = formData.pincode.trim();
     if (pin.length !== 6) {
-      setDeliveryFee(DEFAULT_DELIVERY_FEE);
+      setPincodeFee(null);
       setPincodeInfo(null);
       return;
     }
@@ -60,16 +75,17 @@ const CheckoutPage = () => {
         .maybeSingle();
       if (cancelled) return;
       if (data && data.delivery_charge != null) {
-        setDeliveryFee(Number(data.delivery_charge));
+        setPincodeFee(Number(data.delivery_charge));
         setPincodeInfo({ city: data.city, days: data.delivery_days, source: 'pincode' });
       } else {
-        setDeliveryFee(DEFAULT_DELIVERY_FEE);
+        setPincodeFee(null);
         setPincodeInfo({ source: 'default' });
       }
       setPincodeChecking(false);
     })();
     return () => { cancelled = true; };
   }, [formData.pincode]);
+
 
   
   let couponDiscount = 0;

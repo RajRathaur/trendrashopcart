@@ -1,0 +1,3 @@
+ALTER TABLE public.products
+  ADD COLUMN IF NOT EXISTS delivery_charge NUMERIC(10,2),
+  ADD COLUMN IF NOT EXISTS free_delivery BOOLEAN NOT NULL DEFAULT false;
