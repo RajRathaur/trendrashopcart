@@ -68,6 +68,7 @@ interface Order {
   user_id: string;
   tracking_number: string | null;
   courier_name: string | null;
+  cod_confirmed: boolean | null;
 }
 
 const statusOptions: OrderStatus[] = [
