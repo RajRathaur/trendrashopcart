@@ -140,11 +140,12 @@ export const Navbar = () => {
 
             {/* Logo */}
             <Link to="/" className="flex flex-col items-center shrink-0">
-              <img src={trendraLogo} alt="Trendra" className="w-8 h-8 md:w-9 md:h-9 rounded object-cover" />
-              <span className="text-[10px] md:text-xs font-semibold text-primary-foreground italic hidden sm:block -mt-0.5">
+              <img src={trendraLogo} alt="Trendra" className="w-7 h-7 md:w-9 md:h-9 rounded object-cover" />
+              <span className="text-[8px] md:text-xs font-semibold text-primary-foreground italic -mt-0.5">
                 Explore <span className="text-yellow-300">Plus</span>
               </span>
             </Link>
+
 
             {/* Search Bar with Category Dropdown */}
             <div ref={searchContainerRef} className="flex-1 max-w-2xl hidden md:block relative">
@@ -202,15 +203,15 @@ export const Navbar = () => {
               </div>
             </div>
 
-            {/* Desktop Nav Items */}
-            <div className="hidden md:flex items-center gap-1">
+            {/* Nav Items — visible on all screens, scaled for mobile */}
+            <div className="flex items-center gap-0.5 md:gap-1 ml-auto">
               {/* Login / User */}
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="text-primary-foreground hover:bg-white/10 gap-1 text-sm font-medium h-9 px-3">
-                      <User className="h-4 w-4" />
-                      <span className="max-w-[80px] truncate">{profile?.full_name || 'Account'}</span>
+                    <Button variant="ghost" className="text-primary-foreground hover:bg-white/10 gap-1 text-xs md:text-sm font-medium h-8 md:h-9 px-1.5 md:px-3">
+                      <User className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                      <span className="max-w-[60px] md:max-w-[80px] truncate hidden sm:inline">{profile?.full_name || 'Account'}</span>
                       <ChevronDown className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -263,27 +264,30 @@ export const Navbar = () => {
               ) : (
                 <Button
                   onClick={() => navigate('/login')}
-                  className="bg-white text-primary font-semibold hover:bg-white/90 h-8 px-8 text-sm rounded-sm shadow-none"
+                  className="bg-white text-primary font-semibold hover:bg-white/90 h-7 md:h-8 px-3 md:px-8 text-xs md:text-sm rounded-sm shadow-none"
                 >
                   Login
                 </Button>
               )}
 
-              {/* Become a Seller */}
+              {/* Become a Seller — icon on mobile, text on desktop */}
               <Button
                 variant="ghost"
-                className="text-primary-foreground hover:bg-white/10 text-sm font-medium h-9 px-3"
+                className="text-primary-foreground hover:bg-white/10 text-sm font-medium h-8 md:h-9 px-1.5 md:px-3"
                 onClick={() => navigate('/become-seller')}
+                title="Become a Seller"
               >
-                Become a Seller
+                <Store className="h-4 w-4 md:hidden" />
+                <span className="hidden md:inline">Become a Seller</span>
               </Button>
 
               {/* More dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-primary-foreground hover:bg-white/10 text-sm font-medium h-9 px-3 gap-1">
-                    More
-                    <ChevronDown className="h-3 w-3" />
+                  <Button variant="ghost" className="text-primary-foreground hover:bg-white/10 text-sm font-medium h-8 md:h-9 px-1.5 md:px-3 gap-1">
+                    <MoreVertical className="h-4 w-4 md:hidden" />
+                    <span className="hidden md:inline">More</span>
+                    <ChevronDown className="h-3 w-3 hidden md:inline" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44 bg-card z-50">
@@ -305,15 +309,14 @@ export const Navbar = () => {
               {/* Notifications */}
               <NotificationBell />
 
-
               {/* Cart */}
               <Button
                 variant="ghost"
-                className="text-primary-foreground hover:bg-white/10 relative h-9 px-3 gap-1.5 text-sm font-medium"
+                className="text-primary-foreground hover:bg-white/10 relative h-8 md:h-9 px-1.5 md:px-3 gap-1 md:gap-1.5 text-xs md:text-sm font-medium"
                 onClick={() => navigate('/cart')}
               >
                 <div className="relative">
-                  <ShoppingCart className="h-5 w-5" />
+                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
                   {itemCount > 0 && (
                     <span className="absolute -top-2 -right-2.5 bg-yellow-400 text-foreground text-[10px] font-bold rounded-full h-4 min-w-[16px] flex items-center justify-center px-0.5">
                       {itemCount}
@@ -323,6 +326,7 @@ export const Navbar = () => {
                 <span className="hidden lg:inline">Cart</span>
               </Button>
             </div>
+
           </div>
 
           {/* Mobile Search */}
