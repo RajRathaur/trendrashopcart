@@ -34,11 +34,8 @@ const LoginPage = () => {
   const [emailOtp, setEmailOtp] = useState('');
   const [emailOtpSent, setEmailOtpSent] = useState(false);
   const [emailOtpLoading, setEmailOtpLoading] = useState(false);
-  // 2FA: after password login, verify email via OTP before completing session
-  const [pending2FA, setPending2FA] = useState(false);
-  const [twoFAEmail, setTwoFAEmail] = useState('');
-  const [twoFAOtp, setTwoFAOtp] = useState('');
-  const [twoFALoading, setTwoFALoading] = useState(false);
+
+
 
   const handleSendEmailOtp = async () => {
     if (!validateEmail(emailOtpAddr)) {
@@ -133,9 +130,9 @@ const LoginPage = () => {
     }
   };
 
-  // Redirect if already logged in (skip while awaiting 2FA verification)
+  // Redirect if already logged in
   useEffect(() => {
-    if (!authLoading && user && !pending2FA) {
+    if (!authLoading && user) {
       const googleRedirect = getSafeRedirectPath(sessionStorage.getItem('trendra_google_redirect'));
       sessionStorage.removeItem('trendra_google_redirect');
       const destination = googleRedirect !== '/' ? googleRedirect : redirect;
@@ -146,7 +143,8 @@ const LoginPage = () => {
         navigate(destination, { replace: true });
       }
     }
-  }, [user, isAdmin, authLoading, navigate, redirect, pending2FA]);
+  }, [user, isAdmin, authLoading, navigate, redirect]);
+
 
 
 
@@ -183,42 +181,12 @@ const LoginPage = () => {
 
     try {
       if (isLogin) {
-        // Step 1: verify password
         const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
-
-        // If this email/device has already completed OTP verification once, skip OTP
-        const verifiedKey = `trendra_email_verified_${formData.email.toLowerCase()}`;
-        const alreadyVerified = localStorage.getItem(verifiedKey) === '1';
-        if (alreadyVerified) {
-          toast.success('Welcome back!');
-          // Session already established by signIn — redirect effect will handle it
-          return;
-        }
-
-        // First-time login on this device: sign out and require email OTP verification
-        await supabase.auth.signOut();
-
-        // Skip re-sending if we sent an OTP to this email in the last 60s (rate-limit safe)
-        const lastKey = `trendra_otp_last_${formData.email.toLowerCase()}`;
-        const lastSent = Number(sessionStorage.getItem(lastKey) || 0);
-        const now = Date.now();
-        if (now - lastSent < 60_000) {
-          setTwoFAEmail(formData.email);
-          setPending2FA(true);
-          toast.info('OTP already sent recently. Please check your inbox.');
-        } else {
-          const { error: otpErr } = await supabase.auth.signInWithOtp({
-            email: formData.email,
-            options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
-          });
-          if (otpErr) throw otpErr;
-          sessionStorage.setItem(lastKey, String(now));
-          setTwoFAEmail(formData.email);
-          setPending2FA(true);
-          toast.success('Password verified. Enter the OTP sent to your email.');
-        }
+        toast.success('Welcome back!');
+        // Redirect effect will handle navigation
       } else {
+
         const { error } = await signUp(formData.email, formData.password, formData.fullName);
         if (error) throw error;
         toast.success('Account created! Please check your email to verify.');
@@ -236,61 +204,8 @@ const LoginPage = () => {
     }
   };
 
-  const handleVerify2FA = async () => {
-    if (twoFAOtp.length < 4) {
-      toast.error('Enter the OTP sent to your email');
-      return;
-    }
-    setTwoFALoading(true);
-    try {
-      const { error } = await supabase.auth.verifyOtp({
-        email: twoFAEmail,
-        token: twoFAOtp,
-        type: 'email',
-      });
-      if (error) throw error;
-      localStorage.setItem(`trendra_email_verified_${twoFAEmail.toLowerCase()}`, '1');
-      setPending2FA(false);
-      toast.success('Welcome back!');
-    } catch (err: any) {
-      toast.error(err?.message || 'Invalid OTP');
-    } finally {
-      setTwoFALoading(false);
-    }
-  };
 
-  const [resendCooldown, setResendCooldown] = useState(0);
 
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const t = setInterval(() => setResendCooldown((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [resendCooldown]);
-
-  const handleResend2FA = async () => {
-    if (resendCooldown > 0) return;
-    setTwoFALoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: twoFAEmail,
-        options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
-      });
-      if (error) throw error;
-      sessionStorage.setItem(`trendra_otp_last_${twoFAEmail.toLowerCase()}`, String(Date.now()));
-      setResendCooldown(60);
-      toast.success('OTP resent');
-    } catch (err: any) {
-      const msg: string = err?.message || 'Failed to resend OTP';
-      if (/rate limit|too many|429/i.test(msg)) {
-        toast.error('Email rate limit reached. Wait a minute before requesting another OTP.');
-        setResendCooldown(60);
-      } else {
-        toast.error(msg);
-      }
-    } finally {
-      setTwoFALoading(false);
-    }
-  };
 
   // Show loading while checking auth
   if (authLoading) {
@@ -301,14 +216,15 @@ const LoginPage = () => {
     );
   }
 
-  // If already logged in (and no pending 2FA), show loading (redirect happening)
-  if (user && !pending2FA) {
+  // If already logged in, show loading (redirect happening)
+  if (user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -352,65 +268,14 @@ const LoginPage = () => {
 
           <div className="bg-card rounded-xl shadow-lg p-8">
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              {pending2FA ? 'Verify it\'s you' : (isLogin ? 'Welcome Back!' : 'Create Account')}
+              {isLogin ? 'Welcome Back!' : 'Create Account'}
             </h2>
             <p className="text-muted-foreground mb-6">
-              {pending2FA
-                ? `For your security, enter the 6-digit OTP we sent to ${twoFAEmail}.`
-                : (isLogin ? 'Login to access your account' : 'Sign up to start shopping')}
+              {isLogin ? 'Login to access your account' : 'Sign up to start shopping'}
             </p>
 
-            {pending2FA ? (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="twoFAOtp">Enter OTP</Label>
-                  <div className="relative mt-1">
-                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="twoFAOtp"
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="6-digit code"
-                      className="pl-10 tracking-widest"
-                      value={twoFAOtp}
-                      onChange={(e) => setTwoFAOtp(e.target.value.replace(/\D/g, ''))}
-                      maxLength={6}
-                      autoFocus
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Check your inbox (and spam folder) for the code.
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  className="w-full btn-primary-gradient"
-                  size="lg"
-                  disabled={twoFALoading}
-                  onClick={handleVerify2FA}
-                >
-                  {twoFALoading ? 'Verifying...' : (<>Verify & Login <ArrowRight className="h-4 w-4 ml-2" /></>)}
-                </Button>
-                <div className="flex items-center justify-between text-sm">
-                  <button
-                    type="button"
-                    onClick={handleResend2FA}
-                    disabled={twoFALoading || resendCooldown > 0}
-                    className="text-primary hover:underline disabled:opacity-50 disabled:no-underline"
-                  >
-                    {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend OTP'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setPending2FA(false); setTwoFAOtp(''); setTwoFAEmail(''); }}
-                    className="text-muted-foreground hover:underline"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
             <Tabs value={authMode === 'phone' ? 'email' : authMode} onValueChange={(v) => setAuthMode(v as 'email' | 'emailotp')} className="mb-4">
+
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" /> Password</TabsTrigger>
                 <TabsTrigger value="emailotp"><KeyRound className="h-4 w-4 mr-1" /> Email OTP</TabsTrigger>
@@ -573,7 +438,8 @@ const LoginPage = () => {
                 </div>
               </TabsContent>
             </Tabs>
-            )}
+
+
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
