@@ -9,25 +9,25 @@ import maleImg from '@/assets/cinematic-male-model.jpg';
  */
 export const contentConfig = {
   brand: 'TRENDRA',
-  tagline: 'Cinema for the way you dress',
+  tagline: 'Style that speaks for you',
   female: {
     image: femaleImg,
-    label: 'Femme Noir',
-    title: 'She Owns The Night',
-    subtitle: 'Sharp tailoring. Structured power. Silence that commands every room.',
-    cta: { label: 'Shop Femme', href: '/products?gender=women' },
+    label: 'For Her',
+    title: 'Elegance, Redefined',
+    subtitle: 'From timeless weaves to modern drapes. Find pieces that celebrate your style.',
+    cta: { label: 'Shop Women', href: '/products?gender=women' },
   },
   male: {
     image: maleImg,
-    label: 'Monsieur Noir',
-    title: 'He Walks In Shadows',
-    subtitle: 'Tailored bombers. Cargo lines. Sneakers cut from quiet luxury.',
-    cta: { label: 'Shop Monsieur', href: '/products?gender=men' },
+    label: 'For Him',
+    title: 'Confidence, Tailored',
+    subtitle: 'Smart casuals to statement looks. Dress with intent, every single day.',
+    cta: { label: 'Shop Men', href: '/products?gender=men' },
   },
   finale: {
-    headline: 'Two Worlds. One Wardrobe.',
-    sub: 'Welcome to Trendra — the cinematic shopkart.',
-    cta: { label: 'Enter the Collection', href: '/products' },
+    headline: 'For Her. For Him. For Every Moment.',
+    sub: 'Trendra — India\'s fashion destination.',
+    cta: { label: 'Explore Collection', href: '/products' },
   },
 };
 
