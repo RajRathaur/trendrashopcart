@@ -381,6 +381,33 @@ const AdminProducts = () => {
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })} required />
                 </div>
 
+                <div className="border rounded-md p-3 space-y-2 bg-muted/30">
+                  <Label className="text-sm font-semibold">Delivery</Label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.freeDelivery}
+                      onChange={(e) => setFormData({ ...formData, freeDelivery: e.target.checked })}
+                    />
+                    Free delivery for this product
+                  </label>
+                  {!formData.freeDelivery && (
+                    <div>
+                      <Label htmlFor="deliveryCharge" className="text-xs text-muted-foreground">
+                        Delivery charge (₹) — leave empty to use default ₹40
+                      </Label>
+                      <Input
+                        id="deliveryCharge"
+                        type="number"
+                        min="0"
+                        placeholder="40"
+                        value={formData.deliveryCharge}
+                        onChange={(e) => setFormData({ ...formData, deliveryCharge: e.target.value })}
+                      />
+                    </div>
+                  )}
+                </div>
+
                 {/* Sizes — chip input, enabled once a category is picked */}
                 {formData.categoryId && categoryKind !== 'none' && (
                   <div>
