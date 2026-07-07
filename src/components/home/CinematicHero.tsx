@@ -106,7 +106,7 @@ export const CinematicHero = () => {
     <section
       ref={root}
       aria-label="Trendra cinematic hero"
-      className="relative w-screen h-[25svh] md:h-[100svh] overflow-hidden bg-black left-1/2 right-1/2 -mx-[50vw]"
+      className="relative w-screen h-[25svh] md:h-[100svh] overflow-hidden bg-[#f5f0e8] left-1/2 right-1/2 -mx-[50vw]"
       style={{ fontFamily: '"Urbanist", "Space Grotesk", system-ui, sans-serif' }}
     >
       <div className="absolute top-0 inset-x-0 z-40 flex items-center justify-between px-5 md:px-10 py-5">
