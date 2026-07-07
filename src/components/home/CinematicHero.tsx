@@ -101,6 +101,7 @@ export const CinematicHero = () => {
         .to('.cine-male-zoom', { scale: 1.8, duration: 1.8, ease: 'power2.inOut' })
         .to('.male-copy', { autoAlpha: 0, duration: 0.6 }, '<')
         .to('.cine-finale', { autoAlpha: 1, scale: 1, duration: 1.2 }, '-=0.6');
+      }
 
       gsap.to('.cine-glow', {
         opacity: 0.55,
@@ -112,8 +113,9 @@ export const CinematicHero = () => {
       });
     }, root);
 
+
     return () => ctx.revert();
-  }, [reduceMotion]);
+  }, [reduceMotion, style, timeScale]);
 
   // Reduced-motion: static side-by-side collage
   if (reduceMotion) {
