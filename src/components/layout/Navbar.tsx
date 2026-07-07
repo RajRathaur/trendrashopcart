@@ -299,8 +299,12 @@ export const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* Theme toggle (Day / Night) */}
+              <ThemeToggle />
+
               {/* Notifications */}
               <NotificationBell />
+
 
               {/* Cart */}
               <Button
