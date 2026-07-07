@@ -1,26 +1,20 @@
-import { useEffect, useState } from 'react';
-import deliveryBoy from '@/assets/delivery-boy.png';
-import deliveryTruck from '@/assets/delivery-truck.png';
+import { useAnimationSettings, useEffectivePerformance, speedFactor } from '@/lib/animationSettings';
 
 const stages = ['Packed', 'Dispatched', 'In Transit', 'Delivered'];
 
 /**
  * DeliveryRoad – GPU-composited, jank-free.
- * Only `transform` + `opacity` are animated so every layer stays on the compositor.
+ * Admin can pick style/speed, disable, or hide vehicles via animationSettings.
  */
 export const DeliveryRoad = () => {
-  const [reduced, setReduced] = useState(false);
+  const { deliveryRoad } = useAnimationSettings();
+  const { low } = useEffectivePerformance();
 
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
+  if (!deliveryRoad.enabled) return null;
 
-  const truckDuration = reduced ? '70s' : '30s';
-  const bikeDuration  = reduced ? '55s' : '22s';
+  const factor = speedFactor(deliveryRoad.speed);
+  const truckDuration = `${(low ? 60 : 30) * factor}s`;
+  const bikeDuration = `${(low ? 45 : 22) * factor}s`;
   const ease = 'cubic-bezier(0.45, 0.05, 0.55, 0.95)';
 
   const gpuLayer: React.CSSProperties = {
@@ -29,6 +23,14 @@ export const DeliveryRoad = () => {
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
   };
+
+  // Style-driven colour tokens
+  const palette =
+    deliveryRoad.style === 'neon'
+      ? { road: 'hsl(280,80%,20%)', dash: 'hsl(280,90%,60%)', accent: 'hsl(320,90%,60%)' }
+      : deliveryRoad.style === 'minimal'
+      ? { road: 'hsl(0,0%,85%)', dash: 'hsl(0,0%,60%)', accent: 'hsl(var(--primary))' }
+      : { road: 'hsl(240,5%,25%)', dash: 'hsl(240,5%,40%)', accent: 'hsl(var(--primary))' };
 
   return (
     <section
@@ -56,8 +58,8 @@ export const DeliveryRoad = () => {
             <div key={label} className="flex flex-1 items-center last:flex-none">
               <div className="flex flex-col items-center">
                 <span
-                  className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--primary))]"
-                  style={{ opacity: 0.4 + i * 0.2 }}
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ background: palette.accent, opacity: 0.4 + i * 0.2 }}
                 />
                 <span className="mt-1 text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap">
                   {label}
@@ -66,12 +68,11 @@ export const DeliveryRoad = () => {
               {i < stages.length - 1 && (
                 <div className="relative mx-1 h-[1px] flex-1 overflow-hidden bg-border">
                   <div
-                    className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-[hsl(var(--primary))] to-transparent"
+                    className="absolute inset-y-0 left-0 w-1/3"
                     style={{
                       ...gpuLayer,
-                      animation: reduced
-                        ? undefined
-                        : `track-sweep 3.2s ${ease} ${i * 0.4}s infinite`,
+                      background: `linear-gradient(90deg, transparent, ${palette.accent}, transparent)`,
+                      animation: low ? undefined : `track-sweep 3.2s ${ease} ${i * 0.4}s infinite`,
                     }}
                   />
                 </div>
@@ -82,69 +83,70 @@ export const DeliveryRoad = () => {
       </div>
 
       {/* Road line */}
-      <div className="absolute bottom-5 left-0 right-0 h-[2px] bg-[hsl(240,5%,25%)]" />
+      <div className="absolute bottom-5 left-0 right-0 h-[2px]" style={{ background: palette.road }} />
 
-      {/* Dashed centre markings – transform-scrolled */}
+      {/* Dashed centre markings */}
       <div className="absolute bottom-[19px] left-0 right-0 h-[1px] overflow-hidden">
         <div
           style={{
             ...gpuLayer,
             width: '200%',
             height: '100%',
-            backgroundImage:
-              'repeating-linear-gradient(90deg, hsl(240,5%,40%) 0px, hsl(240,5%,40%) 24px, transparent 24px, transparent 56px)',
-            animation: reduced ? undefined : `markings-scroll ${truckDuration} linear infinite`,
+            backgroundImage: `repeating-linear-gradient(90deg, ${palette.dash} 0px, ${palette.dash} 24px, transparent 24px, transparent 56px)`,
+            animation: low ? undefined : `markings-scroll ${truckDuration} linear infinite`,
           }}
         />
       </div>
 
-      {/* Delivery truck – wheels sit on the line */}
-      <div
-        className="absolute bottom-[18px]"
-        style={{ ...gpuLayer, animation: `drive-across ${truckDuration} ${ease} infinite` }}
-      >
-        <img
-          src={deliveryTruck}
-          alt=""
-          aria-hidden="true"
-          width={72}
-          height={45}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          className="h-[42px] w-auto select-none block"
-          style={{
-            ...gpuLayer,
-            animation: reduced ? undefined : 'vehicle-bob 1.6s cubic-bezier(0.37, 0, 0.63, 1) infinite',
-          }}
-        />
-      </div>
+      {deliveryRoad.showTruck && (
+        <div
+          className="absolute bottom-[18px]"
+          style={{ ...gpuLayer, animation: `drive-across ${truckDuration} ${ease} infinite` }}
+        >
+          <img
+            src={new URL('@/assets/delivery-truck.png', import.meta.url).href}
+            alt=""
+            aria-hidden="true"
+            width={72}
+            height={45}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className="h-[42px] w-auto select-none block"
+            style={{
+              ...gpuLayer,
+              animation: low ? undefined : 'vehicle-bob 1.6s cubic-bezier(0.37, 0, 0.63, 1) infinite',
+            }}
+          />
+        </div>
+      )}
 
-      {/* Delivery boy on scooter – wheels sit on the line */}
-      <div
-        className="absolute bottom-[18px]"
-        style={{
-          ...gpuLayer,
-          animation: `drive-across ${bikeDuration} ${ease} infinite`,
-          animationDelay: reduced ? '0s' : '-9s',
-        }}
-      >
-        <img
-          src={deliveryBoy}
-          alt=""
-          aria-hidden="true"
-          width={64}
-          height={40}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          className="h-[40px] w-auto select-none block"
+      {deliveryRoad.showScooter && (
+        <div
+          className="absolute bottom-[18px]"
           style={{
             ...gpuLayer,
-            animation: reduced ? undefined : 'vehicle-bob 1.1s cubic-bezier(0.37, 0, 0.63, 1) infinite',
+            animation: `drive-across ${bikeDuration} ${ease} infinite`,
+            animationDelay: low ? '0s' : '-9s',
           }}
-        />
-      </div>
+        >
+          <img
+            src={new URL('@/assets/delivery-boy.png', import.meta.url).href}
+            alt=""
+            aria-hidden="true"
+            width={64}
+            height={40}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className="h-[40px] w-auto select-none block"
+            style={{
+              ...gpuLayer,
+              animation: low ? undefined : 'vehicle-bob 1.1s cubic-bezier(0.37, 0, 0.63, 1) infinite',
+            }}
+          />
+        </div>
+      )}
     </section>
   );
 };
