@@ -10,14 +10,14 @@ interface Props {
 }
 
 export const AdminGuard = ({ children, allowSeller = false }: Props) => {
-  const { user, isAdmin, isSeller, loading } = useAuth();
+  const { user, isAdmin, isSeller, isLoading } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
     document.title = 'Loading… — Trendra';
   }, []);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-primary" />
