@@ -106,7 +106,6 @@ export const CinematicHero = () => {
       ref={root}
       aria-label="Trendra cinematic hero"
       className="relative w-screen h-[25svh] md:h-[100svh] overflow-hidden bg-[#f5f0e8] left-1/2 right-1/2 -mx-[50vw]"
-      style={{ fontFamily: '"Urbanist", "Space Grotesk", system-ui, sans-serif' }}
     >
       <div className="absolute top-0 inset-x-0 z-40 flex items-center justify-between px-5 md:px-10 py-5">
         <span className="text-[#7d9b76] tracking-[0.4em] text-xs md:text-sm font-bold uppercase">{c.brand}</span>
