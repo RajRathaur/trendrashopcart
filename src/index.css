@@ -507,3 +507,55 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* =====================================================================
+   Day Light Theme — activated by adding `.light` on <html>.
+   Night (default :root) remains untouched. Only surfaces/text/borders
+   switch to a clean white palette; primary/accent brand colours stay
+   the same so buttons and animations remain identical in vibe.
+   ===================================================================== */
+.light {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 10%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 10%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 10%;
+
+  /* Keep primary/accent as-is so buttons look the same */
+  --primary-foreground: 0 0% 100%;
+  --accent-foreground: 0 0% 100%;
+
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 10% 10%;
+
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 4% 40%;
+
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 240 6% 90%;
+  --input: 240 6% 92%;
+
+  --sidebar-background: 0 0% 100%;
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 240 10% 10%;
+  --sidebar-accent: 240 5% 96%;
+  --sidebar-accent-foreground: 240 10% 10%;
+  --sidebar-border: 240 6% 90%;
+
+  --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.7), hsl(240 5% 96% / 0.5));
+
+  --shadow-sm: 0 1px 2px 0px hsl(240 10% 20% / 0.06);
+  --shadow-md: 0 4px 12px 0px hsl(240 10% 20% / 0.08);
+  --shadow-lg: 0 8px 24px 0px hsl(240 10% 20% / 0.1);
+  --shadow-product: 0 1px 3px hsl(240 10% 20% / 0.1);
+  --shadow-hover: 0 10px 30px -10px hsl(258 90% 66% / 0.35);
+  --shadow-2xs: 0 1px 2px 0px hsl(240 10% 20% / 0.04);
+  --shadow-xs: 0 1px 3px 0px hsl(240 10% 20% / 0.05);
+  --shadow: 0 1px 4px 0px hsl(240 10% 20% / 0.06);
+  --shadow-xl: 0 12px 28px 0px hsl(240 10% 20% / 0.12);
+  --shadow-2xl: 0 18px 40px 0px hsl(240 10% 20% / 0.14);
+}
