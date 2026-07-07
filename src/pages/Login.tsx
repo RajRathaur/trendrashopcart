@@ -249,6 +249,7 @@ const LoginPage = () => {
         type: 'email',
       });
       if (error) throw error;
+      localStorage.setItem(`trendra_email_verified_${twoFAEmail.toLowerCase()}`, '1');
       setPending2FA(false);
       toast.success('Welcome back!');
     } catch (err: any) {
