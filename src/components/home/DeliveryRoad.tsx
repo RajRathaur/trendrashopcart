@@ -86,7 +86,8 @@ export const DeliveryRoad = () => {
 
       {/* Delivery truck */}
       <div
-        className="absolute bottom-[22px]"
+        className="absolute bottom-[14px]"
+
         style={{
           ...gpuLayer,
           animation: `drive-across ${truckDuration} ${ease} infinite`,
@@ -113,7 +114,7 @@ export const DeliveryRoad = () => {
 
       {/* Delivery boy on scooter */}
       <div
-        className="absolute bottom-[22px]"
+        className="absolute bottom-[14px]"
         style={{
           ...gpuLayer,
           animation: `drive-across ${bikeDuration} ${ease} infinite`,
