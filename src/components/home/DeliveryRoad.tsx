@@ -107,7 +107,7 @@ export const DeliveryRoad = () => {
           style={{ ...gpuLayer, animation: `drive-across ${truckDuration} ${ease} infinite` }}
         >
           <img
-            src={new URL('@/assets/delivery-truck.png', import.meta.url).href}
+            src={deliveryTruck}
             alt=""
             aria-hidden="true"
             width={72}
@@ -134,7 +134,7 @@ export const DeliveryRoad = () => {
           }}
         >
           <img
-            src={new URL('@/assets/delivery-boy.png', import.meta.url).href}
+            src={deliveryBoy}
             alt=""
             aria-hidden="true"
             width={64}
