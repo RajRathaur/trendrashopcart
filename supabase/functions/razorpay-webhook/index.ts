@@ -68,13 +68,17 @@ Deno.serve(async (req) => {
     }
 
     // Log every event for reconciliation (best-effort).
-    await admin.from('payment_confirmations').insert({
-      order_id: trendraOrderId,
-      provider: 'razorpay',
-      provider_payment_id: payment?.id ?? null,
-      provider_order_id: payment?.order_id ?? null,
-      status: type,
-    } as never).catch(() => undefined);
+    try {
+      await admin.from('payment_confirmations').insert({
+        order_id: trendraOrderId,
+        provider: 'razorpay',
+        provider_payment_id: payment?.id ?? null,
+        provider_order_id: payment?.order_id ?? null,
+        status: type,
+      } as never);
+    } catch (logErr) {
+      console.warn('payment_confirmations insert failed:', logErr);
+    }
 
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
