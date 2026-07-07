@@ -241,6 +241,8 @@ const AdminProducts = () => {
       categoryId: product.category_id || '',
       sizes: product.sizes || [],
       colors: product.colors || [],
+      deliveryCharge: product.delivery_charge != null ? String(product.delivery_charge) : '',
+      freeDelivery: !!product.free_delivery,
     });
     setDialogOpen(true);
   };
