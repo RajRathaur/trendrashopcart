@@ -26,7 +26,7 @@ const CheckoutPage = () => {
     max_discount_amount: number | null;
   } | null>(null);
   
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online' | 'razorpay'>('cod');
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('razorpay');
 
   // Load Razorpay checkout script once
   useEffect(() => {
