@@ -26,7 +26,17 @@ const CheckoutPage = () => {
     max_discount_amount: number | null;
   } | null>(null);
   
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online'>('cod');
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online' | 'razorpay'>('cod');
+
+  // Load Razorpay checkout script once
+  useEffect(() => {
+    if (document.getElementById('razorpay-checkout-js')) return;
+    const s = document.createElement('script');
+    s.id = 'razorpay-checkout-js';
+    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
     phone: profile?.phone || '',
@@ -222,6 +232,66 @@ const CheckoutPage = () => {
       }
 
       await clearCart();
+
+      if (paymentMethod === 'razorpay') {
+        // Create Razorpay order via edge function
+        const { data: rzp, error: rzpErr } = await supabase.functions.invoke('create-razorpay-order', {
+          body: { orderId: order.id, amount: finalAmount },
+        });
+        if (rzpErr || !rzp?.order_id) {
+          throw new Error(rzpErr?.message || 'Failed to initiate Razorpay payment');
+        }
+
+        const RZP = (window as any).Razorpay;
+        if (!RZP) {
+          toast.error('Payment SDK not loaded. Please refresh and try again.');
+          setLoading(false);
+          return;
+        }
+
+        await clearCart();
+
+        const rz = new RZP({
+          key: rzp.key_id,
+          order_id: rzp.order_id,
+          amount: rzp.amount,
+          currency: rzp.currency || 'INR',
+          name: 'Trendra',
+          description: `Order ${order.order_number}`,
+          prefill: {
+            name: formData.fullName,
+            contact: formData.phone,
+            email: user.email || '',
+          },
+          theme: { color: '#2874f0' },
+          handler: async (resp: any) => {
+            try {
+              await supabase.functions.invoke('verify-razorpay-payment', {
+                body: {
+                  orderId: order.id,
+                  razorpay_order_id: resp.razorpay_order_id,
+                  razorpay_payment_id: resp.razorpay_payment_id,
+                  razorpay_signature: resp.razorpay_signature,
+                },
+              });
+              toast.success('Payment successful!');
+              navigate(`/order-success?order=${order.order_number}`);
+            } catch (verifyErr) {
+              console.error('Verify error:', verifyErr);
+              toast.error('Payment received — verification pending. We will update you shortly.');
+              navigate(`/orders`);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              toast.info('Payment cancelled. Your order is saved as pending.');
+              navigate('/orders');
+            },
+          },
+        });
+        rz.open();
+        return;
+      }
 
       if (paymentMethod === 'online') {
         navigate(`/confirm-payment?order=${order.order_number}&amount=${finalAmount}&orderId=${order.id}`);
@@ -420,6 +490,22 @@ const CheckoutPage = () => {
                       <span className="text-2xl">📱</span>
                     </div>
                   </div>
+
+                  <div
+                    onClick={() => setPaymentMethod('razorpay')}
+                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'razorpay' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-muted-foreground/50'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${paymentMethod === 'razorpay' ? 'border-primary' : 'border-muted-foreground'}`}>
+                        {paymentMethod === 'razorpay' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <div className="flex-1">
+                        <span className="font-semibold text-sm">Pay Online (Cards / UPI / Netbanking)</span>
+                        <p className="text-xs text-muted-foreground mt-0.5">Secure instant payment via Razorpay</p>
+                      </div>
+                      <span className="text-2xl">💳</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
 
@@ -544,6 +630,8 @@ const CheckoutPage = () => {
                     <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Placing Order...</>
                   ) : paymentMethod === 'cod' ? (
                     'Place Order (COD)'
+                  ) : paymentMethod === 'razorpay' ? (
+                    `Pay ₹${finalAmount.toLocaleString('en-IN')} Now`
                   ) : (
                     'Continue to Payment'
                   )}
