@@ -71,7 +71,16 @@ export const BuyNowDialog = ({ open, onOpenChange, productId, productName, amoun
       const shippingCity = profile?.city || 'N/A';
       const shippingState = profile?.state || 'N/A';
       const shippingPincode = profile?.pincode || '000000';
-      const shippingPhone = profile?.phone || '';
+      const shippingPhone = (profile?.phone || '').trim();
+
+      if (!/^[+0-9 ().\-]{7,20}$/.test(shippingPhone)) {
+        toast.error('Please add a valid phone number in your profile before paying online.');
+        onOpenChange(false);
+        navigate('/profile');
+        setLoading(false);
+        return;
+      }
+
 
       const { data: order, error: orderError } = await supabase
         .from('orders')
