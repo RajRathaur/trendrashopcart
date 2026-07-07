@@ -36,12 +36,20 @@ export const contentConfig = {
 export const CinematicHero = () => {
   const root = useRef<HTMLDivElement>(null);
   const c = contentConfig;
+  const { hero } = useAnimationSettings();
+  const { low } = useEffectivePerformance();
   const reduceMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    !hero.enabled ||
+    hero.style === 'staticSplit' ||
+    low ||
+    (typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  const timeScale = 1 / speedFactor(hero.speed); // faster speed -> higher timeScale
+  const style = hero.style;
 
   useEffect(() => {
     if (!root.current || reduceMotion) return;
+
     const ctx = gsap.context(() => {
       gsap.set('.cine-female', { xPercent: 100, scale: 1.2, filter: 'blur(12px)' });
       gsap.set('.cine-female-zoom', { scale: 1, transformOrigin: '50% 50%' });
@@ -54,8 +62,34 @@ export const CinematicHero = () => {
       const tl = gsap.timeline({
         defaults: { ease: 'power3.inOut' },
       });
+      tl.timeScale(timeScale);
 
-      tl.to('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power2.inOut' })
+      if (style === 'crossfade') {
+        // Simple crossfade: female visible, then male fades in and stays
+        gsap.set('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)', autoAlpha: 1 });
+        gsap.set('.cine-male', { xPercent: 0, scale: 1, filter: 'blur(0px)', autoAlpha: 0 });
+        tl.to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 })
+          .to({}, { duration: 3 })
+          .to('.fem-copy', { autoAlpha: 0, duration: 0.6 })
+          .to('.cine-female', { autoAlpha: 0, duration: 1.2 }, '<')
+          .to('.cine-male', { autoAlpha: 1, duration: 1.2 }, '<')
+          .to('.male-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 }, '-=0.3')
+          .to({}, { duration: 3 })
+          .to('.cine-finale', { autoAlpha: 1, scale: 1, duration: 1.2 });
+      } else if (style === 'kenBurns') {
+        // Both visible split, slow ken-burns zoom on both
+        gsap.set('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)' });
+        gsap.set('.cine-male', { xPercent: 0, scale: 1, filter: 'blur(0px)' });
+        gsap.set('.cine-female', { clipPath: 'inset(0 50% 0 0)' });
+        gsap.set('.cine-male', { clipPath: 'inset(0 0 0 50%)' });
+        tl.to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 })
+          .to('.male-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 }, '<');
+        gsap.to('.cine-female-zoom', { scale: 1.15, duration: 10, ease: 'sine.inOut', repeat: -1, yoyo: true });
+        gsap.to('.cine-male-zoom', { scale: 1.15, duration: 10, ease: 'sine.inOut', repeat: -1, yoyo: true });
+      } else {
+        // Default cinematic sequence
+        tl.to('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power2.inOut' })
+
         .to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.12 }, '-=0.6')
         .to({}, { duration: 1 })
         .to('.cine-female-zoom', { scale: 1.8, duration: 1.8, ease: 'power2.inOut' })
