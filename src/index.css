@@ -493,11 +493,16 @@
 
   @keyframes drive-across {
     0% {
-      transform: translateX(-60px);
+      transform: translateX(-80px);
     }
     100% {
-      transform: translateX(calc(100vw + 60px));
+      transform: translateX(calc(100vw + 80px));
     }
+  }
+
+  @keyframes vehicle-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-1.5px); }
   }
 }
 
