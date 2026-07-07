@@ -293,12 +293,8 @@ const CheckoutPage = () => {
         return;
       }
 
-      if (paymentMethod === 'online') {
-        navigate(`/confirm-payment?order=${order.order_number}&amount=${finalAmount}&orderId=${order.id}`);
-      } else {
-        toast.success('Order placed successfully!');
-        navigate(`/order-success?order=${order.order_number}`);
-      }
+      toast.success('Order placed successfully!');
+      navigate(`/order-success?order=${order.order_number}`);
     } catch (error: any) {
       console.error('Checkout error:', error);
       toast.error(error.message || 'Failed to place order');
