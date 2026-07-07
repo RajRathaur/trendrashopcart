@@ -3,6 +3,8 @@ import { gsap } from 'gsap';
 import { Link } from 'react-router-dom';
 import femaleImg from '@/assets/cinematic-female-model.jpg';
 import maleImg from '@/assets/cinematic-male-model.jpg';
+import { useAnimationSettings, useEffectivePerformance, speedFactor } from '@/lib/animationSettings';
+
 
 /**
  * ADMIN-EDITABLE CONTENT
