@@ -9,25 +9,25 @@ import maleImg from '@/assets/cinematic-male-model.jpg';
  */
 export const contentConfig = {
   brand: 'TRENDRA',
-  tagline: 'Cinema for the way you dress',
+  tagline: 'Style that speaks for you',
   female: {
     image: femaleImg,
-    label: 'Femme Noir',
-    title: 'She Owns The Night',
-    subtitle: 'Sharp tailoring. Structured power. Silence that commands every room.',
-    cta: { label: 'Shop Femme', href: '/products?gender=women' },
+    label: 'For Her',
+    title: 'Elegance, Redefined',
+    subtitle: 'From timeless weaves to modern drapes. Find pieces that celebrate your style.',
+    cta: { label: 'Shop Women', href: '/products?gender=women' },
   },
   male: {
     image: maleImg,
-    label: 'Monsieur Noir',
-    title: 'He Walks In Shadows',
-    subtitle: 'Tailored bombers. Cargo lines. Sneakers cut from quiet luxury.',
-    cta: { label: 'Shop Monsieur', href: '/products?gender=men' },
+    label: 'For Him',
+    title: 'Confidence, Tailored',
+    subtitle: 'Smart casuals to statement looks. Dress with intent, every single day.',
+    cta: { label: 'Shop Men', href: '/products?gender=men' },
   },
   finale: {
-    headline: 'Two Worlds. One Wardrobe.',
-    sub: 'Welcome to Trendra — the cinematic shopkart.',
-    cta: { label: 'Enter the Collection', href: '/products' },
+    headline: 'For Her. For Him. For Every Moment.',
+    sub: 'Trendra — India\'s fashion destination.',
+    cta: { label: 'Explore Collection', href: '/products' },
   },
 };
 
@@ -85,17 +85,16 @@ export const CinematicHero = () => {
       <section
         ref={root}
         aria-label="Trendra cinematic hero"
-        className="relative w-screen overflow-hidden bg-black left-1/2 right-1/2 -mx-[50vw]"
-        style={{ fontFamily: '"Urbanist", "Space Grotesk", system-ui, sans-serif' }}
+        className="relative w-screen overflow-hidden bg-[#f5f0e8] left-1/2 right-1/2 -mx-[50vw]"
       >
-        <div className="grid grid-cols-2 min-h-[70vh] md:min-h-[85vh]">
+        <div className="grid grid-cols-2 min-h-[70vh] md:min-h-[85vh] gap-1 p-1">
           <div className="relative overflow-hidden">
             <img src={c.female.image} alt={c.female.title} className="w-full h-full object-cover object-top" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/80 via-[#f5f0e8]/20 to-transparent" />
           </div>
           <div className="relative overflow-hidden">
             <img src={c.male.image} alt={c.male.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/80 via-[#f5f0e8]/20 to-transparent" />
           </div>
         </div>
       </section>
@@ -106,17 +105,16 @@ export const CinematicHero = () => {
     <section
       ref={root}
       aria-label="Trendra cinematic hero"
-      className="relative w-screen h-[25svh] md:h-[100svh] overflow-hidden bg-black left-1/2 right-1/2 -mx-[50vw]"
-      style={{ fontFamily: '"Urbanist", "Space Grotesk", system-ui, sans-serif' }}
+      className="relative w-screen h-[25svh] md:h-[100svh] overflow-hidden bg-[#f5f0e8] left-1/2 right-1/2 -mx-[50vw]"
     >
       <div className="absolute top-0 inset-x-0 z-40 flex items-center justify-between px-5 md:px-10 py-5">
-        <span className="text-[#deff9a] tracking-[0.4em] text-xs md:text-sm font-bold uppercase">{c.brand}</span>
-        <span className="hidden md:block text-white/75 text-xs uppercase tracking-[0.3em]">{c.tagline}</span>
+        <span className="text-[#7d9b76] tracking-[0.4em] text-xs md:text-sm font-bold uppercase">{c.brand}</span>
+        <span className="hidden md:block text-[#2d2d2d]/60 text-xs uppercase tracking-[0.3em]">{c.tagline}</span>
       </div>
 
       <div
-        className="cine-glow pointer-events-none absolute -bottom-40 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] rounded-full opacity-30 blur-[140px]"
-        style={{ background: '#deff9a' }}
+        className="cine-glow pointer-events-none absolute -bottom-40 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] rounded-full opacity-20 blur-[140px]"
+        style={{ background: '#a8c0a0' }}
       />
 
       {/* FEMALE LAYER */}
@@ -132,18 +130,18 @@ export const CinematicHero = () => {
             decoding="async"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#f5f0e8]/80 via-transparent to-[#f5f0e8]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/90 via-transparent to-[#f5f0e8]/30" />
         <div className="fem-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center px-4 md:px-16 pb-4 md:pb-0 max-w-2xl">
-          <span className="text-[#deff9a] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.female.label}</span>
-          <h1 className="mt-1 md:mt-4 text-white text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight drop-shadow-lg">
+          <span className="text-[#7d9b76] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.female.label}</span>
+          <h1 className="mt-1 md:mt-4 text-[#2d2d2d] text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight">
             {c.female.title}
           </h1>
-          <p className="mt-1 md:mt-5 text-white/80 text-[10px] md:text-lg max-w-md font-light drop-shadow line-clamp-2">{c.female.subtitle}</p>
+          <p className="mt-1 md:mt-5 text-[#2d2d2d]/70 text-[10px] md:text-lg max-w-md font-light line-clamp-2">{c.female.subtitle}</p>
           <div className="mt-2 md:mt-6">
             <Link
               to={c.female.cta.href}
-              className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#deff9a] text-black text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
+              className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#7d9b76] text-white text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-[#5a7a54] transition-colors"
             >
               {c.female.cta.label}
             </Link>
@@ -164,19 +162,19 @@ export const CinematicHero = () => {
             decoding="async"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/10 to-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#f5f0e8]/80 via-transparent to-[#f5f0e8]/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/90 via-transparent to-[#f5f0e8]/40" />
         <div className="male-copy absolute inset-0 z-20 flex flex-col justify-end md:justify-center md:items-end px-4 md:px-16 pb-4 md:pb-0">
           <div className="max-w-2xl md:text-right">
-            <span className="text-[#deff9a] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.male.label}</span>
-            <h2 className="mt-1 md:mt-4 text-white text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight">
+            <span className="text-[#7d9b76] text-[8px] md:text-xs tracking-[0.5em] uppercase font-bold">{c.male.label}</span>
+            <h2 className="mt-1 md:mt-4 text-[#2d2d2d] text-lg md:text-8xl font-black uppercase leading-[0.95] tracking-tight">
               {c.male.title}
             </h2>
-            <p className="mt-1 md:mt-5 text-white/70 text-[10px] md:text-lg max-w-md md:ml-auto font-light line-clamp-2">{c.male.subtitle}</p>
+            <p className="mt-1 md:mt-5 text-[#2d2d2d]/70 text-[10px] md:text-lg max-w-md md:ml-auto font-light line-clamp-2">{c.male.subtitle}</p>
             <div className="mt-2 md:mt-6 md:text-right">
               <Link
                 to={c.male.cta.href}
-                className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#deff9a] text-black text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-white transition-colors"
+                className="inline-block px-3 py-1.5 md:px-6 md:py-3 bg-[#7d9b76] text-white text-[10px] md:text-sm font-bold uppercase tracking-[0.25em] hover:bg-[#5a7a54] transition-colors"
               >
                 {c.male.cta.label}
               </Link>
@@ -186,15 +184,15 @@ export const CinematicHero = () => {
       </div>
 
       {/* FINALE */}
-      <div className="cine-finale absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6 bg-black/60 backdrop-blur-sm">
-        <span className="text-[#deff9a] text-[10px] md:text-xs tracking-[0.6em] uppercase font-bold">{c.brand}</span>
-        <h3 className="mt-5 text-white text-4xl md:text-7xl font-black uppercase leading-[0.95] tracking-tight max-w-4xl">
+      <div className="cine-finale absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6 bg-[#f5f0e8]/80 backdrop-blur-sm">
+        <span className="text-[#7d9b76] text-[10px] md:text-xs tracking-[0.6em] uppercase font-bold">{c.brand}</span>
+        <h3 className="mt-5 text-[#2d2d2d] text-4xl md:text-7xl font-black uppercase leading-[0.95] tracking-tight max-w-4xl">
           {c.finale.headline}
         </h3>
-        <p className="mt-5 text-white/70 text-sm md:text-lg max-w-xl font-light">{c.finale.sub}</p>
+        <p className="mt-5 text-[#2d2d2d]/70 text-sm md:text-lg max-w-xl font-light">{c.finale.sub}</p>
         <Link
           to={c.finale.cta.href}
-          className="mt-8 px-8 py-4 bg-[#deff9a] text-black text-xs md:text-sm font-bold uppercase tracking-[0.3em] hover:bg-white transition-colors"
+          className="mt-8 px-8 py-4 bg-[#7d9b76] text-white text-xs md:text-sm font-bold uppercase tracking-[0.3em] hover:bg-[#5a7a54] transition-colors"
         >
           {c.finale.cta.label}
         </Link>
