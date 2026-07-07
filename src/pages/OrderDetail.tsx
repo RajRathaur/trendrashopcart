@@ -7,11 +7,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Package, ChevronRight, Truck, CheckCircle, XCircle, 
-  RotateCcw, Clock, MapPin, CreditCard, ArrowLeft, ShoppingBag
+  RotateCcw, Clock, MapPin, CreditCard, ArrowLeft, ShoppingBag, ExternalLink, Loader2
 } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { getTrackingUrl } from '@/lib/tracking';
 
 interface Order {
   id: string;
@@ -27,6 +28,8 @@ interface Order {
   shipping_phone: string;
   payment_method: string;
   notes: string | null;
+  tracking_number: string | null;
+  courier_name: string | null;
 }
 
 interface OrderItem {
@@ -165,6 +168,50 @@ const OrderDetail = () => {
             </p>
           )}
         </motion.div>
+
+        {/* Tracking Card */}
+        {!isTerminal && (() => {
+          const trackUrl = getTrackingUrl(order.courier_name, order.tracking_number);
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="bg-card rounded-xl shadow-sm border p-5 mb-4"
+            >
+              {trackUrl ? (
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold flex items-center gap-2">
+                      <Truck className="h-4 w-4 text-primary" />
+                      Shipped via {order.courier_name}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      AWB: <span className="font-mono">{order.tracking_number}</span>
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => window.open(trackUrl, '_blank', 'noopener,noreferrer')}
+                    className="btn-primary-gradient"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-1.5" />
+                    Track Your Order
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Loader2 className="h-5 w-5 animate-spin text-yellow-600" />
+                  <div>
+                    <p className="text-sm font-semibold">Status: Processing</p>
+                    <p className="text-xs text-muted-foreground">
+                      Tracking details will appear here once your order is shipped.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          );
+        })()}
 
         {/* Status Timeline */}
         <motion.div 

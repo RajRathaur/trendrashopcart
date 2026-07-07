@@ -30,13 +30,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Loader2, Trash2, Eye, MessageCircle, FileText } from 'lucide-react';
+import { Loader2, Trash2, Eye, MessageCircle, FileText, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
 import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
 import { logAdminAction, maskPhone, addressSnippet } from '@/lib/auditLog';
 import { generateTaxInvoice } from '@/lib/invoice';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { COURIER_OPTIONS } from '@/lib/tracking';
 
 type OrderStatus = Database['public']['Enums']['order_status'];
 
@@ -63,6 +66,8 @@ interface Order {
   payment_method: string | null;
   created_at: string;
   user_id: string;
+  tracking_number: string | null;
+  courier_name: string | null;
 }
 
 const statusOptions: OrderStatus[] = [
@@ -90,6 +95,46 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<Record<string, OrderItem[]>>({});
+  const [trackingDrafts, setTrackingDrafts] = useState<Record<string, { courier: string; awb: string }>>({});
+  const [savingTracking, setSavingTracking] = useState<string | null>(null);
+
+  const getDraft = (order: Order) => trackingDrafts[order.id] ?? { courier: order.courier_name ?? '', awb: order.tracking_number ?? '' };
+  const setDraft = (id: string, patch: Partial<{ courier: string; awb: string }>) =>
+    setTrackingDrafts(prev => ({ ...prev, [id]: { ...(prev[id] ?? { courier: '', awb: '' }), ...patch } }));
+
+  const handleSaveTracking = async (order: Order) => {
+    const draft = getDraft(order);
+    setSavingTracking(order.id);
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({
+          tracking_number: draft.awb.trim() || null,
+          courier_name: draft.courier || null,
+        } as any)
+        .eq('id', order.id);
+      if (error) throw error;
+      toast.success('Tracking details saved');
+      setOrders(prev => prev.map(o => o.id === order.id
+        ? { ...o, tracking_number: draft.awb.trim() || null, courier_name: draft.courier || null }
+        : o));
+
+      if (order.user_id && draft.awb.trim() && draft.courier) {
+        await supabase.from('notifications').insert({
+          user_id: order.user_id,
+          title: `Order #${order.order_number} - Tracking added`,
+          message: `Your order has been shipped via ${draft.courier}. AWB: ${draft.awb.trim()}`,
+          type: 'order_update',
+          order_id: order.id,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to save tracking');
+    } finally {
+      setSavingTracking(null);
+    }
+  };
 
   useEffect(() => {
     if (!authLoading) {
@@ -471,6 +516,52 @@ const AdminOrders = () => {
                                   <Loader2 className="h-4 w-4 animate-spin" />
                                 )}
                               </div>
+                            </div>
+
+                            {/* Tracking Details */}
+                            <div className="mt-4 pt-4 border-t">
+                              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                <FileText className="h-4 w-4" /> Shipment Tracking
+                              </h4>
+                              {(() => {
+                                const draft = getDraft(order);
+                                return (
+                                  <div className="grid md:grid-cols-[200px_1fr_auto] gap-2 items-end">
+                                    <div>
+                                      <Label className="text-xs">Courier</Label>
+                                      <Select value={draft.courier} onValueChange={(v) => setDraft(order.id, { courier: v })}>
+                                        <SelectTrigger><SelectValue placeholder="Select courier" /></SelectTrigger>
+                                        <SelectContent>
+                                          {COURIER_OPTIONS.map(c => (
+                                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs">Tracking Number (AWB)</Label>
+                                      <Input
+                                        value={draft.awb}
+                                        onChange={(e) => setDraft(order.id, { awb: e.target.value })}
+                                        placeholder="Paste AWB number"
+                                      />
+                                    </div>
+                                    <Button
+                                      onClick={() => handleSaveTracking(order)}
+                                      disabled={savingTracking === order.id}
+                                    >
+                                      {savingTracking === order.id
+                                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                                        : <><Save className="h-4 w-4 mr-1" /> Save</>}
+                                    </Button>
+                                  </div>
+                                );
+                              })()}
+                              {order.tracking_number && (
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  Current: <span className="font-mono">{order.tracking_number}</span> via {order.courier_name || '—'}
+                                </p>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>

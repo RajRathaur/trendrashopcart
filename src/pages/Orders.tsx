@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { Package, ChevronRight, ShoppingBag, Truck, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
+import { Package, ChevronRight, ShoppingBag, Truck, CheckCircle, XCircle, RotateCcw, ExternalLink, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { getTrackingUrl } from '@/lib/tracking';
 
 interface Order {
   id: string;
@@ -17,6 +18,8 @@ interface Order {
   shipping_city: string;
   shipping_state: string;
   payment_method: string;
+  tracking_number: string | null;
+  courier_name: string | null;
 }
 
 interface OrderItem {
@@ -207,15 +210,45 @@ const OrdersPage = () => {
                         💵 {order.payment_method === 'cod' ? 'Cash on Delivery' : order.payment_method}
                       </span>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => navigate(`/order/${order.id}`)}
-                      className="text-primary border-primary/30 hover:bg-primary/5"
-                    >
-                      <Truck className="h-3.5 w-3.5 mr-1" />
-                      Track Order
-                    </Button>
+                    {(() => {
+                      const trackUrl = getTrackingUrl(order.courier_name, order.tracking_number);
+                      if (trackUrl) {
+                        return (
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(`/order/${order.id}`)}
+                            >
+                              Details
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => window.open(trackUrl, '_blank', 'noopener,noreferrer')}
+                              className="btn-primary-gradient"
+                            >
+                              <ExternalLink className="h-3.5 w-3.5 mr-1" />
+                              Track Your Order
+                            </Button>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 flex items-center gap-1">
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                            Status: Processing
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => navigate(`/order/${order.id}`)}
+                          >
+                            Details
+                          </Button>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>

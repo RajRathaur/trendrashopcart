@@ -629,6 +629,7 @@ export type Database = {
       orders: {
         Row: {
           cod_confirmed: boolean | null
+          courier_name: string | null
           created_at: string
           id: string
           notes: string | null
@@ -641,11 +642,13 @@ export type Database = {
           shipping_state: string
           status: Database["public"]["Enums"]["order_status"] | null
           total_amount: number
+          tracking_number: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
           cod_confirmed?: boolean | null
+          courier_name?: string | null
           created_at?: string
           id?: string
           notes?: string | null
@@ -658,11 +661,13 @@ export type Database = {
           shipping_state: string
           status?: Database["public"]["Enums"]["order_status"] | null
           total_amount: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
           cod_confirmed?: boolean | null
+          courier_name?: string | null
           created_at?: string
           id?: string
           notes?: string | null
@@ -675,6 +680,7 @@ export type Database = {
           shipping_state?: string
           status?: Database["public"]["Enums"]["order_status"] | null
           total_amount?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
         }
