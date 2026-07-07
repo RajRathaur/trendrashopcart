@@ -26,7 +26,17 @@ const CheckoutPage = () => {
     max_discount_amount: number | null;
   } | null>(null);
   
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online'>('cod');
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online' | 'razorpay'>('cod');
+
+  // Load Razorpay checkout script once
+  useEffect(() => {
+    if (document.getElementById('razorpay-checkout-js')) return;
+    const s = document.createElement('script');
+    s.id = 'razorpay-checkout-js';
+    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
     phone: profile?.phone || '',
