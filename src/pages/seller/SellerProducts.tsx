@@ -100,6 +100,10 @@ const SellerProducts = () => {
       images: form.imageUrl ? [form.imageUrl] : [],
       category_id: form.categoryId || null,
       seller_id: seller.id,
+      free_delivery: form.freeDelivery,
+      delivery_charge: form.freeDelivery
+        ? 0
+        : (form.deliveryCharge.trim() !== '' ? parseFloat(form.deliveryCharge) : null),
     };
     if (editing) {
       const { error } = await supabase.from('products').update(payload).eq('id', editing.id);
