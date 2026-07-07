@@ -180,6 +180,31 @@ const SellerProducts = () => {
                   <Textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
                 </div>
                 <ProductImageUpload imageUrl={form.imageUrl} onImageChange={(url) => setForm({ ...form, imageUrl: url })} />
+                <div className="border rounded-md p-3 space-y-2 bg-muted/30">
+                  <Label className="text-sm font-semibold">Delivery</Label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.freeDelivery}
+                      onChange={(e) => setForm({ ...form, freeDelivery: e.target.checked })}
+                    />
+                    Free delivery for this product
+                  </label>
+                  {!form.freeDelivery && (
+                    <div>
+                      <Label className="text-xs text-muted-foreground">
+                        Delivery charge (₹) — leave empty for default ₹40
+                      </Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="40"
+                        value={form.deliveryCharge}
+                        onChange={(e) => setForm({ ...form, deliveryCharge: e.target.value })}
+                      />
+                    </div>
+                  )}
+                </div>
                 <Button onClick={save} disabled={saving} className="w-full">
                   {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
                   {editing ? 'Update' : 'Add'} Product
