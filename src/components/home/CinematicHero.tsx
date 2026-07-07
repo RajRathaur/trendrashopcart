@@ -85,17 +85,16 @@ export const CinematicHero = () => {
       <section
         ref={root}
         aria-label="Trendra cinematic hero"
-        className="relative w-screen overflow-hidden bg-black left-1/2 right-1/2 -mx-[50vw]"
-        style={{ fontFamily: '"Urbanist", "Space Grotesk", system-ui, sans-serif' }}
+        className="relative w-screen overflow-hidden bg-[#f5f0e8] left-1/2 right-1/2 -mx-[50vw]"
       >
-        <div className="grid grid-cols-2 min-h-[70vh] md:min-h-[85vh]">
+        <div className="grid grid-cols-2 min-h-[70vh] md:min-h-[85vh] gap-1 p-1">
           <div className="relative overflow-hidden">
             <img src={c.female.image} alt={c.female.title} className="w-full h-full object-cover object-top" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/80 via-[#f5f0e8]/20 to-transparent" />
           </div>
           <div className="relative overflow-hidden">
             <img src={c.male.image} alt={c.male.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e8]/80 via-[#f5f0e8]/20 to-transparent" />
           </div>
         </div>
       </section>
