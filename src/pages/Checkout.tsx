@@ -233,6 +233,66 @@ const CheckoutPage = () => {
 
       await clearCart();
 
+      if (paymentMethod === 'razorpay') {
+        // Create Razorpay order via edge function
+        const { data: rzp, error: rzpErr } = await supabase.functions.invoke('create-razorpay-order', {
+          body: { orderId: order.id, amount: finalAmount },
+        });
+        if (rzpErr || !rzp?.order_id) {
+          throw new Error(rzpErr?.message || 'Failed to initiate Razorpay payment');
+        }
+
+        const RZP = (window as any).Razorpay;
+        if (!RZP) {
+          toast.error('Payment SDK not loaded. Please refresh and try again.');
+          setLoading(false);
+          return;
+        }
+
+        await clearCart();
+
+        const rz = new RZP({
+          key: rzp.key_id,
+          order_id: rzp.order_id,
+          amount: rzp.amount,
+          currency: rzp.currency || 'INR',
+          name: 'Trendra',
+          description: `Order ${order.order_number}`,
+          prefill: {
+            name: formData.fullName,
+            contact: formData.phone,
+            email: user.email || '',
+          },
+          theme: { color: '#2874f0' },
+          handler: async (resp: any) => {
+            try {
+              await supabase.functions.invoke('verify-razorpay-payment', {
+                body: {
+                  orderId: order.id,
+                  razorpay_order_id: resp.razorpay_order_id,
+                  razorpay_payment_id: resp.razorpay_payment_id,
+                  razorpay_signature: resp.razorpay_signature,
+                },
+              });
+              toast.success('Payment successful!');
+              navigate(`/order-success?order=${order.order_number}`);
+            } catch (verifyErr) {
+              console.error('Verify error:', verifyErr);
+              toast.error('Payment received — verification pending. We will update you shortly.');
+              navigate(`/orders`);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              toast.info('Payment cancelled. Your order is saved as pending.');
+              navigate('/orders');
+            },
+          },
+        });
+        rz.open();
+        return;
+      }
+
       if (paymentMethod === 'online') {
         navigate(`/confirm-payment?order=${order.order_number}&amount=${finalAmount}&orderId=${order.id}`);
       } else {
