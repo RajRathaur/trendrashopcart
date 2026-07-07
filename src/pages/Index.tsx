@@ -81,13 +81,6 @@ const Index = () => {
       {/* Delivery road transition */}
       <DeliveryRoad />
 
-      {/* Fruit Slicer Game Promo (moved up in place of Curated Categories) */}
-      <div className="container mx-auto px-3">
-        <GamePromoBanner />
-      </div>
-
-
-
       {/* Banner Slider */}
       {demoBanners.length > 0 && (
         <div className="container mx-auto px-3">
@@ -103,7 +96,7 @@ const Index = () => {
       {/* Section separator */}
       <div className="section-separator" />
 
-      {/* Deals of the Day */}
+      {/* Deals of the Day (moved up above Fruit Slicer) */}
       <div className="container mx-auto px-3">
         <DealsSection
           products={demoProducts.filter(p => p.discount_percent >= 50)}
@@ -127,11 +120,17 @@ const Index = () => {
 
       <div className="section-separator" />
 
-      {/* Curated Categories (moved down in place of Game Promo) */}
+      {/* Fruit Slicer Game Promo (moved below products) */}
+      <div className="container mx-auto px-3">
+        <GamePromoBanner />
+      </div>
+
+      <div className="section-separator" />
+
+      {/* Curated Categories */}
       <div className="container mx-auto px-4 md:px-6">
         <CategoryGrid />
       </div>
-
 
       <div className="section-separator" />
       <div className="container mx-auto px-3">
