@@ -50,14 +50,19 @@ export const CinematicHero = () => {
   useEffect(() => {
     if (!root.current || reduceMotion) return;
 
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    // Blur filters are the #1 jank source on mobile GPUs — drop them on small screens.
+    const initialBlur = isMobile ? 'blur(0px)' : 'blur(12px)';
+    const zoomTarget = isMobile ? 1.35 : 1.8;
+
     const ctx = gsap.context(() => {
-      gsap.set('.cine-female', { xPercent: 100, scale: 1.2, filter: 'blur(12px)' });
+      gsap.set('.cine-female', { xPercent: 100, scale: 1.15, filter: initialBlur });
       gsap.set('.cine-female-zoom', { scale: 1, transformOrigin: '50% 50%' });
-      gsap.set('.cine-male', { xPercent: 100, scale: 1.2, filter: 'blur(12px)' });
+      gsap.set('.cine-male', { xPercent: 100, scale: 1.15, filter: initialBlur });
       gsap.set('.cine-male-zoom', { scale: 1, transformOrigin: '50% 85%' });
-      gsap.set('.cine-finale', { autoAlpha: 0, scale: 0.92 });
-      gsap.set('.fem-copy > *', { y: 40, autoAlpha: 0 });
-      gsap.set('.male-copy > *', { y: 40, autoAlpha: 0 });
+      gsap.set('.cine-finale', { autoAlpha: 0, scale: 0.94 });
+      gsap.set('.fem-copy > *', { y: 30, autoAlpha: 0 });
+      gsap.set('.male-copy > *', { y: 30, autoAlpha: 0 });
 
       const tl = gsap.timeline({
         defaults: { ease: 'power3.inOut' },
@@ -65,7 +70,6 @@ export const CinematicHero = () => {
       tl.timeScale(timeScale);
 
       if (style === 'crossfade') {
-        // Simple crossfade: female visible, then male fades in and stays
         gsap.set('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)', autoAlpha: 1 });
         gsap.set('.cine-male', { xPercent: 0, scale: 1, filter: 'blur(0px)', autoAlpha: 0 });
         tl.to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 })
@@ -77,41 +81,44 @@ export const CinematicHero = () => {
           .to({}, { duration: 3 })
           .to('.cine-finale', { autoAlpha: 1, scale: 1, duration: 1.2 });
       } else if (style === 'kenBurns') {
-        // Both visible split, slow ken-burns zoom on both
         gsap.set('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)' });
         gsap.set('.cine-male', { xPercent: 0, scale: 1, filter: 'blur(0px)' });
         gsap.set('.cine-female', { clipPath: 'inset(0 50% 0 0)' });
         gsap.set('.cine-male', { clipPath: 'inset(0 0 0 50%)' });
         tl.to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 })
           .to('.male-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 }, '<');
-        gsap.to('.cine-female-zoom', { scale: 1.15, duration: 10, ease: 'sine.inOut', repeat: -1, yoyo: true });
-        gsap.to('.cine-male-zoom', { scale: 1.15, duration: 10, ease: 'sine.inOut', repeat: -1, yoyo: true });
+        gsap.to('.cine-female-zoom', { scale: 1.12, duration: 10, ease: 'sine.inOut', repeat: -1, yoyo: true });
+        gsap.to('.cine-male-zoom', { scale: 1.12, duration: 10, ease: 'sine.inOut', repeat: -1, yoyo: true });
       } else {
         // Default cinematic sequence
-        tl.to('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power2.inOut' })
-
-        .to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.12 }, '-=0.6')
-        .to({}, { duration: 1 })
-        .to('.cine-female-zoom', { scale: 1.8, duration: 1.8, ease: 'power2.inOut' })
-        .to('.fem-copy', { autoAlpha: 0, duration: 0.6 }, '<')
-        .to('.cine-female', { xPercent: -100, scale: 1.1, duration: 1.6, ease: 'power2.inOut' })
-        .to('.cine-male', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power2.inOut' }, '<')
-        .to('.male-copy > *', { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.12 }, '-=0.6')
-        .to({}, { duration: 1 })
-        .to('.cine-male-zoom', { scale: 1.8, duration: 1.8, ease: 'power2.inOut' })
-        .to('.male-copy', { autoAlpha: 0, duration: 0.6 }, '<')
-        .to('.cine-finale', { autoAlpha: 1, scale: 1, duration: 1.2 }, '-=0.6');
+        tl.to('.cine-female', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.4, ease: 'power2.inOut' })
+          .to('.fem-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 }, '-=0.5')
+          .to({}, { duration: 1 })
+          .to('.cine-female-zoom', { scale: zoomTarget, duration: 1.6, ease: 'power2.inOut' })
+          .to('.fem-copy', { autoAlpha: 0, duration: 0.5 }, '<')
+          .to('.cine-female', { xPercent: -100, scale: 1.08, duration: 1.4, ease: 'power2.inOut' })
+          .to('.cine-male', { xPercent: 0, scale: 1, filter: 'blur(0px)', duration: 1.4, ease: 'power2.inOut' }, '<')
+          .to('.male-copy > *', { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1 }, '-=0.5')
+          .to({}, { duration: 1 })
+          .to('.cine-male-zoom', { scale: zoomTarget, duration: 1.6, ease: 'power2.inOut' })
+          .to('.male-copy', { autoAlpha: 0, duration: 0.5 }, '<')
+          .to('.cine-finale', { autoAlpha: 1, scale: 1, duration: 1.1 }, '-=0.5');
       }
 
-      gsap.to('.cine-glow', {
-        opacity: 0.55,
-        scale: 1.15,
-        duration: 3.4,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      });
+      if (!isMobile) {
+        // Glow pulse also uses filter/blur underneath — skip on mobile.
+        gsap.to('.cine-glow', {
+          opacity: 0.55,
+          scale: 1.15,
+          duration: 3.4,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+        });
+      }
     }, root);
+
+
 
 
     return () => ctx.revert();
