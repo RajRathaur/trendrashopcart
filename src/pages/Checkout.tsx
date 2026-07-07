@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,40 @@ const CheckoutPage = () => {
     notes: '',
   });
 
-  const deliveryFee = totalAmount >= 499 ? 0 : 40;
+  const DEFAULT_DELIVERY_FEE = 40;
+  const [deliveryFee, setDeliveryFee] = useState<number>(DEFAULT_DELIVERY_FEE);
+  const [pincodeChecking, setPincodeChecking] = useState(false);
+  const [pincodeInfo, setPincodeInfo] = useState<{ city?: string; days?: number; source: 'default' | 'pincode' } | null>(null);
+
+  useEffect(() => {
+    const pin = formData.pincode.trim();
+    if (pin.length !== 6) {
+      setDeliveryFee(DEFAULT_DELIVERY_FEE);
+      setPincodeInfo(null);
+      return;
+    }
+    let cancelled = false;
+    setPincodeChecking(true);
+    (async () => {
+      const { data } = await supabase
+        .from('delivery_pincodes')
+        .select('delivery_charge, city, delivery_days, is_active')
+        .eq('pincode', pin)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (cancelled) return;
+      if (data && data.delivery_charge != null) {
+        setDeliveryFee(Number(data.delivery_charge));
+        setPincodeInfo({ city: data.city, days: data.delivery_days, source: 'pincode' });
+      } else {
+        setDeliveryFee(DEFAULT_DELIVERY_FEE);
+        setPincodeInfo({ source: 'default' });
+      }
+      setPincodeChecking(false);
+    })();
+    return () => { cancelled = true; };
+  }, [formData.pincode]);
+
   
   let couponDiscount = 0;
   if (appliedCoupon) {
@@ -457,11 +490,22 @@ const CheckoutPage = () => {
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Delivery</span>
+                    <span className="text-muted-foreground">
+                      Delivery Charge
+                      {pincodeChecking && <Loader2 className="inline h-3 w-3 ml-1 animate-spin" />}
+                    </span>
                     <span className={deliveryFee === 0 ? 'text-green-600 font-semibold' : 'font-medium'}>
                       {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
                     </span>
                   </div>
+                  {pincodeInfo?.source === 'pincode' && (
+                    <p className="text-xs text-muted-foreground -mt-1">
+                      For {pincodeInfo.city}{pincodeInfo.days ? ` · ~${pincodeInfo.days} day(s)` : ''}
+                    </p>
+                  )}
+                  {pincodeInfo?.source === 'default' && (
+                    <p className="text-xs text-muted-foreground -mt-1">Default charge (pincode not in serviced list)</p>
+                  )}
 
                   <div className="border-t pt-3">
                     <div className="flex justify-between text-base font-bold">
