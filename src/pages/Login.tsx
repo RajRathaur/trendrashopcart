@@ -181,42 +181,12 @@ const LoginPage = () => {
 
     try {
       if (isLogin) {
-        // Step 1: verify password
         const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
-
-        // If this email/device has already completed OTP verification once, skip OTP
-        const verifiedKey = `trendra_email_verified_${formData.email.toLowerCase()}`;
-        const alreadyVerified = localStorage.getItem(verifiedKey) === '1';
-        if (alreadyVerified) {
-          toast.success('Welcome back!');
-          // Session already established by signIn — redirect effect will handle it
-          return;
-        }
-
-        // First-time login on this device: sign out and require email OTP verification
-        await supabase.auth.signOut();
-
-        // Skip re-sending if we sent an OTP to this email in the last 60s (rate-limit safe)
-        const lastKey = `trendra_otp_last_${formData.email.toLowerCase()}`;
-        const lastSent = Number(sessionStorage.getItem(lastKey) || 0);
-        const now = Date.now();
-        if (now - lastSent < 60_000) {
-          setTwoFAEmail(formData.email);
-          setPending2FA(true);
-          toast.info('OTP already sent recently. Please check your inbox.');
-        } else {
-          const { error: otpErr } = await supabase.auth.signInWithOtp({
-            email: formData.email,
-            options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
-          });
-          if (otpErr) throw otpErr;
-          sessionStorage.setItem(lastKey, String(now));
-          setTwoFAEmail(formData.email);
-          setPending2FA(true);
-          toast.success('Password verified. Enter the OTP sent to your email.');
-        }
+        toast.success('Welcome back!');
+        // Redirect effect will handle navigation
       } else {
+
         const { error } = await signUp(formData.email, formData.password, formData.fullName);
         if (error) throw error;
         toast.success('Account created! Please check your email to verify.');
