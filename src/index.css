@@ -515,7 +515,8 @@
    the same so buttons and animations remain identical in vibe.
    ===================================================================== */
 .light {
-  --background: 0 0% 100%;
+  /* Soft off-white background — no harsh pure-white glare */
+  --background: 240 20% 97%;
   --foreground: 240 10% 10%;
 
   --card: 0 0% 100%;
@@ -524,19 +525,18 @@
   --popover: 0 0% 100%;
   --popover-foreground: 240 10% 10%;
 
-  /* Keep primary/accent as-is so buttons look the same */
   --primary-foreground: 0 0% 100%;
   --accent-foreground: 0 0% 100%;
 
-  --secondary: 240 5% 96%;
+  --secondary: 240 5% 94%;
   --secondary-foreground: 240 10% 10%;
 
-  --muted: 240 5% 96%;
+  --muted: 240 5% 94%;
   --muted-foreground: 240 4% 40%;
 
   --destructive-foreground: 0 0% 100%;
 
-  --border: 240 6% 90%;
+  --border: 240 6% 88%;
   --input: 240 6% 92%;
 
   --sidebar-background: 0 0% 100%;
@@ -558,4 +558,47 @@
   --shadow: 0 1px 4px 0px hsl(240 10% 20% / 0.06);
   --shadow-xl: 0 12px 28px 0px hsl(240 10% 20% / 0.12);
   --shadow-2xl: 0 18px 40px 0px hsl(240 10% 20% / 0.14);
+}
+
+/* ---------- Light-mode Navbar: white surface, dark text ---------- */
+.light .navbar {
+  background: #ffffff !important;
+  color: hsl(240 10% 10%);
+  border-bottom: 1px solid hsl(240 6% 88%);
+  box-shadow: 0 1px 4px hsl(240 10% 20% / 0.06);
+}
+
+.light .navbar .text-primary-foreground {
+  color: hsl(240 10% 10%) !important;
+}
+
+.light .navbar .hover\:bg-white\/10:hover {
+  background-color: hsl(240 5% 92%) !important;
+}
+
+/* Search bar visible on white navbar */
+.light .navbar .search-bar {
+  border: 1px solid hsl(240 6% 85%) !important;
+  background: #fff;
+}
+.light .navbar form button[type="submit"] {
+  background: hsl(var(--primary));
+}
+.light .navbar form button[type="submit"] svg {
+  color: #fff;
+}
+
+/* Login pill: primary fill instead of white-on-white */
+.light .navbar .bg-white.text-primary {
+  background: hsl(var(--primary)) !important;
+  color: #fff !important;
+}
+.light .navbar .bg-white.text-primary:hover {
+  filter: brightness(1.08);
+  background: hsl(var(--primary)) !important;
+}
+
+/* "Explore Plus" yellow accent stays legible */
+.light .navbar .text-yellow-300 {
+  color: hsl(var(--accent)) !important;
 }
