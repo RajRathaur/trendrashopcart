@@ -226,9 +226,9 @@ const CartPage = () => {
                     {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
                   </span>
                 </div>
-                {deliveryFee > 0 && (
-                  <div className="bg-primary/5 rounded-lg p-2.5 text-xs text-primary">
-                    Add ₹{499 - totalAmount} more for <strong>free delivery</strong>
+                {deliveryFee === 0 && items.length > 0 && (
+                  <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-2.5 text-xs text-green-700 dark:text-green-400">
+                    🎉 Free delivery on all items in your cart
                   </div>
                 )}
 
