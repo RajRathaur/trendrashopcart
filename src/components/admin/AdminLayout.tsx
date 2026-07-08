@@ -19,6 +19,7 @@ const navItems = [
   { href: '/admin/payments', label: 'Payments', icon: CreditCard },
   { href: '/admin/banners', label: 'Banners', icon: Image },
   { href: '/admin/redeems', label: 'Redeems', icon: Gift },
+  { href: '/admin/coupons', label: 'Coupons', icon: Tag },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/broadcast', label: 'Broadcast', icon: Megaphone },
   { href: '/admin/email-monitor', label: 'Email Monitor', icon: MailCheck },
