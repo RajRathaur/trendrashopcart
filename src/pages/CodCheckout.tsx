@@ -197,11 +197,19 @@ const CodCheckout = () => {
             <div className="bg-muted/50 rounded-xl p-4 mb-5 space-y-2 text-sm">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground flex items-center gap-1.5"><Package className="h-3.5 w-3.5" /> Order</span>
-                <span className="font-medium">{productName || '—'}</span>
+                <span className="font-medium truncate ml-2">{productName || '—'}</span>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>₹{subtotal.toLocaleString('en-IN')}</span></div>
+              {couponDiscount > 0 && (
+                <div className="flex justify-between text-green-600"><span>Coupon ({couponCode})</span><span>−₹{couponDiscount.toLocaleString('en-IN')}</span></div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Delivery</span>
+                <span className={delivery === 0 ? 'text-green-600 font-semibold' : ''}>{delivery === 0 ? 'FREE' : `₹${delivery}`}</span>
+              </div>
+              <div className="flex justify-between items-center pt-2 border-t">
                 <span className="text-muted-foreground">Amount to Pay</span>
-                <span className="font-bold text-lg text-primary">₹{amount}</span>
+                <span className="font-bold text-lg text-primary">₹{totalAmount.toLocaleString('en-IN')}</span>
               </div>
             </div>
 
