@@ -147,11 +147,16 @@ const CodCheckout = () => {
             </div>
             <h1 className="text-2xl font-bold mb-2">Order Placed Successfully!</h1>
             <p className="text-muted-foreground mb-6 text-sm">
-              Your Cash on Delivery order has been recorded. Pay ₹{amount} when your order arrives.
+              Your Cash on Delivery order has been recorded. Pay ₹{totalAmount.toLocaleString('en-IN')} when your order arrives.
             </p>
             <div className="bg-muted/50 rounded-xl p-4 mb-6 text-sm text-left space-y-2">
               <div className="flex justify-between"><span className="text-muted-foreground">Product</span><span className="font-medium">{productName}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Amount (COD)</span><span className="font-bold text-primary">₹{amount}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>₹{subtotal.toLocaleString('en-IN')}</span></div>
+              {couponDiscount > 0 && (
+                <div className="flex justify-between text-green-600"><span>Coupon ({couponCode})</span><span>−₹{couponDiscount.toLocaleString('en-IN')}</span></div>
+              )}
+              <div className="flex justify-between"><span className="text-muted-foreground">Delivery</span><span>{delivery === 0 ? 'FREE' : `₹${delivery}`}</span></div>
+              <div className="flex justify-between pt-2 border-t"><span className="font-semibold">Total (COD)</span><span className="font-bold text-primary">₹{totalAmount.toLocaleString('en-IN')}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="font-medium text-orange-600">Pending / COD</span></div>
             </div>
             <div className="flex gap-3">
