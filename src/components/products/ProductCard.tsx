@@ -159,6 +159,8 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
       productName={product.name}
       amount={product.price}
       quantity={1}
+      freeDelivery={(product as any).free_delivery}
+      deliveryCharge={(product as any).delivery_charge}
     />
     </>
   );
