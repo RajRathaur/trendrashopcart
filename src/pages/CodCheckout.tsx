@@ -17,7 +17,11 @@ const CodCheckout = () => {
   const { user } = useAuth();
 
   const productName = searchParams.get('product') || '';
-  const amount = searchParams.get('amount') || '0';
+  const subtotal = Number(searchParams.get('amount') || '0');
+  const delivery = Number(searchParams.get('delivery') || '0');
+  const couponCode = searchParams.get('coupon') || '';
+  const couponDiscount = Number(searchParams.get('couponDiscount') || '0');
+  const totalAmount = Math.max(0, subtotal - couponDiscount + delivery);
   const productId = searchParams.get('productId') || '';
   const quantity = Math.max(1, Number(searchParams.get('quantity')) || 1);
   const selectedSize = searchParams.get('size');
