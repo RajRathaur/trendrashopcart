@@ -84,7 +84,7 @@ const CodCheckout = () => {
           shipping_pincode: pincode,
           shipping_phone: phone.trim(),
           payment_method: 'cod',
-          notes: `COD Buy Now customer: ${customerName.trim()}`,
+          notes: `COD Buy Now customer: ${customerName.trim()} | Delivery: ₹${delivery}${couponCode ? ` | Coupon: ${couponCode} (-₹${couponDiscount})` : ''}`,
         })
         .select()
         .single();
