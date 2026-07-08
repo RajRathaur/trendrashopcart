@@ -100,7 +100,7 @@ const CodCheckout = () => {
           product_name: product?.name || productName || 'Unknown Product',
           product_image: product?.images?.[0] || null,
           quantity,
-          price: quantity > 0 ? totalAmount / quantity : totalAmount,
+          price: itemPrice,
           size: selectedSize,
           color: selectedColor,
         });
