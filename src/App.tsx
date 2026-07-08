@@ -140,6 +140,7 @@ const AppRoutes = () => (
       <Route path="/admin/email-monitor" element={admin(<AdminEmailMonitor />)} />
       <Route path="/admin/otp-debug" element={admin(<AdminOtpDebug />)} />
       <Route path="/admin/animations" element={admin(<AdminAnimations />)} />
+      <Route path="/admin/coupons" element={admin(<AdminCoupons />)} />
 
 
       {/* Redirect common paths */}
