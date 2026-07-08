@@ -68,7 +68,7 @@ const CodCheckout = () => {
         product = data;
       }
 
-      const totalAmount = parseFloat(amount) || Number(product?.price || 0) * quantity;
+      const computedTotal = totalAmount > 0 ? totalAmount : Number(product?.price || 0) * quantity + delivery;
       const addressParts = address.trim().split(',').map((part) => part.trim()).filter(Boolean);
       const shippingCity = addressParts.length >= 2 ? addressParts[addressParts.length - 1] : 'Not provided';
 
