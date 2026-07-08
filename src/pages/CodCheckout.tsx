@@ -17,7 +17,11 @@ const CodCheckout = () => {
   const { user } = useAuth();
 
   const productName = searchParams.get('product') || '';
-  const amount = searchParams.get('amount') || '0';
+  const subtotal = Number(searchParams.get('amount') || '0');
+  const delivery = Number(searchParams.get('delivery') || '0');
+  const couponCode = searchParams.get('coupon') || '';
+  const couponDiscount = Number(searchParams.get('couponDiscount') || '0');
+  const totalAmount = Math.max(0, subtotal - couponDiscount + delivery);
   const productId = searchParams.get('productId') || '';
   const quantity = Math.max(1, Number(searchParams.get('quantity')) || 1);
   const selectedSize = searchParams.get('size');
@@ -64,7 +68,7 @@ const CodCheckout = () => {
         product = data;
       }
 
-      const totalAmount = parseFloat(amount) || Number(product?.price || 0) * quantity;
+      const itemPrice = quantity > 0 ? subtotal / quantity : subtotal;
       const addressParts = address.trim().split(',').map((part) => part.trim()).filter(Boolean);
       const shippingCity = addressParts.length >= 2 ? addressParts[addressParts.length - 1] : 'Not provided';
 
@@ -80,7 +84,7 @@ const CodCheckout = () => {
           shipping_pincode: pincode,
           shipping_phone: phone.trim(),
           payment_method: 'cod',
-          notes: `COD Buy Now customer: ${customerName.trim()}`,
+          notes: `COD Buy Now customer: ${customerName.trim()} | Delivery: ₹${delivery}${couponCode ? ` | Coupon: ${couponCode} (-₹${couponDiscount})` : ''}`,
         })
         .select()
         .single();
@@ -96,7 +100,7 @@ const CodCheckout = () => {
           product_name: product?.name || productName || 'Unknown Product',
           product_image: product?.images?.[0] || null,
           quantity,
-          price: quantity > 0 ? totalAmount / quantity : totalAmount,
+          price: itemPrice,
           size: selectedSize,
           color: selectedColor,
         });
@@ -143,11 +147,16 @@ const CodCheckout = () => {
             </div>
             <h1 className="text-2xl font-bold mb-2">Order Placed Successfully!</h1>
             <p className="text-muted-foreground mb-6 text-sm">
-              Your Cash on Delivery order has been recorded. Pay ₹{amount} when your order arrives.
+              Your Cash on Delivery order has been recorded. Pay ₹{totalAmount.toLocaleString('en-IN')} when your order arrives.
             </p>
             <div className="bg-muted/50 rounded-xl p-4 mb-6 text-sm text-left space-y-2">
               <div className="flex justify-between"><span className="text-muted-foreground">Product</span><span className="font-medium">{productName}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Amount (COD)</span><span className="font-bold text-primary">₹{amount}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>₹{subtotal.toLocaleString('en-IN')}</span></div>
+              {couponDiscount > 0 && (
+                <div className="flex justify-between text-green-600"><span>Coupon ({couponCode})</span><span>−₹{couponDiscount.toLocaleString('en-IN')}</span></div>
+              )}
+              <div className="flex justify-between"><span className="text-muted-foreground">Delivery</span><span>{delivery === 0 ? 'FREE' : `₹${delivery}`}</span></div>
+              <div className="flex justify-between pt-2 border-t"><span className="font-semibold">Total (COD)</span><span className="font-bold text-primary">₹{totalAmount.toLocaleString('en-IN')}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="font-medium text-orange-600">Pending / COD</span></div>
             </div>
             <div className="flex gap-3">
@@ -188,11 +197,19 @@ const CodCheckout = () => {
             <div className="bg-muted/50 rounded-xl p-4 mb-5 space-y-2 text-sm">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground flex items-center gap-1.5"><Package className="h-3.5 w-3.5" /> Order</span>
-                <span className="font-medium">{productName || '—'}</span>
+                <span className="font-medium truncate ml-2">{productName || '—'}</span>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>₹{subtotal.toLocaleString('en-IN')}</span></div>
+              {couponDiscount > 0 && (
+                <div className="flex justify-between text-green-600"><span>Coupon ({couponCode})</span><span>−₹{couponDiscount.toLocaleString('en-IN')}</span></div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Delivery</span>
+                <span className={delivery === 0 ? 'text-green-600 font-semibold' : ''}>{delivery === 0 ? 'FREE' : `₹${delivery}`}</span>
+              </div>
+              <div className="flex justify-between items-center pt-2 border-t">
                 <span className="text-muted-foreground">Amount to Pay</span>
-                <span className="font-bold text-lg text-primary">₹{amount}</span>
+                <span className="font-bold text-lg text-primary">₹{totalAmount.toLocaleString('en-IN')}</span>
               </div>
             </div>
 

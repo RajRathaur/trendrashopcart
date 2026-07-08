@@ -558,6 +558,8 @@ const ProductDetail = () => {
         quantity={quantity}
         size={selectedSize}
         color={selectedColor}
+        freeDelivery={(product as any).free_delivery}
+        deliveryCharge={(product as any).delivery_charge}
       />
     </Layout>
   );

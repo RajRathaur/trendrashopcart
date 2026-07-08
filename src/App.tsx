@@ -64,6 +64,7 @@ const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminEmailMonitor = lazy(() => import("./pages/admin/AdminEmailMonitor"));
 const AdminOtpDebug = lazy(() => import("./pages/admin/AdminOtpDebug"));
 const AdminAnimations = lazy(() => import("./pages/admin/AdminAnimations"));
+const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 
 
 const queryClient = new QueryClient();
@@ -139,6 +140,7 @@ const AppRoutes = () => (
       <Route path="/admin/email-monitor" element={admin(<AdminEmailMonitor />)} />
       <Route path="/admin/otp-debug" element={admin(<AdminOtpDebug />)} />
       <Route path="/admin/animations" element={admin(<AdminAnimations />)} />
+      <Route path="/admin/coupons" element={admin(<AdminCoupons />)} />
 
 
       {/* Redirect common paths */}
