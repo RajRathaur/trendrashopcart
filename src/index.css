@@ -458,7 +458,7 @@
 
   /* Flipkart-style section separator */
   .section-separator {
-    @apply bg-muted h-2.5 w-full;
+    @apply bg-muted h-2 w-full sm:h-2.5;
   }
 }
 

@@ -38,8 +38,8 @@ export const DeliveryRoad = () => {
   return (
     <section
       aria-label="Delivery in progress"
-      className="relative w-screen left-1/2 right-1/2 -mx-[50vw] overflow-hidden"
-      style={{ height: '120px', contain: 'layout paint style' }}
+      className="relative w-screen left-1/2 right-1/2 -mx-[50vw] overflow-hidden h-[80px] sm:h-[120px]"
+      style={{ contain: 'layout paint style' }}
     >
       {/* Live tracker pill */}
       <div className="absolute top-3 left-0 right-0 flex justify-center px-4">

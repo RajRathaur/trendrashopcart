@@ -89,7 +89,7 @@ const Index = () => {
       )}
 
       {/* Flash Sale Timer */}
-      <div className="container mx-auto px-3 py-2">
+      <div className="container mx-auto px-3 py-1 sm:py-2">
         <FlashSaleTimer />
       </div>
 
@@ -97,7 +97,7 @@ const Index = () => {
       <div className="section-separator" />
 
       {/* Deals of the Day (moved up above Fruit Slicer) */}
-      <div className="container mx-auto px-3">
+      <div className="container mx-auto px-3 pt-1 sm:pt-0">
         <DealsSection
           products={demoProducts.filter(p => p.discount_percent >= 50)}
           title="Deals of the Day"
