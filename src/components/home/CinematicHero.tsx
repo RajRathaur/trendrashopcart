@@ -151,7 +151,7 @@ export const CinematicHero = () => {
     <section
       ref={root}
       aria-label="Trendra cinematic hero"
-      className="relative w-screen h-[30svh] sm:h-[55svh] md:h-[100svh] overflow-hidden bg-[#f5f0e8] left-1/2 right-1/2 -mx-[50vw] py-3 sm:py-6"
+      className="relative w-screen h-[28svh] sm:h-[55svh] md:h-[100svh] overflow-hidden bg-[#f5f0e8] left-1/2 right-1/2 -mx-[50vw] py-2 sm:py-6"
     >
       <div className="absolute top-0 inset-x-0 z-40 flex items-center justify-between px-5 md:px-10 py-4 md:py-5">
         <span className="text-[#7d9b76] tracking-[0.4em] text-[10px] md:text-sm font-bold uppercase">{c.brand}</span>
