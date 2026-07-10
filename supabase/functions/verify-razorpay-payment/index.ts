@@ -28,24 +28,25 @@ Deno.serve(async (req) => {
     const userId = claimsData.claims.sub as string;
 
     const body = await req.json().catch(() => ({}));
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, trendra_order_id } = body ?? {};
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body ?? {};
+    // Accept both snake_case and camelCase from clients.
+    const trendraOrderId: string | null =
+      body?.trendra_order_id ?? body?.order_id ?? body?.orderId ?? null;
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return json({ error: 'Missing fields' }, 400);
     }
 
-    // Verify signature: HMAC_SHA256(order_id + "|" + payment_id, key_secret)
     const expected = await hmacSha256Hex(keySecret, `${razorpay_order_id}|${razorpay_payment_id}`);
     if (!timingSafeEqual(expected, razorpay_signature)) {
       return json({ error: 'Invalid signature' }, 400);
     }
 
-    // Update order (RLS: owner). Uses service role to also record the payment row.
     const admin = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
-    if (trendra_order_id) {
+    if (trendraOrderId) {
       const { error: updErr } = await admin
         .from('orders')
         .update({
@@ -54,20 +55,26 @@ Deno.serve(async (req) => {
           status: 'confirmed',
           updated_at: new Date().toISOString(),
         })
-        .eq('id', trendra_order_id)
+        .eq('id', trendraOrderId)
         .eq('user_id', userId);
       if (updErr) console.error('order update error:', updErr);
     }
 
-    // Best-effort payment confirmation row (schema-tolerant).
-    await admin.from('payment_confirmations').insert({
-      user_id: userId,
-      order_id: trendra_order_id ?? null,
-      provider: 'razorpay',
-      provider_order_id: razorpay_order_id,
-      provider_payment_id: razorpay_payment_id,
-      status: 'verified',
-    } as never).catch((e) => console.error('payment_confirmations insert:', e));
+    // Best-effort payment confirmation row. Await + try/catch — Supabase
+    // query builders are thenables, not Promises, so `.catch()` is invalid.
+    try {
+      const { error: pcErr } = await admin.from('payment_confirmations').insert({
+        user_id: userId,
+        order_id: trendraOrderId ?? null,
+        provider: 'razorpay',
+        provider_order_id: razorpay_order_id,
+        provider_payment_id: razorpay_payment_id,
+        status: 'verified',
+      } as never);
+      if (pcErr) console.error('payment_confirmations insert:', pcErr);
+    } catch (e) {
+      console.error('payment_confirmations insert threw:', e);
+    }
 
     return json({ verified: true });
   } catch (e) {

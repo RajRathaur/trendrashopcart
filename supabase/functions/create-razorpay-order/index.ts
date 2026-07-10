@@ -34,7 +34,8 @@ Deno.serve(async (req) => {
     // Input
     const body = await req.json().catch(() => ({}));
     const amountRupees = Number(body?.amount);
-    const orderId: string | undefined = body?.order_id; // internal Trendra order id (optional)
+    // Accept both snake_case and camelCase from clients.
+    const orderId: string | undefined = body?.order_id ?? body?.orderId ?? body?.trendra_order_id;
     if (!Number.isFinite(amountRupees) || amountRupees <= 0 || amountRupees > 1_000_000) {
       return json({ error: 'Invalid amount' }, 400);
     }

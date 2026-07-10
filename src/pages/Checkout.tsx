@@ -236,7 +236,7 @@ const CheckoutPage = () => {
       if (paymentMethod === 'razorpay') {
         // Create Razorpay order via edge function
         const { data: rzp, error: rzpErr } = await supabase.functions.invoke('create-razorpay-order', {
-          body: { orderId: order.id, amount: finalAmount },
+          body: { order_id: order.id, orderId: order.id, amount: finalAmount },
         });
         if (rzpErr || !rzp?.order_id) {
           throw new Error(rzpErr?.message || 'Failed to initiate Razorpay payment');
@@ -268,12 +268,17 @@ const CheckoutPage = () => {
             try {
               await supabase.functions.invoke('verify-razorpay-payment', {
                 body: {
+                  order_id: order.id,
                   orderId: order.id,
+                  trendra_order_id: order.id,
                   razorpay_order_id: resp.razorpay_order_id,
                   razorpay_payment_id: resp.razorpay_payment_id,
                   razorpay_signature: resp.razorpay_signature,
                 },
               });
+              if (appliedCoupon) {
+                try { await (supabase as any).rpc('increment_coupon_usage', { _code: appliedCoupon.code }); } catch (e) { console.warn('coupon increment failed', e); }
+              }
               toast.success('Payment successful!');
               navigate(`/order-success?order=${order.order_number}`);
             } catch (verifyErr) {
@@ -293,6 +298,9 @@ const CheckoutPage = () => {
         return;
       }
 
+      if (appliedCoupon) {
+        try { await (supabase as any).rpc('increment_coupon_usage', { _code: appliedCoupon.code }); } catch (e) { console.warn('coupon increment failed', e); }
+      }
       toast.success('Order placed successfully!');
       navigate(`/order-success?order=${order.order_number}`);
     } catch (error: any) {

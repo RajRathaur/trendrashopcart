@@ -1219,6 +1219,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_coupon_usage: { Args: { _code: string }; Returns: undefined }
       is_order_owner: {
         Args: { _order_id: string; _user_id: string }
         Returns: boolean

@@ -163,10 +163,10 @@ const AdminUsers = () => {
                   >
                     <TableCell className="font-medium">{u.full_name || 'Unnamed'}</TableCell>
                     <TableCell className="text-sm">
-                      {u.email ? <a href={`mailto:${u.email}`} className="hover:underline">{u.email}</a> : '—'}
+                      {u.email ? <a href={`mailto:${u.email}`} onClick={(e) => e.stopPropagation()} className="hover:underline">{u.email}</a> : '—'}
                     </TableCell>
                     <TableCell className="text-sm">
-                      {u.phone ? <a href={`tel:${u.phone}`} className="hover:underline">{u.phone}</a> : <span className="text-muted-foreground">—</span>}
+                      {u.phone ? <a href={`tel:${u.phone}`} onClick={(e) => e.stopPropagation()} className="hover:underline">{u.phone}</a> : <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="text-sm max-w-[220px]">
                       {u.address || u.city || u.state || u.pincode ? (
@@ -203,11 +203,11 @@ const AdminUsers = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       {u.is_blocked ? (
-                        <Button size="sm" variant="outline" onClick={() => toggleBlock(u.user_id, false)}>
+                        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); toggleBlock(u.user_id, false); }}>
                           <Undo2 className="h-3.5 w-3.5 mr-1" />Unblock
                         </Button>
                       ) : (
-                        <Button size="sm" variant="outline" onClick={() => toggleBlock(u.user_id, true)}>
+                        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); toggleBlock(u.user_id, true); }}>
                           <Ban className="h-3.5 w-3.5 mr-1" />Block
                         </Button>
                       )}
