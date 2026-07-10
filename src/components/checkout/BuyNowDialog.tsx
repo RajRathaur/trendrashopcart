@@ -199,6 +199,9 @@ export const BuyNowDialog = ({
                 razorpay_signature: resp.razorpay_signature,
               },
             });
+            if (appliedCoupon) {
+              try { await (supabase as any).rpc('increment_coupon_usage', { _code: appliedCoupon.code }); } catch (err) { console.warn('coupon increment failed', err); }
+            }
             toast.success('Payment successful!');
             navigate(`/order-success?order=${order.order_number}`);
           } catch (e) {
