@@ -126,8 +126,15 @@ const ProductDetail = () => {
         delivery_charge: Number(data.delivery_charge ?? 0),
       });
     } else {
-      setPincodeStatus('unavailable');
-      setPincodeInfo(null);
+      // Nationwide fallback: we ship everywhere; unseeded pincodes get default terms.
+      setPincodeStatus('available');
+      setPincodeInfo({
+        city: undefined,
+        state: undefined,
+        delivery_days: 5,
+        is_cod_available: true,
+        delivery_charge: 40,
+      });
     }
   };
 
