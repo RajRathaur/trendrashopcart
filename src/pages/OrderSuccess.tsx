@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Package, ArrowRight, Truck, Clock, CreditCard, Banknote, CalendarDays, Loader2 } from 'lucide-react';
+import { CheckCircle, Package, ArrowRight, Truck, Clock, CreditCard, Banknote, CalendarDays, Loader2, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays } from 'date-fns';
+import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
 
 interface OrderInfo {
   id: string;
@@ -17,6 +18,9 @@ interface OrderInfo {
   created_at: string;
   shipping_city: string;
   shipping_state: string;
+  shipping_address?: string | null;
+  shipping_phone?: string | null;
+  user_id?: string | null;
 }
 
 const OrderSuccessPage = () => {
@@ -31,12 +35,30 @@ const OrderSuccessPage = () => {
       if (!orderNumber) { setLoading(false); return; }
       const { data } = await supabase
         .from('orders')
-        .select('id, order_number, total_amount, status, payment_method, cod_confirmed, created_at, shipping_city, shipping_state')
+        .select('id, order_number, total_amount, status, payment_method, cod_confirmed, created_at, shipping_city, shipping_state, shipping_address, shipping_phone, user_id')
         .eq('order_number', orderNumber)
         .maybeSingle();
-      if (!cancelled) {
-        setOrder(data as OrderInfo | null);
-        setLoading(false);
+      if (cancelled) return;
+      setOrder(data as OrderInfo | null);
+      setLoading(false);
+
+      // Auto-send confirmation email once per order (per browser)
+      if (data) {
+        const notifyKey = `order-notified-${data.order_number}`;
+        if (!sessionStorage.getItem(notifyKey)) {
+          sessionStorage.setItem(notifyKey, '1');
+          const emailStatus = (data.status && data.status !== 'pending') ? data.status : 'pending';
+          supabase.functions.invoke('send-order-email', {
+            body: {
+              orderNumber: data.order_number,
+              status: emailStatus,
+              totalAmount: data.total_amount,
+              shippingCity: data.shipping_city,
+              shippingState: data.shipping_state,
+              customerUserId: data.user_id,
+            },
+          }).catch((e) => console.warn('confirmation email failed:', e));
+        }
       }
     })();
     return () => { cancelled = true; };
@@ -45,10 +67,11 @@ const OrderSuccessPage = () => {
   const isCod = (order?.payment_method || '').toLowerCase() === 'cod';
   const isRazorpay = (order?.payment_method || '').toLowerCase() === 'razorpay';
   const paymentLabel = isCod ? 'Cash on Delivery' : isRazorpay ? 'Razorpay (Online)' : (order?.payment_method || 'Online');
-  const paid = !isCod && order?.status && order.status !== 'pending';
+  // For online payments treat any non-pending status as Paid/Confirmed.
+  const paid = !isCod && !!order?.status && order.status !== 'pending';
   const paymentStatusLabel = isCod
     ? (order?.cod_confirmed ? 'COD Confirmed' : 'Pay on Delivery')
-    : paid ? 'Paid' : 'Pending';
+    : paid ? 'Paid • Confirmed' : 'Confirming…';
   const paymentStatusClass = isCod
     ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300'
     : paid
@@ -63,7 +86,7 @@ const OrderSuccessPage = () => {
     const s = order?.status || 'pending';
     if (s === 'delivered') return 3;
     if (s === 'shipped') return 2;
-    if (s === 'confirmed') return 1;
+    if (s === 'confirmed' || (!isCod && paid)) return 1;
     return 0;
   })();
 
@@ -73,6 +96,12 @@ const OrderSuccessPage = () => {
     { icon: Truck, label: 'Shipped' },
     { icon: Package, label: 'Delivered' },
   ];
+
+  const handleWhatsAppConfirm = () => {
+    if (!order) return;
+    const msg = `Hi Trendra! Please confirm my order.\n\nOrder ID: ${order.order_number}\nAmount: ₹${Number(order.total_amount).toLocaleString('en-IN')}\nPayment: ${paymentLabel}\nShipping: ${order.shipping_city}, ${order.shipping_state}${order.shipping_phone ? `\nMobile: ${order.shipping_phone}` : ''}`;
+    openWhatsApp(getWhatsAppLink(msg));
+  };
 
   return (
     <Layout>
@@ -93,17 +122,18 @@ const OrderSuccessPage = () => {
           </motion.div>
 
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            Order Placed Successfully!
+            {isCod ? 'Order Placed — Please Confirm!' : 'Order Confirmed!'}
           </h1>
           <p className="text-muted-foreground mb-6 text-sm">
-            Thank you for your order. We'll notify you when it ships.
+            {isCod
+              ? 'Ek confirmation email bhej diya hai. Kripya WhatsApp par bhi confirm karein taki hum jaldi dispatch kar sakein.'
+              : 'Payment received. Confirmation email aapke inbox mein bhej diya hai.'}
           </p>
 
           {loading ? (
             <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
           ) : (
             <>
-              {/* Order + Payment card */}
               <div className="bg-card rounded-xl border border-border/50 p-5 mb-4 text-left">
                 <div className="flex items-start justify-between gap-4 mb-4 pb-4 border-b border-border/50">
                   <div>
@@ -147,8 +177,7 @@ const OrderSuccessPage = () => {
                 </div>
               </div>
 
-              {/* Timeline */}
-              <div className="bg-card rounded-xl border border-border/50 p-5 mb-6">
+              <div className="bg-card rounded-xl border border-border/50 p-5 mb-4">
                 <div className="flex items-center justify-between">
                   {timeline.map((step, i) => {
                     const active = i <= currentStep;
@@ -168,18 +197,29 @@ const OrderSuccessPage = () => {
                   })}
                 </div>
               </div>
+
+              {order && (
+                <Button
+                  onClick={handleWhatsAppConfirm}
+                  className="w-full mb-3 bg-[#25D366] hover:bg-[#128C7E] text-white"
+                  size="lg"
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  {isCod ? 'Confirm Order on WhatsApp' : 'Get Update on WhatsApp'}
+                </Button>
+              )}
             </>
           )}
 
           <div className="space-y-3">
             <Link to="/orders">
-              <Button className="w-full" size="lg">
+              <Button className="w-full" size="lg" variant="outline">
                 Track Your Order
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
             <Link to="/products">
-              <Button variant="outline" className="w-full" size="lg">
+              <Button variant="ghost" className="w-full" size="lg">
                 Continue Shopping
               </Button>
             </Link>
