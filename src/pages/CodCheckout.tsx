@@ -126,8 +126,8 @@ const CodCheckout = () => {
       if (couponCode) {
         try { await (supabase as any).rpc('increment_coupon_usage', { _code: couponCode }); } catch (e) { console.warn('coupon increment failed', e); }
       }
-      setSubmitted(true);
       toast.success('COD order placed successfully!');
+      navigate(`/order-success?order=${order.order_number}`);
     } catch (err: any) {
       console.error('COD submit error:', err);
       toast.error(err.message || 'Failed to place order');
