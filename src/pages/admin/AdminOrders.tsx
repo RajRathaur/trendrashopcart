@@ -258,7 +258,16 @@ const AdminOrders = () => {
         }
       }
 
-      toast.success('Order status updated');
+      // Auto-open WhatsApp deep link so admin can send status update to customer.
+      if (order?.shipping_phone) {
+        const phone = order.shipping_phone.replace(/\D/g, '');
+        const waNumber = phone.length === 10 ? `91${phone}` : phone;
+        const msg = `Hi! Your Trendra order #${order.order_number} status has been updated to: *${newStatus.toUpperCase()}*.\n\nTotal: ₹${Number(order.total_amount).toLocaleString('en-IN')}\nShipping to: ${order.shipping_city}, ${order.shipping_state}\n\nThank you for shopping with Trendra!`;
+        const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+
+      toast.success('Order status updated — email sent, WhatsApp opened');
       fetchOrders();
     } catch (error) {
       console.error('Error updating order:', error);
