@@ -34,7 +34,7 @@ import { Loader2, Trash2, Eye, MessageCircle, FileText, Save } from 'lucide-reac
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
-import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
+import { openWhatsApp } from '@/config/admin';
 import { logAdminAction, maskPhone, addressSnippet } from '@/lib/auditLog';
 import { generateTaxInvoice } from '@/lib/invoice';
 import { Input } from '@/components/ui/input';
@@ -194,6 +194,7 @@ const AdminOrders = () => {
   };
 
   const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+    let emailSent = false;
     try {
       // Find the order to get user_id and order_number
       const order = orders.find(o => o.id === orderId);
@@ -251,6 +252,8 @@ const AdminOrders = () => {
 
           if (emailError) {
             console.warn('Email notification failed:', emailError);
+          } else {
+            emailSent = true;
           }
         } catch (emailErr) {
           console.warn('Email notification error:', emailErr);
@@ -258,16 +261,12 @@ const AdminOrders = () => {
         }
       }
 
-      // Auto-open WhatsApp deep link so admin can send status update to customer.
-      if (order?.shipping_phone) {
-        const phone = order.shipping_phone.replace(/\D/g, '');
-        const waNumber = phone.length === 10 ? `91${phone}` : phone;
-        const msg = `Hi! Your Trendra order #${order.order_number} status has been updated to: *${newStatus.toUpperCase()}*.\n\nTotal: ₹${Number(order.total_amount).toLocaleString('en-IN')}\nShipping to: ${order.shipping_city}, ${order.shipping_state}\n\nThank you for shopping with Trendra!`;
-        const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
-        window.open(url, '_blank', 'noopener,noreferrer');
+      const whatsappHint = order?.shipping_phone ? ' Use the WhatsApp button to send the update.' : '';
+      if (emailSent) {
+        toast.success(`Order status updated and email sent.${whatsappHint}`);
+      } else {
+        toast.warning(`Order status updated, but email could not be sent.${whatsappHint}`);
       }
-
-      toast.success('Order status updated — email sent, WhatsApp opened');
       fetchOrders();
     } catch (error) {
       console.error('Error updating order:', error);
@@ -276,8 +275,14 @@ const AdminOrders = () => {
   };
 
   const handleWhatsAppNotify = (order: Order) => {
+    const phone = order.shipping_phone.replace(/\D/g, '');
+    if (!phone) {
+      toast.error('Customer phone number is missing');
+      return;
+    }
+    const waNumber = phone.length === 10 ? `91${phone}` : phone;
     const message = `Hi! Your Trendra order #${order.order_number} status has been updated to: *${order.status.toUpperCase()}*.\n\nTotal: ₹${order.total_amount.toLocaleString()}\nShipping to: ${order.shipping_city}, ${order.shipping_state}\n\nThank you for shopping with Trendra!`;
-    const url = getWhatsAppLink(message);
+    const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
     openWhatsApp(url);
   };
 

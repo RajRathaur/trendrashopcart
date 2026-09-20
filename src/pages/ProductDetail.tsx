@@ -29,7 +29,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState<'available' | 'unavailable' | null>(null);
-  const [pincodeInfo, setPincodeInfo] = useState<{ city: string; state: string; delivery_days: number; is_cod_available: boolean; delivery_charge: number } | null>(null);
+  const [pincodeInfo, setPincodeInfo] = useState<{ city?: string; state?: string; delivery_days: number; is_cod_available: boolean; delivery_charge: number } | null>(null);
   const [checkingPincode, setCheckingPincode] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
 
@@ -478,7 +478,11 @@ const ProductDetail = () => {
                 <div className="mt-2 space-y-1 text-sm">
                   <p className="pincode-available flex items-center gap-1">
                     <Check className="h-4 w-4" />
-                    Delivery to <strong>{pincodeInfo.city}, {pincodeInfo.state}</strong> in {pincodeInfo.delivery_days} days
+                    {pincodeInfo.city && pincodeInfo.state ? (
+                      <>Delivery to <strong>{pincodeInfo.city}, {pincodeInfo.state}</strong> in {pincodeInfo.delivery_days} days</>
+                    ) : (
+                      <>Delivery available to pincode <strong>{pincode}</strong> in {pincodeInfo.delivery_days} days</>
+                    )}
                   </p>
                   <p className="flex items-center gap-1">
                     <Truck className="h-4 w-4 text-primary" />
