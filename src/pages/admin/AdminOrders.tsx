@@ -34,7 +34,7 @@ import { Loader2, Trash2, Eye, MessageCircle, FileText, Save } from 'lucide-reac
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
-import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
+import { openWhatsApp } from '@/config/admin';
 import { logAdminAction, maskPhone, addressSnippet } from '@/lib/auditLog';
 import { generateTaxInvoice } from '@/lib/invoice';
 import { Input } from '@/components/ui/input';
