@@ -26,6 +26,7 @@ const LoginPage = () => {
     password: '',
   });
   const [authMode, setAuthMode] = useState<'email' | 'phone' | 'emailotp'>('email');
+  const [googleError, setGoogleError] = useState<string | null>(null);
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
