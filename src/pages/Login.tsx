@@ -456,21 +456,7 @@ const LoginPage = () => {
               className="w-full"
               size="lg"
               disabled={loading}
-              onClick={async () => {
-                setLoading(true);
-                try {
-                  sessionStorage.setItem('trendra_google_redirect', redirect);
-                  const result = await lovable.auth.signInWithOAuth('google', {
-                    redirect_uri: window.location.origin,
-                    extraParams: { prompt: 'select_account' },
-                  });
-                  if (result.error) throw result.error;
-                } catch (err: any) {
-                  console.error('[GoogleOAuth] exception', err);
-                  toast.error(err?.message || 'Google sign-in failed', { duration: 8000 });
-                  setLoading(false);
-                }
-              }}
+              onClick={() => handleGoogleSignIn()}
             >
               <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
