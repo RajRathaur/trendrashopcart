@@ -147,6 +147,27 @@ const LoginPage = () => {
   }, [user, isAdmin, authLoading, navigate, redirect]);
 
 
+  const handleGoogleSignIn = async () => {
+    setGoogleError(null);
+    setLoading(true);
+    try {
+      sessionStorage.setItem('trendra_google_redirect', redirect);
+      const { error } = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri: window.location.origin,
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      const msg: string = err?.message || '';
+      let friendly = 'Google login abhi kaam nahi kar raha. Please retry karein ya Email OTP use karein.';
+      if (/popup|blocked/i.test(msg)) friendly = 'Popup block ho gaya. Browser me popups allow karein aur retry karein.';
+      else if (/cancel|closed/i.test(msg)) friendly = 'Login cancel ho gaya. Dobara try karein.';
+      else if (/network|fetch|timeout/i.test(msg)) friendly = 'Network issue. Internet check karke retry karein.';
+      setGoogleError(friendly);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
 
   const validateEmail = (email: string) => {
@@ -467,6 +488,22 @@ const LoginPage = () => {
               </svg>
               Continue with Google
             </Button>
+
+            {googleError && (
+              <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                <p>{googleError}</p>
+                <div className="mt-2 flex gap-2">
+                  <Button type="button" size="sm" variant="outline" onClick={handleGoogleSignIn} disabled={loading}>
+                    Retry Google Login
+                  </Button>
+                  <Button type="button" size="sm" variant="ghost" onClick={() => { setGoogleError(null); setAuthMode('emailotp'); }}>
+                    Email OTP se login
+                  </Button>
+                </div>
+              </div>
+            )}
+
+
 
 
 
