@@ -147,8 +147,26 @@ const LoginPage = () => {
   }, [user, isAdmin, authLoading, navigate, redirect]);
 
 
+  const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
+
+  const openFullPageGoogle = () => {
+    const url = `${window.location.origin}/auth/google?redirect=${encodeURIComponent(redirect)}`;
+    const tab = window.open(url, '_blank', 'noopener,noreferrer');
+    if (!tab) {
+      setGoogleError('Naya tab block ho gaya. Browser me popups allow karein, ya niche wale link ko naye tab me kholein.');
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     setGoogleError(null);
+
+    // Google blocks its sign-in page inside embedded frames (ERR_BLOCKED_BY_RESPONSE),
+    // so run the whole flow in a dedicated top-level tab instead.
+    if (isEmbedded) {
+      openFullPageGoogle();
+      return;
+    }
+
     setLoading(true);
     try {
       sessionStorage.setItem('trendra_google_redirect', redirect);
