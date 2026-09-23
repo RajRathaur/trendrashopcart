@@ -507,6 +507,20 @@ const LoginPage = () => {
               Continue with Google
             </Button>
 
+            {isEmbedded && (
+              <p className="mt-2 text-xs text-muted-foreground text-center">
+                Google login naye tab me khulega.{' '}
+                <a
+                  href={`/auth/google?redirect=${encodeURIComponent(redirect)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Naye tab me kholein
+                </a>
+              </p>
+            )}
+
             {googleError && (
               <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
                 <p>{googleError}</p>
