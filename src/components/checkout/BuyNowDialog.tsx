@@ -7,6 +7,7 @@ import { CreditCard, Banknote, ChevronRight, Loader2, Tag, X } from 'lucide-reac
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { loadRazorpay } from '@/lib/razorpay';
 
 interface BuyNowDialogProps {
   open: boolean;
@@ -38,12 +39,7 @@ export const BuyNowDialog = ({
   } | null>(null);
 
   useEffect(() => {
-    if (document.getElementById('razorpay-checkout-js')) return;
-    const s = document.createElement('script');
-    s.id = 'razorpay-checkout-js';
-    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    s.async = true;
-    document.body.appendChild(s);
+    void loadRazorpay().catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -116,6 +112,7 @@ export const BuyNowDialog = ({
 
     setLoading(true);
     try {
+      const Razorpay = await loadRazorpay();
       const { data: product, error: prodErr } = await supabase
         .from('products')
         .select('id, name, price, images, seller_id')
@@ -173,12 +170,9 @@ export const BuyNowDialog = ({
       });
       if (rzpErr || !rzp?.order_id) throw new Error(rzpErr?.message || 'Payment init failed');
 
-      const RZP = (window as any).Razorpay;
-      if (!RZP) { toast.error('Payment SDK not loaded. Refresh and try again.'); return; }
-
       onOpenChange(false);
 
-      const rz = new RZP({
+      const rz = new Razorpay({
         key: rzp.key_id,
         order_id: rzp.order_id,
         amount: rzp.amount,

@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ChevronRight, Truck, Shield, CreditCard, Tag, X, ShoppingBag, Package, MapPin, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { loadRazorpay } from '@/lib/razorpay';
 
 const CheckoutPage = () => {
   const { items, totalAmount, clearCart } = useCart();
@@ -28,14 +29,8 @@ const CheckoutPage = () => {
   
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('razorpay');
 
-  // Load Razorpay checkout script once
   useEffect(() => {
-    if (document.getElementById('razorpay-checkout-js')) return;
-    const s = document.createElement('script');
-    s.id = 'razorpay-checkout-js';
-    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    s.async = true;
-    document.body.appendChild(s);
+    void loadRazorpay().catch(() => undefined);
   }, []);
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
@@ -231,9 +226,8 @@ const CheckoutPage = () => {
         console.warn('Admin notification failed:', emailErr);
       }
 
-      await clearCart();
-
       if (paymentMethod === 'razorpay') {
+        const Razorpay = await loadRazorpay();
         // Create Razorpay order via edge function
         const { data: rzp, error: rzpErr } = await supabase.functions.invoke('create-razorpay-order', {
           body: { order_id: order.id, orderId: order.id, amount: finalAmount },
@@ -242,16 +236,7 @@ const CheckoutPage = () => {
           throw new Error(rzpErr?.message || 'Failed to initiate Razorpay payment');
         }
 
-        const RZP = (window as any).Razorpay;
-        if (!RZP) {
-          toast.error('Payment SDK not loaded. Please refresh and try again.');
-          setLoading(false);
-          return;
-        }
-
-        await clearCart();
-
-        const rz = new RZP({
+        const rz = new Razorpay({
           key: rzp.key_id,
           order_id: rzp.order_id,
           amount: rzp.amount,
@@ -279,6 +264,7 @@ const CheckoutPage = () => {
               if (appliedCoupon) {
                 try { await (supabase as any).rpc('increment_coupon_usage', { _code: appliedCoupon.code }); } catch (e) { console.warn('coupon increment failed', e); }
               }
+              await clearCart();
               toast.success('Payment successful!');
               navigate(`/order-success?order=${order.order_number}`);
             } catch (verifyErr) {
@@ -301,6 +287,7 @@ const CheckoutPage = () => {
       if (appliedCoupon) {
         try { await (supabase as any).rpc('increment_coupon_usage', { _code: appliedCoupon.code }); } catch (e) { console.warn('coupon increment failed', e); }
       }
+      await clearCart();
       toast.success('Order placed successfully!');
       navigate(`/order-success?order=${order.order_number}`);
     } catch (error: any) {
