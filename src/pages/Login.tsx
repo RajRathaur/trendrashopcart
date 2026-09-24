@@ -9,7 +9,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { lovable } from '@/integrations/lovable';
 
 const getSafeRedirectPath = (value: string | null) => {
   if (!value || !value.startsWith('/') || value.startsWith('//')) return '/';
@@ -152,9 +151,12 @@ const LoginPage = () => {
     setLoading(true);
     try {
       sessionStorage.setItem('trendra_google_redirect', redirect);
-      const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: window.location.origin,
-        extraParams: { prompt: 'select_account' },
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/login`,
+          queryParams: { prompt: 'select_account' },
+        },
       });
       if (error) throw error;
     } catch (err: any) {
