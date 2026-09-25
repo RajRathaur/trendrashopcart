@@ -832,6 +832,7 @@ export type Database = {
           mrp: number
           name: string
           price: number
+          price_tiers: Json
           product_type: string | null
           rating: number | null
           review_count: number | null
@@ -857,6 +858,7 @@ export type Database = {
           mrp: number
           name: string
           price: number
+          price_tiers?: Json
           product_type?: string | null
           rating?: number | null
           review_count?: number | null
@@ -882,6 +884,7 @@ export type Database = {
           mrp?: number
           name?: string
           price?: number
+          price_tiers?: Json
           product_type?: string | null
           rating?: number | null
           review_count?: number | null
