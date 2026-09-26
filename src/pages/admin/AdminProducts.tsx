@@ -24,8 +24,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Loader2, Plus, Pencil, Trash2, Flame, X } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Flame, X, Package } from 'lucide-react';
 import { toast } from 'sonner';
+import { parseTiers } from '@/lib/pricing';
 
 interface Product {
   id: string;
@@ -82,12 +83,13 @@ const AdminProducts = () => {
     colors: [] as string[],
     deliveryCharge: '',
     freeDelivery: false,
+    tiers: [] as { qty: string; price: string }[],
   });
 
   const emptyForm = {
     name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '',
     isFeatured: false, categoryId: '', sizes: [] as string[], colors: [] as string[],
-    deliveryCharge: '', freeDelivery: false,
+    deliveryCharge: '', freeDelivery: false, tiers: [] as { qty: string; price: string }[],
   };
 
   const selectedCategory = categories.find((c) => c.id === formData.categoryId);
@@ -188,6 +190,9 @@ const AdminProducts = () => {
         delivery_charge: formData.freeDelivery
           ? 0
           : (formData.deliveryCharge.trim() !== '' ? parseFloat(formData.deliveryCharge) : null),
+        price_tiers: formData.tiers
+          .map((t) => ({ qty: parseInt(t.qty), price: parseFloat(t.price) }))
+          .filter((t) => Number.isFinite(t.qty) && t.qty > 1 && Number.isFinite(t.price) && t.price > 0),
       };
 
       if (editingProduct) {
@@ -243,6 +248,7 @@ const AdminProducts = () => {
       colors: product.colors || [],
       deliveryCharge: product.delivery_charge != null ? String(product.delivery_charge) : '',
       freeDelivery: !!product.free_delivery,
+      tiers: parseTiers(product.price_tiers).map((t) => ({ qty: String(t.qty), price: String(t.price) })),
     });
     setDialogOpen(true);
   };
@@ -406,6 +412,53 @@ const AdminProducts = () => {
                       />
                     </div>
                   )}
+                </div>
+
+                {/* Bulk / pack pricing — e.g. 10 units for ₹60 */}
+                <div className="border rounded-md p-3 space-y-2 bg-muted/30">
+                  <Label className="text-sm font-semibold flex items-center gap-1.5">
+                    <Package className="h-4 w-4" /> Bulk Pack Pricing (optional)
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Example: 1 unit ₹10, but 10 units together ₹60. Add packs below.
+                  </p>
+                  {formData.tiers.map((t, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <Input
+                        type="number" min="2" placeholder="Qty (e.g. 10)"
+                        value={t.qty}
+                        onChange={(e) => {
+                          const tiers = [...formData.tiers];
+                          tiers[i] = { ...tiers[i], qty: e.target.value };
+                          setFormData({ ...formData, tiers });
+                        }}
+                      />
+                      <span className="text-xs text-muted-foreground shrink-0">units for ₹</span>
+                      <Input
+                        type="number" min="1" placeholder="Price (e.g. 60)"
+                        value={t.price}
+                        onChange={(e) => {
+                          const tiers = [...formData.tiers];
+                          tiers[i] = { ...tiers[i], price: e.target.value };
+                          setFormData({ ...formData, tiers });
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, tiers: formData.tiers.filter((_, j) => j !== i) })}
+                        className="text-muted-foreground hover:text-destructive shrink-0"
+                        aria-label="Remove pack"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button" variant="outline" size="sm"
+                    onClick={() => setFormData({ ...formData, tiers: [...formData.tiers, { qty: '', price: '' }] })}
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1" /> Add Pack
+                  </Button>
                 </div>
 
                 {/* Sizes — chip input, enabled once a category is picked */}

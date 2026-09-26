@@ -8,6 +8,13 @@
       "when": 1790306126633,
       "tag": "0000_product_price_tiers",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790388508390,
+      "tag": "0001_pack_aware_order_item_pricing",
+      "breakpoints": true
     }
   ]
 }
