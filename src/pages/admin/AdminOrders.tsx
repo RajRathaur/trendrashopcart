@@ -261,11 +261,22 @@ const AdminOrders = () => {
         }
       }
 
-      const whatsappHint = order?.shipping_phone ? ' Use the WhatsApp button to send the update.' : '';
-      if (emailSent) {
-        toast.success(`Order status updated and email sent.${whatsappHint}`);
+      const baseMsg = emailSent
+        ? 'Order status updated and email sent.'
+        : 'Order status updated, but email could not be sent.';
+      const toastFn = emailSent ? toast.success : toast.warning;
+      if (order?.shipping_phone) {
+        // Persistent toast with a click action: window.open after awaits gets
+        // blocked by popup blockers, so the admin taps to open WhatsApp.
+        toastFn(baseMsg, {
+          duration: 15000,
+          action: {
+            label: 'Send WhatsApp',
+            onClick: () => handleWhatsAppNotify({ ...order, status: newStatus }),
+          },
+        });
       } else {
-        toast.warning(`Order status updated, but email could not be sent.${whatsappHint}`);
+        toastFn(baseMsg);
       }
       fetchOrders();
     } catch (error) {
