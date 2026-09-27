@@ -16,7 +16,7 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
-import { Loader2, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Product {
@@ -80,6 +80,30 @@ const SellerProducts = () => {
   };
 
   const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  const [aiLoading, setAiLoading] = useState(false);
+  const suggestWithAI = async () => {
+    if (!form.imageUrl) return;
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-product-suggest', {
+        body: { imageUrl: form.imageUrl, categories: categories.map((c) => c.name), hint: form.name },
+      });
+      if (error || data?.error) throw new Error(data?.error || 'AI suggestion nahi mil paya');
+      const cat = categories.find((c) => c.name.toLowerCase() === String(data.category).toLowerCase());
+      setForm((f) => ({
+        ...f,
+        name: data.title || f.name,
+        description: data.description || f.description,
+        categoryId: cat?.id || f.categoryId,
+      }));
+      toast.success('AI suggestions bhar diye — check karke edit kar sakte hain');
+    } catch (e: any) {
+      toast.error(e.message || 'AI suggestion nahi mil paya');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const save = async () => {
     if (!seller?.id) return;
@@ -180,6 +204,10 @@ const SellerProducts = () => {
                   <Textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
                 </div>
                 <ProductImageUpload imageUrl={form.imageUrl} onImageChange={(url) => setForm({ ...form, imageUrl: url })} />
+                <Button type="button" variant="secondary" className="w-full" disabled={!form.imageUrl || aiLoading} onClick={suggestWithAI}>
+                  {aiLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+                  {form.imageUrl ? 'AI se title, description aur category banayein' : 'Pehle photo upload karein'}
+                </Button>
                 <div className="border rounded-md p-3 space-y-2 bg-muted/30">
                   <Label className="text-sm font-semibold">Delivery</Label>
                   <label className="flex items-center gap-2 text-sm cursor-pointer">
