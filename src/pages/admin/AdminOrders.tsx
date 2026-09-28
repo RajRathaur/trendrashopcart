@@ -298,6 +298,23 @@ const AdminOrders = () => {
     openWhatsApp(url);
   };
 
+  const handleQikInkPush = async (order: Order) => {
+    setPushingQikInk(order.id);
+    try {
+      const { data, error } = await supabase.functions.invoke('qikink-order', {
+        body: { order_id: order.id },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error + (data.detail ? ` — ${data.detail}` : ''));
+      toast.success(`Order #${order.order_number} QikInk par bhej diya gaya`);
+      logAdminAction('qikink_push', 'order', order.id, { order_number: order.order_number });
+    } catch (err: any) {
+      toast.error(err?.message || 'QikInk push failed');
+    } finally {
+      setPushingQikInk(null);
+    }
+  };
+
   const downloadInvoice = async (order: Order) => {
     try {
       let items = orderItems[order.id];
@@ -483,6 +500,18 @@ const AdminOrders = () => {
                               title="Download invoice"
                             >
                               <FileText className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleQikInkPush(order)}
+                              disabled={pushingQikInk === order.id}
+                              title="Push to QikInk (print & fulfill)"
+                              className="text-primary hover:text-primary"
+                            >
+                              {pushingQikInk === order.id
+                                ? <Loader2 className="h-4 w-4 animate-spin" />
+                                : <Printer className="h-4 w-4" />}
                             </Button>
                             <Select
                               value={order.status}
