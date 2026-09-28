@@ -30,7 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Loader2, Trash2, Eye, MessageCircle, FileText, Save } from 'lucide-react';
+import { Loader2, Trash2, Eye, MessageCircle, FileText, Save, Printer } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
@@ -98,6 +98,7 @@ const AdminOrders = () => {
   const [orderItems, setOrderItems] = useState<Record<string, OrderItem[]>>({});
   const [trackingDrafts, setTrackingDrafts] = useState<Record<string, { courier: string; awb: string }>>({});
   const [savingTracking, setSavingTracking] = useState<string | null>(null);
+  const [pushingQikInk, setPushingQikInk] = useState<string | null>(null);
 
   const getDraft = (order: Order) => trackingDrafts[order.id] ?? { courier: order.courier_name ?? '', awb: order.tracking_number ?? '' };
   const setDraft = (id: string, patch: Partial<{ courier: string; awb: string }>) =>
