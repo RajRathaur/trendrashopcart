@@ -134,6 +134,16 @@ const AssistantPage = () => {
     onFinish: () => loadThreads(),
   });
 
+  // Auto-send query coming from homepage AI suggestion box (?q=...)
+  useEffect(() => {
+    if (!user || !threadId || !initialQuery || loadingThread) return;
+    if (autoSendRef.current === initialQuery) return;
+    autoSendRef.current = initialQuery;
+    setSearchParams({}, { replace: true });
+    void sendMessage({ text: initialQuery });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, threadId, initialQuery, loadingThread]);
+
   const handleSubmit = async (message: PromptInputMessage) => {
     const text = (message.text ?? input).trim();
     if (!text || !threadId) return;
