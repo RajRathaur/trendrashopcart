@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams, Link, useSearchParams } from "react-router-dom";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,6 +33,9 @@ const AssistantPage = () => {
   const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { threadId } = useParams<{ threadId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQuery = searchParams.get("q")?.trim() || "";
+  const autoSendRef = useRef<string | null>(null);
 
   const [threads, setThreads] = useState<Thread[]>([]);
   const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
@@ -43,7 +46,10 @@ const AssistantPage = () => {
   // Redirect to login if not signed in
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate(`/login?redirect=/assistant`, { replace: true });
+      const target = initialQuery
+        ? `/assistant?q=${encodeURIComponent(initialQuery)}`
+        : "/assistant";
+      navigate(`/login?redirect=${encodeURIComponent(target)}`, { replace: true });
     }
   }, [authLoading, user, navigate]);
 
@@ -127,6 +133,16 @@ const AssistantPage = () => {
     onError: (e) => toast.error(e.message || "Chat failed"),
     onFinish: () => loadThreads(),
   });
+
+  // Auto-send query coming from homepage AI suggestion box (?q=...)
+  useEffect(() => {
+    if (!user || !threadId || !initialQuery || loadingThread) return;
+    if (autoSendRef.current === initialQuery) return;
+    autoSendRef.current = initialQuery;
+    setSearchParams({}, { replace: true });
+    void sendMessage({ text: initialQuery });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, threadId, initialQuery, loadingThread]);
 
   const handleSubmit = async (message: PromptInputMessage) => {
     const text = (message.text ?? input).trim();

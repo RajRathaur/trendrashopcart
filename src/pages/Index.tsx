@@ -12,6 +12,7 @@ import { FloatingStickers } from '@/components/home/FloatingStickers';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { GamePromoBanner } from '@/components/home/GamePromoBanner';
+import { AiSuggestBox } from '@/components/home/AiSuggestBox';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
@@ -80,6 +81,11 @@ const Index = () => {
 
       {/* Delivery road transition */}
       <DeliveryRoad />
+
+      {/* AI Suggestion Box */}
+      <div className="container mx-auto px-3 py-2 sm:py-3">
+        <AiSuggestBox />
+      </div>
 
       {/* Banner Slider */}
       {demoBanners.length > 0 && (
