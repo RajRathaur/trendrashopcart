@@ -63,6 +63,7 @@ const AdminBroadcast = lazy(() => import("./pages/admin/AdminBroadcast"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminEmailMonitor = lazy(() => import("./pages/admin/AdminEmailMonitor"));
 const AdminOtpDebug = lazy(() => import("./pages/admin/AdminOtpDebug"));
+const AdminEmailTemplates = lazy(() => import("./pages/admin/AdminEmailTemplates"));
 const AdminAnimations = lazy(() => import("./pages/admin/AdminAnimations"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 
@@ -139,6 +140,7 @@ const AppRoutes = () => (
       <Route path="/admin/users" element={admin(<AdminUsers />)} />
       <Route path="/admin/email-monitor" element={admin(<AdminEmailMonitor />)} />
       <Route path="/admin/otp-debug" element={admin(<AdminOtpDebug />)} />
+      <Route path="/admin/email-templates" element={admin(<AdminEmailTemplates />)} />
       <Route path="/admin/animations" element={admin(<AdminAnimations />)} />
       <Route path="/admin/coupons" element={admin(<AdminCoupons />)} />
 
