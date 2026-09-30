@@ -10,6 +10,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, Ban, Undo2, Users as UsersIcon, UserPlus, Activity, Phone, MapPin, Clock, ShoppingBag, Mail, User } from 'lucide-react';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Sheet,
   SheetContent,
@@ -105,6 +107,11 @@ const AdminUsers = () => {
     blockedCount: enriched.filter((u) => u.is_blocked).length,
   }), [enriched]);
 
+  const [mailTo, setMailTo] = useState<{ id: string; email: string; name: string } | null>(null);
+  const [mailSubject, setMailSubject] = useState('');
+  const [mailBody, setMailBody] = useState('');
+  const [mailSending, setMailSending] = useState(false);
+
   const toggleBlock = async (user_id: string, blocked: boolean) => {
     const { error } = await supabase.from('profiles').update({ is_blocked: blocked }).eq('user_id', user_id);
     if (error) return toast.error(error.message);
@@ -112,8 +119,29 @@ const AdminUsers = () => {
     load();
   };
 
+  const sendMail = async () => {
+    if (!mailTo || !mailSubject.trim() || !mailBody.trim()) return toast.error('Subject aur message likhiye');
+    setMailSending(true);
+    const { error } = await supabase.functions.invoke('send-order-email', {
+      body: { mode: 'custom', customerUserId: mailTo.id, subject: mailSubject, message: mailBody },
+    });
+    setMailSending(false);
+    if (error) return toast.error('Mail nahi gaya: ' + error.message);
+    toast.success(`Mail bhej diya: ${mailTo.email}`);
+    setMailTo(null); setMailSubject(''); setMailBody('');
+  };
+
   return (
     <AdminLayout>
+      <Dialog open={!!mailTo} onOpenChange={(o) => !o && setMailTo(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Mail to {mailTo?.name || mailTo?.email}</DialogTitle></DialogHeader>
+          <p className="text-xs text-muted-foreground">{mailTo?.email} — {'{name}'} likhne par customer ka naam aa jayega.</p>
+          <Input placeholder="Subject" value={mailSubject} maxLength={200} onChange={(e) => setMailSubject(e.target.value)} />
+          <Textarea placeholder="Message…" rows={7} maxLength={5000} value={mailBody} onChange={(e) => setMailBody(e.target.value)} />
+          <Button onClick={sendMail} disabled={mailSending}>{mailSending ? 'Bhej rahe hain…' : 'Send Mail'}</Button>
+        </DialogContent>
+      </Dialog>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Users</h1>
       </div>
@@ -201,7 +229,10 @@ const AdminUsers = () => {
                         {!u.isActive && !u.isNew && !u.is_blocked && <Badge variant="outline" className="text-xs">Inactive</Badge>}
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right whitespace-nowrap">
+                      <Button size="sm" variant="outline" className="mr-1" disabled={!u.email} onClick={(e) => { e.stopPropagation(); setMailTo({ id: u.user_id, email: u.email || '', name: u.full_name || '' }); }}>
+                        <Mail className="h-3.5 w-3.5 mr-1" />Mail
+                      </Button>
                       {u.is_blocked ? (
                         <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); toggleBlock(u.user_id, false); }}>
                           <Undo2 className="h-3.5 w-3.5 mr-1" />Unblock
