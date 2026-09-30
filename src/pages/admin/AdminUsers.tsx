@@ -126,7 +126,12 @@ const AdminUsers = () => {
       body: { mode: 'custom', customerUserId: mailTo.id, subject: mailSubject, message: mailBody },
     });
     setMailSending(false);
-    if (error) return toast.error('Mail nahi gaya: ' + error.message);
+    if (error) {
+      let details = error.message;
+      try { details = await (error as any).context?.text?.() || details; } catch { /* ignore */ }
+      if (details.includes('verify a domain')) details = 'Resend me trendra.store domain verify nahi hai — abhi sirf aapke apne email par mail ja sakta hai.';
+      return toast.error('Mail nahi gaya: ' + details, { duration: 10000 });
+    }
     toast.success(`Mail bhej diya: ${mailTo.email}`);
     setMailTo(null); setMailSubject(''); setMailBody('');
   };
