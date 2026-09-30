@@ -56,10 +56,11 @@ Deno.serve(async (req) => {
     }
     const callerId = claimsData.claims.sub as string;
 
-    const { orderNumber, status, totalAmount, shippingCity, shippingState, customerUserId } =
-      await req.json();
+    const body = await req.json();
+    const { orderNumber, status, totalAmount, shippingCity, shippingState, customerUserId } = body;
+    const isCustom = body.mode === "custom";
 
-    if (!customerUserId || !orderNumber || !status) {
+    if (!customerUserId || (!isCustom && (!orderNumber || !status)) || (isCustom && (!body.subject || !body.message))) {
       return new Response(JSON.stringify({ error: "Missing required fields" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -67,7 +68,7 @@ Deno.serve(async (req) => {
     }
 
     // Allow: admin, OR the order owner notifying themselves.
-    if (callerId !== customerUserId) {
+    if (callerId !== customerUserId || isCustom) {
       const { data: roleData } = await userClient
         .from("user_roles")
         .select("role")
@@ -97,8 +98,36 @@ Deno.serve(async (req) => {
     }
     const customerEmail = userLookup.user.email;
 
+    const esc = (v: unknown) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+    const { data: prof } = await admin.from("profiles").select("full_name").eq("user_id", customerUserId).maybeSingle();
+    const custName = prof?.full_name || "Customer";
+    const fill = (t: string) => t
+      .replaceAll("{name}", custName).replaceAll("{order}", String(orderNumber ?? ""))
+      .replaceAll("{status}", String(status ?? "")).replaceAll("{amount}", `₹${Number(totalAmount || 0).toLocaleString("en-IN")}`);
+    const { data: tplRows } = await admin.from("site_content").select("content_key, content_value")
+      .in("content_key", [`email_status_${status}_subject`, `email_status_${status}_body`, "email_from"]);
+    const tpl: Record<string, string> = {};
+    for (const r of tplRows || []) tpl[r.content_key] = r.content_value;
+    const fromAddr = tpl.email_from?.trim() || Deno.env.get("RESEND_FROM") || "Trendra <onboarding@resend.dev>";
+
+    if (isCustom) {
+      const subj = String(body.subject).slice(0, 200);
+      const msg = String(body.message).slice(0, 5000);
+      const html = `<!DOCTYPE html><html><body style="margin:0;background:#f5f0e8;font-family:Arial,sans-serif;padding:32px 16px;"><table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table width="600" style="background:#fff;border-radius:12px;padding:32px;"><tr><td><h1 style="color:#7d9b76;margin:0 0 16px;font-size:22px;">Trendra</h1><p style="color:#18181b;font-size:15px;">Hi ${esc(custName)},</p><div style="color:#3f3f46;font-size:15px;line-height:1.6;white-space:pre-wrap;">${esc(fill(msg))}</div><p style="color:#a1a1aa;font-size:12px;margin-top:32px;">Trendra • trendra.care.ac.in@gmail.com • +91 9125442370</p></td></tr></table></td></tr></table></body></html>`;
+      const r = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ from: fromAddr, to: [customerEmail], subject: fill(subj), html }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(`Resend API error [${r.status}]: ${JSON.stringify(d)}`);
+      return new Response(JSON.stringify({ success: true, id: d.id, to: customerEmail }), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const emoji = statusEmoji[status] || "📋";
-    const message = statusMessages[status] || `Your order status has been updated to: ${status}.`;
+    const message = esc(fill(tpl[`email_status_${status}_body`]?.trim() || statusMessages[status] || `Your order status has been updated to: ${status}.`));
     const capitalizedStatus = status.charAt(0).toUpperCase() + status.slice(1);
 
     const htmlContent = `<!DOCTYPE html>
@@ -116,10 +145,10 @@ Deno.serve(async (req) => {
 <p style="color:#71717a;margin:0;font-size:15px;">${message}</p></div>
 <table width="100%" style="background:#f8fafc;border-radius:8px;padding:20px;margin-bottom:24px;" cellpadding="0" cellspacing="0"><tr><td style="padding:12px 20px;">
 <table width="100%" cellpadding="0" cellspacing="0">
-<tr><td style="color:#71717a;font-size:13px;padding-bottom:8px;">Order Number</td><td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:8px;">#${orderNumber}</td></tr>
+<tr><td style="color:#71717a;font-size:13px;padding-bottom:8px;">Order Number</td><td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:8px;">#${esc(orderNumber)}</td></tr>
 <tr><td style="color:#71717a;font-size:13px;padding-bottom:8px;">Status</td><td align="right" style="color:#2563eb;font-size:14px;font-weight:600;padding-bottom:8px;">${capitalizedStatus}</td></tr>
 <tr><td style="color:#71717a;font-size:13px;padding-bottom:8px;">Total Amount</td><td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:8px;">₹${Number(totalAmount || 0).toLocaleString("en-IN")}</td></tr>
-<tr><td style="color:#71717a;font-size:13px;">Shipping To</td><td align="right" style="color:#18181b;font-size:14px;font-weight:600;">${shippingCity || ""}, ${shippingState || ""}</td></tr>
+<tr><td style="color:#71717a;font-size:13px;">Shipping To</td><td align="right" style="color:#18181b;font-size:14px;font-weight:600;">${esc(shippingCity)}, ${esc(shippingState)}</td></tr>
 </table></td></tr></table>
 <div style="text-align:center;margin-top:24px;">
 <a href="https://trendra.store/orders" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">View My Orders</a></div>
@@ -136,9 +165,9 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Trendra <onboarding@resend.dev>",
+        from: fromAddr,
         to: [customerEmail],
-        subject: `${emoji} Order #${orderNumber} - ${capitalizedStatus}`,
+        subject: tpl[`email_status_${status}_subject`]?.trim() ? fill(tpl[`email_status_${status}_subject`]) : `${emoji} Order #${orderNumber} - ${capitalizedStatus}`,
         html: htmlContent,
       }),
     });

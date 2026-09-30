@@ -25,6 +25,7 @@ const navItems = [
   { href: '/admin/email-monitor', label: 'Email Monitor', icon: MailCheck },
   { href: '/admin/otp-debug', label: 'OTP Debug', icon: KeyRound },
   { href: '/admin/audit-logs', label: 'Audit Logs', icon: Shield },
+  { href: '/admin/email-templates', label: 'Email Templates', icon: Mail },
   { href: '/admin/animations', label: 'Animations', icon: Sparkles },
 
 ];
