@@ -631,6 +631,9 @@ export type Database = {
           cod_confirmed: boolean | null
           courier_name: string | null
           created_at: string
+          delivery_latitude: number | null
+          delivery_location_accuracy: number | null
+          delivery_longitude: number | null
           id: string
           notes: string | null
           order_number: string
@@ -650,6 +653,9 @@ export type Database = {
           cod_confirmed?: boolean | null
           courier_name?: string | null
           created_at?: string
+          delivery_latitude?: number | null
+          delivery_location_accuracy?: number | null
+          delivery_longitude?: number | null
           id?: string
           notes?: string | null
           order_number: string
@@ -669,6 +675,9 @@ export type Database = {
           cod_confirmed?: boolean | null
           courier_name?: string | null
           created_at?: string
+          delivery_latitude?: number | null
+          delivery_location_accuracy?: number | null
+          delivery_longitude?: number | null
           id?: string
           notes?: string | null
           order_number?: string
