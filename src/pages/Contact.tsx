@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, MapPin, Clock, Send, MessageSquare, MessageCircle } from 'lucide-react';
+import { Mail, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
-import { ADMIN_CONFIG, getWhatsAppLink } from '@/config/admin';
+import { ADMIN_CONFIG } from '@/config/admin';
 import { Seo } from '@/components/Seo';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -65,8 +65,8 @@ const ContactPage = () => {
   return (
     <Layout>
       <Seo
-        title="Contact Trendra Shopkart — Customer Support"
-        description="Reach the Trendra Shopkart team for orders, returns, seller queries or partnership requests. WhatsApp, email and phone support available."
+        title="Contact Trendra — Customer Support"
+        description="Reach the Trendra team by email for orders, returns, seller queries or partnership requests."
         path="/contact"
       />
       <div className="container mx-auto px-4 py-8">
@@ -88,34 +88,6 @@ const ContactPage = () => {
               </h2>
 
               <div className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Phone className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Phone</h3>
-                    <p className="text-sm text-muted-foreground">{ADMIN_CONFIG.phone.mobile}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                    <MessageCircle className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">WhatsApp</h3>
-                    <a 
-                      href={getWhatsAppLink('Hi! I need help with my order.')} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-sm text-green-600 hover:text-green-700 font-medium"
-                    >
-                      {ADMIN_CONFIG.whatsapp.displayNumber}
-                    </a>
-                    <p className="text-xs text-muted-foreground mt-1">Click to chat with us</p>
-                  </div>
-                </div>
-
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Mail className="h-5 w-5 text-primary" />

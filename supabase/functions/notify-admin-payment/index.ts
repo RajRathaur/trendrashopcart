@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
           <tr>
             <td style="background-color:#f8fafc;padding:24px 40px;text-align:center;border-top:1px solid #e4e4e7;">
               <p style="color:#a1a1aa;font-size:12px;margin:0;">
-                © ${new Date().getFullYear()} Trendra India Pvt. Ltd. All rights reserved.
+                 © ${new Date().getFullYear()} Trendra. All rights reserved.
               </p>
             </td>
           </tr>

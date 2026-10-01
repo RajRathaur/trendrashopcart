@@ -15,6 +15,13 @@
       "when": 1790388508390,
       "tag": "0001_pack_aware_order_item_pricing",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790813474014,
+      "tag": "0002_add_required_order_delivery_location",
+      "breakpoints": true
     }
   ]
 }

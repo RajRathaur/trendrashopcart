@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Package, ArrowRight, Truck, Clock, CreditCard, Banknote, CalendarDays, Loader2, MessageCircle } from 'lucide-react';
+import { CheckCircle, Package, ArrowRight, Truck, Clock, CreditCard, Banknote, CalendarDays, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { format, addDays } from 'date-fns';
-import { getWhatsAppLink, openWhatsApp } from '@/config/admin';
 
 interface OrderInfo {
   id: string;
@@ -97,12 +96,6 @@ const OrderSuccessPage = () => {
     { icon: Package, label: 'Delivered' },
   ];
 
-  const handleWhatsAppConfirm = () => {
-    if (!order) return;
-    const msg = `Hi Trendra! Please confirm my order.\n\nOrder ID: ${order.order_number}\nAmount: ₹${Number(order.total_amount).toLocaleString('en-IN')}\nPayment: ${paymentLabel}\nShipping: ${order.shipping_city}, ${order.shipping_state}${order.shipping_phone ? `\nMobile: ${order.shipping_phone}` : ''}`;
-    openWhatsApp(getWhatsAppLink(msg));
-  };
-
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
@@ -126,7 +119,7 @@ const OrderSuccessPage = () => {
           </h1>
           <p className="text-muted-foreground mb-6 text-sm">
             {isCod
-              ? 'Ek confirmation email bhej diya hai. Kripya WhatsApp par bhi confirm karein taki hum jaldi dispatch kar sakein.'
+              ? 'Aapka order mil gaya hai. Confirmation email aapke inbox mein bhej diya hai.'
               : 'Payment received. Confirmation email aapke inbox mein bhej diya hai.'}
           </p>
 
@@ -198,16 +191,6 @@ const OrderSuccessPage = () => {
                 </div>
               </div>
 
-              {order && (
-                <Button
-                  onClick={handleWhatsAppConfirm}
-                  className="w-full mb-3 bg-[#25D366] hover:bg-[#128C7E] text-white"
-                  size="lg"
-                >
-                  <MessageCircle className="h-5 w-5 mr-2" />
-                  {isCod ? 'Confirm Order on WhatsApp' : 'Get Update on WhatsApp'}
-                </Button>
-              )}
             </>
           )}
 
