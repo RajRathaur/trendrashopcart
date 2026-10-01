@@ -154,8 +154,8 @@ Deno.serve(async (req) => {
 <a href="https://trendra.store/orders" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">View My Orders</a></div>
 </td></tr>
 <tr><td style="background:#f8fafc;padding:24px 40px;text-align:center;border-top:1px solid #e4e4e7;">
-<p style="color:#a1a1aa;font-size:12px;margin:0;">Trendra • trendra.care.ac.in@gmail.com • +91 9125442370</p>
-<p style="color:#a1a1aa;font-size:11px;margin:8px 0 0;">© ${new Date().getFullYear()} Trendra India Pvt. Ltd.</p></td></tr>
+<p style="color:#a1a1aa;font-size:12px;margin:0;">Trendra • trendra.care.ac.in@gmail.com</p>
+<p style="color:#a1a1aa;font-size:11px;margin:8px 0 0;">© ${new Date().getFullYear()} Trendra.</p></td></tr>
 </table></td></tr></table></body></html>`;
 
     const resendRes = await fetch("https://api.resend.com/emails", {

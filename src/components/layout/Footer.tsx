@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Store, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, MessageCircle, CreditCard, Shield, Truck, RotateCcw } from 'lucide-react';
-import { ADMIN_CONFIG, getWhatsAppLink } from '@/config/admin';
+import { Facebook, Twitter, Instagram, Youtube, Mail, MapPin, CreditCard, Shield, Truck, RotateCcw } from 'lucide-react';
+import { ADMIN_CONFIG } from '@/config/admin';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -74,16 +74,6 @@ export const Footer = () => {
           <div className="col-span-2 md:col-span-2 lg:col-span-2">
             <h3 className="text-xs font-bold text-white/50 uppercase tracking-wider mb-4">Contact Us</h3>
             <ul className="space-y-3 text-xs">
-              <li className="flex items-center gap-2">
-                <Phone className="h-3.5 w-3.5 shrink-0" />
-                {ADMIN_CONFIG.phone.mobile}
-              </li>
-              <li>
-                <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-400 transition-colors">
-                  <MessageCircle className="h-3.5 w-3.5 shrink-0" />
-                  WhatsApp: {ADMIN_CONFIG.whatsapp.displayNumber}
-                </a>
-              </li>
               <li>
                 <a href={`mailto:${ADMIN_CONFIG.email.primary}`} className="flex items-center gap-2 hover:text-white transition-colors">
                   <Mail className="h-3.5 w-3.5 shrink-0" />
@@ -126,7 +116,7 @@ export const Footer = () => {
 
             {/* Copyright */}
             <p className="text-[11px] text-white/40">
-              © {currentYear} Trendra India Pvt. Ltd. All rights reserved.
+              © {currentYear} Trendra. All rights reserved.
             </p>
           </div>
         </div>
