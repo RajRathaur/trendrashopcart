@@ -21,13 +21,14 @@ interface BuyNowDialogProps {
   color?: string | null;
   freeDelivery?: boolean;
   deliveryCharge?: number | null;
+  codAvailable?: boolean;
 }
 
 const DEFAULT_DELIVERY = 40;
 
 export const BuyNowDialog = ({
   open, onOpenChange, productId, productName, amount, quantity, size, color,
-  freeDelivery = false, deliveryCharge = null,
+  freeDelivery = false, deliveryCharge = null, codAvailable = true,
 }: BuyNowDialogProps) => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
@@ -294,6 +295,7 @@ export const BuyNowDialog = ({
             <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
           </button>
 
+          {codAvailable ? (
           <button
             onClick={handleCOD}
             disabled={loading}
@@ -308,6 +310,9 @@ export const BuyNowDialog = ({
             </div>
             <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
           </button>
+          ) : (
+            <p className="text-xs text-center text-muted-foreground">Cash on Delivery is not available for this product.</p>
+          )}
         </div>
       </DialogContent>
     </Dialog>

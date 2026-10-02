@@ -83,13 +83,14 @@ const AdminProducts = () => {
     colors: [] as string[],
     deliveryCharge: '',
     freeDelivery: false,
+    codAvailable: true,
     tiers: [] as { qty: string; price: string }[],
   });
 
   const emptyForm = {
     name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '',
     isFeatured: false, categoryId: '', sizes: [] as string[], colors: [] as string[],
-    deliveryCharge: '', freeDelivery: false, tiers: [] as { qty: string; price: string }[],
+    deliveryCharge: '', freeDelivery: false, codAvailable: true, tiers: [] as { qty: string; price: string }[],
   };
 
   const selectedCategory = categories.find((c) => c.id === formData.categoryId);
@@ -187,6 +188,7 @@ const AdminProducts = () => {
         sizes: formData.sizes.length ? formData.sizes : null,
         colors: formData.colors.length ? formData.colors : null,
         free_delivery: formData.freeDelivery,
+        cod_available: formData.codAvailable,
         delivery_charge: formData.freeDelivery
           ? 0
           : (formData.deliveryCharge.trim() !== '' ? parseFloat(formData.deliveryCharge) : null),
@@ -248,6 +250,7 @@ const AdminProducts = () => {
       colors: product.colors || [],
       deliveryCharge: product.delivery_charge != null ? String(product.delivery_charge) : '',
       freeDelivery: !!product.free_delivery,
+      codAvailable: product.cod_available !== false,
       tiers: parseTiers(product.price_tiers).map((t) => ({ qty: String(t.qty), price: String(t.price) })),
     });
     setDialogOpen(true);
@@ -389,6 +392,14 @@ const AdminProducts = () => {
 
                 <div className="border rounded-md p-3 space-y-2 bg-muted/30">
                   <Label className="text-sm font-semibold">Delivery</Label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.codAvailable}
+                      onChange={(e) => setFormData({ ...formData, codAvailable: e.target.checked })}
+                    />
+                    Cash on Delivery (COD) available
+                  </label>
                   <label className="flex items-center gap-2 text-sm cursor-pointer">
                     <input
                       type="checkbox"

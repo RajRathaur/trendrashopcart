@@ -450,6 +450,11 @@ const CheckoutPage = () => {
                   Payment Method
                 </h2>
                 <div className="space-y-3">
+                  {items.some((i: any) => i.product?.cod_available === false) ? (
+                    <div className="border-2 border-dashed rounded-xl p-4 text-sm text-muted-foreground">
+                      Cash on Delivery is not available for some items in your cart. Please pay online.
+                    </div>
+                  ) : (
                   <div
                     onClick={() => setPaymentMethod('cod')}
                     className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-muted-foreground/50'}`}
@@ -465,6 +470,7 @@ const CheckoutPage = () => {
                       <span className="text-2xl">💵</span>
                     </div>
                   </div>
+                  )}
 
 
                   <div
