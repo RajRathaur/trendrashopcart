@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ProductImageUpload } from '@/components/admin/ProductImageUpload';
+import { ProductImagesUpload } from '@/components/admin/ProductImagesUpload';
 import {
   Table,
   TableBody,
@@ -76,7 +76,7 @@ const AdminProducts = () => {
     mrp: '',
     stock: '',
     description: '',
-    imageUrl: '',
+    images: [] as string[],
     isFeatured: false,
     categoryId: '',
     sizes: [] as string[],
@@ -88,7 +88,7 @@ const AdminProducts = () => {
   });
 
   const emptyForm = {
-    name: '', price: '', mrp: '', stock: '', description: '', imageUrl: '',
+    name: '', price: '', mrp: '', stock: '', description: '', images: [] as string[],
     isFeatured: false, categoryId: '', sizes: [] as string[], colors: [] as string[],
     deliveryCharge: '', freeDelivery: false, codAvailable: true, tiers: [] as { qty: string; price: string }[],
   };
@@ -173,7 +173,7 @@ const AdminProducts = () => {
 
     try {
       const slug = formData.name.toLowerCase().replace(/\s+/g, '-');
-      const images = formData.imageUrl ? [formData.imageUrl] : [];
+      const images = formData.images;
 
       const payload: any = {
         name: formData.name,
@@ -243,7 +243,7 @@ const AdminProducts = () => {
       mrp: product.mrp.toString(),
       stock: product.stock.toString(),
       description: '',
-      imageUrl: product.images?.[0] || '',
+      images: product.images || [],
       isFeatured: product.is_featured || false,
       categoryId: product.category_id || '',
       sizes: product.sizes || [],
@@ -336,9 +336,9 @@ const AdminProducts = () => {
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                <ProductImageUpload
-                  imageUrl={formData.imageUrl}
-                  onImageChange={(url) => setFormData({ ...formData, imageUrl: url })}
+                <ProductImagesUpload
+                  images={formData.images}
+                  onImagesChange={(urls) => setFormData({ ...formData, images: urls })}
                 />
 
                 <div>
