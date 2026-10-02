@@ -571,6 +571,7 @@ const ProductDetail = () => {
         color={selectedColor}
         freeDelivery={(product as any).free_delivery}
         deliveryCharge={(product as any).delivery_charge}
+        codAvailable={(product as any).cod_available !== false}
       />
     </Layout>
   );

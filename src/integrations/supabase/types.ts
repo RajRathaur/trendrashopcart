@@ -828,6 +828,7 @@ export type Database = {
       products: {
         Row: {
           category_id: string | null
+          cod_available: boolean
           colors: string[] | null
           created_at: string
           delivery_charge: number | null
@@ -854,6 +855,7 @@ export type Database = {
         }
         Insert: {
           category_id?: string | null
+          cod_available?: boolean
           colors?: string[] | null
           created_at?: string
           delivery_charge?: number | null
@@ -880,6 +882,7 @@ export type Database = {
         }
         Update: {
           category_id?: string | null
+          cod_available?: boolean
           colors?: string[] | null
           created_at?: string
           delivery_charge?: number | null
