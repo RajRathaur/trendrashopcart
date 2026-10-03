@@ -45,6 +45,18 @@ export const GamePromoBanner = () => {
           </div>
         </motion.div>
       </Link>
+      <div className="grid grid-cols-2 gap-3 mt-3">
+        <Link to="/spin-wheel" className="rounded-xl p-4 bg-gradient-to-br from-amber-400 to-pink-500 text-white shadow active:scale-95 transition">
+          <div className="text-3xl">🎡</div>
+          <div className="font-bold mt-1">Spin the Wheel</div>
+          <div className="text-xs text-white/85">Roz free spin, coins jeeto</div>
+        </Link>
+        <Link to="/hill-climb" className="rounded-xl p-4 bg-gradient-to-br from-sky-500 to-emerald-500 text-white shadow active:scale-95 transition">
+          <div className="text-3xl">🏎️</div>
+          <div className="font-bold mt-1">Hill Climb</div>
+          <div className="text-xs text-white/85">Pahad par race, coins kamao</div>
+        </Link>
+      </div>
     </section>
   );
 };
