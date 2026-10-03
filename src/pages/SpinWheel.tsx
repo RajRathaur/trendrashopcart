@@ -83,12 +83,10 @@ const SpinWheel = () => {
             transition={{ duration: 4, ease: [0.15, 0.8, 0.2, 1] }}
           >
             {SEGMENTS.map((s, i) => (
-              <div
-                key={i}
-                className="absolute left-1/2 top-1/2 origin-left text-base font-extrabold text-primary-foreground drop-shadow"
-                style={{ transform: `rotate(${i * SEG + SEG / 2 - 90}deg) translateX(58%)` }}
-              >
-                {s.coins === 0 ? '😅' : s.coins}
+              <div key={i} className="absolute inset-0" style={{ transform: `rotate(${i * SEG + SEG / 2}deg)` }}>
+                <span className="absolute left-1/2 top-4 -translate-x-1/2 text-lg font-extrabold text-primary-foreground drop-shadow">
+                  {s.coins === 0 ? '😅' : s.coins}
+                </span>
               </div>
             ))}
           </motion.div>
