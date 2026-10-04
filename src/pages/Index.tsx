@@ -18,6 +18,7 @@ import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
 import { Seo } from '@/components/Seo';
 import { EditableText } from '@/components/EditableText';
+import { AdsterraAd } from '@/components/ads/AdsterraAd';
 
 const Index = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
