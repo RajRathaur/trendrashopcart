@@ -19,22 +19,37 @@ export const AdsterraAd = ({ adKey, width, height, className }: AdsterraAdProps)
     const container = containerRef.current;
     if (!container) return;
 
-    // Clear any previous render (React StrictMode double-invokes effects)
-    container.innerHTML = '';
+    let cancelled = false;
 
-    const configScript = document.createElement('script');
-    configScript.type = 'text/javascript';
-    configScript.text = `atOptions = { 'key' : '${adKey}', 'format' : 'iframe', 'height' : ${height}, 'width' : ${width}, 'params' : {} };`;
+    // Defer ad loading until the browser is idle so ads never
+    // compete with the page's own rendering and animations.
+    const inject = () => {
+      if (cancelled || !containerRef.current) return;
+      const el = containerRef.current;
+      el.innerHTML = '';
 
-    const loaderScript = document.createElement('script');
-    loaderScript.type = 'text/javascript';
-    loaderScript.src = `https://bauval.org/22/${adKey}`;
-    loaderScript.async = true;
+      const configScript = document.createElement('script');
+      configScript.type = 'text/javascript';
+      configScript.text = `atOptions = { 'key' : '${adKey}', 'format' : 'iframe', 'height' : ${height}, 'width' : ${width}, 'params' : {} };`;
 
-    container.appendChild(configScript);
-    container.appendChild(loaderScript);
+      const loaderScript = document.createElement('script');
+      loaderScript.type = 'text/javascript';
+      loaderScript.src = `https://bauval.org/22/${adKey}`;
+      loaderScript.async = true;
+
+      el.appendChild(configScript);
+      el.appendChild(loaderScript);
+    };
+
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+    const idleId = w.requestIdleCallback
+      ? w.requestIdleCallback(inject, { timeout: 3000 })
+      : (window.setTimeout(inject, 1500) as unknown as number);
 
     return () => {
+      cancelled = true;
+      if (w.cancelIdleCallback) w.cancelIdleCallback(idleId);
+      else window.clearTimeout(idleId);
       container.innerHTML = '';
     };
   }, [adKey, width, height]);
