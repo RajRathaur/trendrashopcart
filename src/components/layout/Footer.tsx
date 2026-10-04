@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Youtube, Mail, MapPin, CreditCard, Shield, Truck, RotateCcw } from 'lucide-react';
 import { ADMIN_CONFIG } from '@/config/admin';
+import { AdsterraAd } from '@/components/ads/AdsterraAd';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="mt-auto" style={{ background: 'hsl(220, 18%, 18%)' }}>
+      <div className="container mx-auto px-4 pt-6 flex justify-center">
+        <AdsterraAd adKey="d89b77215d139b3355a1abde580a8657" width={468} height={60} />
+      </div>
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 text-white/80">
           {/* About */}

@@ -18,6 +18,7 @@ import { Product, Banner } from '@/types';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
 import { Seo } from '@/components/Seo';
 import { EditableText } from '@/components/EditableText';
+import { AdsterraAd } from '@/components/ads/AdsterraAd';
 
 const Index = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -81,6 +82,16 @@ const Index = () => {
 
       {/* Delivery road transition */}
       <DeliveryRoad />
+
+      {/* Ad banner — desktop leaderboard / mobile banner */}
+      <div className="container mx-auto px-3 py-2 flex justify-center">
+        <div className="hidden md:block">
+          <AdsterraAd adKey="87a01297c493a91f49e43feb0e934043" width={728} height={90} />
+        </div>
+        <div className="md:hidden">
+          <AdsterraAd adKey="835b73275328dbc781e07c6046dae00c" width={320} height={50} />
+        </div>
+      </div>
 
       {/* AI Suggestion Box */}
       <div className="container mx-auto px-3 py-2 sm:py-3">
@@ -153,6 +164,13 @@ const Index = () => {
       {/* Testimonials */}
       <div className="container mx-auto px-3">
         <TestimonialsSection />
+      </div>
+
+      <div className="section-separator" />
+
+      {/* Ad — medium rectangle */}
+      <div className="container mx-auto px-3 py-2 flex justify-center">
+        <AdsterraAd adKey="a1fd2cfbcf00131e916860291922332d" width={300} height={250} />
       </div>
 
       <div className="section-separator" />
