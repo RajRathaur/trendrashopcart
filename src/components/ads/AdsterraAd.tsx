@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface AdsterraAdProps {
   adKey: string;
@@ -8,51 +8,33 @@ interface AdsterraAdProps {
 }
 
 /**
- * Adsterra iframe ad unit. Injects the atOptions config and the
- * bauval.org loader script into an isolated container so multiple
- * units on one page don't clash over the global atOptions variable.
+ * Adsterra iframe ad unit. Each placement runs inside its own document,
+ * preventing concurrent loaders from overwriting the global atOptions.
  */
 export const AdsterraAd = ({ adKey, width, height, className }: AdsterraAdProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    let cancelled = false;
-
-    // Defer ad loading until the browser is idle so ads never
-    // compete with the page's own rendering and animations.
-    const inject = () => {
-      if (cancelled || !containerRef.current) return;
-      const el = containerRef.current;
-      el.innerHTML = '';
-
-      const configScript = document.createElement('script');
-      configScript.type = 'text/javascript';
-      configScript.text = `atOptions = { 'key' : '${adKey}', 'format' : 'iframe', 'height' : ${height}, 'width' : ${width}, 'params' : {} };`;
-
-      const loaderScript = document.createElement('script');
-      loaderScript.type = 'text/javascript';
-      loaderScript.src = `https://bauval.org/22/${adKey}`;
-      loaderScript.async = true;
-
-      el.appendChild(configScript);
-      el.appendChild(loaderScript);
-    };
-
-    const w = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
-    const idleId = w.requestIdleCallback
-      ? w.requestIdleCallback(inject, { timeout: 3000 })
-      : (window.setTimeout(inject, 1500) as unknown as number);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setShouldLoad(true);
+        observer.disconnect();
+      },
+      { rootMargin: '300px 0px' },
+    );
+    observer.observe(container);
 
     return () => {
-      cancelled = true;
-      if (w.cancelIdleCallback) w.cancelIdleCallback(idleId);
-      else window.clearTimeout(idleId);
-      container.innerHTML = '';
+      observer.disconnect();
     };
-  }, [adKey, width, height]);
+  }, []);
+
+  const source = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><base target="_blank"><style>html,body{margin:0;padding:0;width:${width}px;height:${height}px;overflow:hidden}</style></head><body><script>var atOptions={'key':'${adKey}','format':'iframe','height':${height},'width':${width},'params':{}};<\/script><script src="https://bauval.org/22/${adKey}"><\/script></body></html>`;
 
   return (
     <div
@@ -60,6 +42,18 @@ export const AdsterraAd = ({ adKey, width, height, className }: AdsterraAdProps)
       className={className}
       style={{ width, height, maxWidth: '100%', margin: '0 auto', overflow: 'hidden' }}
       aria-label="Advertisement"
-    />
+    >
+      {shouldLoad && (
+        <iframe
+          title="Advertisement"
+          srcDoc={source}
+          width={width}
+          height={height}
+          loading="lazy"
+          referrerPolicy="strict-origin-when-cross-origin"
+          style={{ display: 'block', border: 0, maxWidth: '100%' }}
+        />
+      )}
+    </div>
   );
 };
