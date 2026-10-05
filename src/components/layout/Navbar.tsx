@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, Package, Store, Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby, TrendingUp, MoreVertical, Gamepad2 } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, Package, Store, Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby, TrendingUp, MoreVertical, Gamepad2, Truck, ShieldCheck } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
@@ -55,10 +55,16 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50">
-      <nav className="navbar px-4 py-2.5">
+    <header className="sticky top-0 z-50 commerce-header">
+      <div className="commerce-offer-strip">
+        <div className="container mx-auto px-3 flex items-center justify-between gap-3">
+          <span className="inline-flex items-center gap-1.5"><Truck className="h-3 w-3" /> Free delivery on eligible orders</span>
+          <span className="hidden sm:inline-flex items-center gap-1.5"><ShieldCheck className="h-3 w-3" /> Secure shopping</span>
+        </div>
+      </div>
+      <nav className="navbar px-3 py-2">
         <div className="container mx-auto">
-          <div className="flex items-center gap-3 md:gap-6">
+          <div className="flex items-center gap-2 md:gap-5">
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild className="md:hidden">
@@ -139,29 +145,27 @@ export const Navbar = () => {
             </Sheet>
 
             {/* Logo */}
-            <Link to="/" className="flex flex-col items-center shrink-0">
-              <img src={trendraLogo} alt="Trendra" className="w-7 h-7 md:w-9 md:h-9 rounded object-cover" />
-              <span className="text-[8px] md:text-xs font-semibold text-primary-foreground italic -mt-0.5">
-                Explore <span className="text-yellow-300">Plus</span>
-              </span>
+            <Link to="/" className="commerce-brand shrink-0" aria-label="Trendra home">
+              <img src={trendraLogo} alt="" className="commerce-brand-logo" />
+              <span className="commerce-brand-name">Trendra</span>
             </Link>
 
 
             {/* Search Bar with Category Dropdown */}
             <div ref={searchContainerRef} className="flex-1 max-w-2xl hidden md:block relative">
               <form onSubmit={handleSearch}>
-                <div className="relative flex">
+                <div className="commerce-search-shell">
                   <Input
                     type="search"
                     placeholder="Search for Products, Brands and More"
-                    className="search-bar pl-4 pr-12 h-9 w-full rounded-none rounded-l-sm border-0 text-sm"
+                    className="search-bar pl-4 pr-12 h-9 w-full rounded-none border-0 text-sm"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     onFocus={() => setShowCategories(true)}
                   />
-                  <button type="submit" className="bg-white px-4 flex items-center justify-center rounded-r-sm hover:bg-gray-50 transition-colors">
+                  <Button type="submit" variant="ghost" size="icon" className="commerce-search-button">
                     <Search className="h-5 w-5 text-primary" />
-                  </button>
+                  </Button>
                 </div>
               </form>
 
@@ -332,7 +336,7 @@ export const Navbar = () => {
           {/* Mobile Search */}
           <div className="mt-2 md:hidden relative" ref={searchContainerRef}>
             <form onSubmit={handleSearch}>
-              <div className="relative flex">
+              <div className="commerce-search-shell">
                 <Input
                   type="search"
                   placeholder="Search for Products, Brands and More"
@@ -341,9 +345,9 @@ export const Navbar = () => {
                   onChange={e => setSearchQuery(e.target.value)}
                   onFocus={() => setShowCategories(true)}
                 />
-                <button type="submit" className="bg-white px-3 flex items-center justify-center rounded-r-sm">
+                <Button type="submit" variant="ghost" size="icon" className="commerce-search-button">
                   <Search className="h-4 w-4 text-primary" />
-                </button>
+                </Button>
               </div>
             </form>
 
@@ -375,6 +379,20 @@ export const Navbar = () => {
           </div>
         </div>
       </nav>
+      <div className="commerce-category-nav">
+        <div className="container mx-auto px-3 flex items-center gap-1 md:justify-center overflow-x-auto no-scrollbar">
+          {categories.slice(0, 5).map((cat) => (
+            <Link key={cat.slug} to={`/products?category=${cat.slug}`} className="commerce-category-link">
+              <cat.icon className="h-3.5 w-3.5" />
+              <span>{cat.name}</span>
+            </Link>
+          ))}
+          <Link to="/products" className="commerce-category-link">
+            <MoreVertical className="h-3.5 w-3.5" />
+            <span>More</span>
+          </Link>
+        </div>
+      </div>
     </header>
   );
 };

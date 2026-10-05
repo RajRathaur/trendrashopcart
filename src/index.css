@@ -1,7 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,40 +9,38 @@
 
 @layer base {
   :root {
-    /* Midnight Luxury — Dark Premium Theme */
-    /* #09090B */
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
+    --background: 210 25% 97%;
+    --foreground: 220 28% 14%;
 
     /* #18181B */
-    --card: 240 4% 10%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 28% 14%;
 
-    --popover: 240 4% 10%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 28% 14%;
 
     /* #8B5CF6 Vivid Purple */
-    --primary: 258 90% 66%;
+    --primary: 213 91% 52%;
     --primary-foreground: 0 0% 98%;
     --primary-glow: 258 90% 76%;
 
-    --secondary: 240 4% 14%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 210 30% 94%;
+    --secondary-foreground: 220 28% 14%;
 
-    --muted: 240 4% 14%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 210 25% 93%;
+    --muted-foreground: 218 11% 46%;
 
     /* #D97706 Luxury Gold */
-    --accent: 32 94% 44%;
+    --accent: 14 88% 55%;
     --accent-foreground: 0 0% 98%;
     --accent-glow: 32 94% 60%;
 
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 4% 18%;
-    --input: 240 4% 14%;
-    --ring: 258 90% 66%;
+    --border: 214 20% 87%;
+    --input: 214 20% 87%;
+    --ring: 213 91% 52%;
 
     --radius: 0rem;
 
@@ -93,8 +87,8 @@
     --chart-4: 0 72% 55%;
     --chart-5: 200 80% 55%;
 
-    --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-serif: 'Space Grotesk', ui-serif, Georgia, serif;
+    --font-sans: Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-serif: Arial, ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
     --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.2);
@@ -171,7 +165,7 @@
   }
 
   html {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: Arial, system-ui, sans-serif;
     scroll-behavior: smooth;
   }
 
@@ -181,8 +175,8 @@
   }
 
   h1, h2, h3, .section-title {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
-    letter-spacing: -0.02em;
+    font-family: Arial, system-ui, sans-serif;
+    letter-spacing: 0;
     font-weight: 700;
   }
 }
@@ -339,10 +333,39 @@
 
   /* Navbar - Black */
   .navbar {
-    background: hsl(0, 0%, 8%);
+    background: hsl(var(--primary));
     @apply text-white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
   }
+
+  .commerce-header { box-shadow: 0 2px 8px hsl(220 28% 14% / 0.12); }
+  .commerce-offer-strip {
+    @apply py-1 text-[10px] sm:text-xs;
+    background: hsl(var(--card));
+    color: hsl(var(--muted-foreground));
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  .commerce-brand { @apply flex items-center gap-2; }
+  .commerce-brand-logo { @apply w-8 h-8 md:w-9 md:h-9 object-cover border-2; border-color: hsl(var(--primary-foreground) / 0.75); }
+  .commerce-brand-name { @apply hidden sm:inline text-lg md:text-xl font-extrabold; color: hsl(var(--primary-foreground)); }
+  .commerce-search-shell { @apply relative flex w-full overflow-hidden bg-card; border-radius: 2px; }
+  .commerce-search-button { @apply h-9 w-11 shrink-0 rounded-none bg-card hover:bg-muted; }
+  .commerce-category-nav { @apply bg-card border-b; }
+  .commerce-category-link { @apply shrink-0 inline-flex items-center gap-1.5 px-3 py-2 text-[11px] sm:text-xs font-semibold text-foreground hover:text-primary transition-colors; }
+  .commerce-trust-strip { @apply bg-card border-y; }
+  .commerce-trust-item { @apply flex items-center gap-2 px-2 sm:px-4 py-2.5 min-w-0; }
+  .commerce-trust-item > span:first-child { @apply text-lg sm:text-xl; }
+  .commerce-trust-item span:last-child { @apply min-w-0 flex flex-col; }
+  .commerce-trust-item strong { @apply text-[10px] sm:text-xs text-foreground truncate; }
+  .commerce-trust-item small { @apply text-[9px] sm:text-[10px] text-muted-foreground truncate; }
+  .commerce-product-section { @apply bg-card border border-border/70 shadow-sm overflow-hidden; }
+  .commerce-product-section-deals .commerce-section-heading { background: linear-gradient(90deg, hsl(var(--accent) / 0.14), hsl(var(--card))); }
+  .commerce-product-section-trending .commerce-section-heading { background: linear-gradient(90deg, hsl(var(--primary) / 0.14), hsl(var(--card))); }
+  .commerce-product-section-recommended .commerce-section-heading { background: linear-gradient(90deg, hsl(var(--warning) / 0.14), hsl(var(--card))); }
+  .product-image-shell { background: hsl(0 0% 100%); }
+  .commerce-category-image { @apply border-2 rounded-full bg-card shadow-sm; border-color: hsl(var(--border)); }
+  .commerce-footer { background: hsl(222 35% 12%); }
+  .commerce-footer-copy { color: hsl(0 0% 100% / 0.8); }
 
   /* Search bar - Flipkart style */
   .search-bar {

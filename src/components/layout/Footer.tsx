@@ -7,12 +7,12 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto" style={{ background: 'hsl(220, 18%, 18%)' }}>
+    <footer className="mt-auto commerce-footer">
       <div className="container mx-auto px-4 pt-6 flex justify-center">
         <AdsterraAd adKey="d89b77215d139b3355a1abde580a8657" width={468} height={60} />
       </div>
       <div className="container mx-auto px-4 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 text-white/80">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 commerce-footer-copy">
           {/* About */}
           <div className="col-span-2 md:col-span-1">
             <h3 className="text-xs font-bold text-white/50 uppercase tracking-wider mb-4">About</h3>

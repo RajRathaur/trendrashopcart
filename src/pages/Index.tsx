@@ -15,9 +15,7 @@ import { GamePromoBanner } from '@/components/home/GamePromoBanner';
 import { AiSuggestBox } from '@/components/home/AiSuggestBox';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
-import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
 import { Seo } from '@/components/Seo';
-import { EditableText } from '@/components/EditableText';
 import { AdsterraAd } from '@/components/ads/AdsterraAd';
 
 const Index = () => {
@@ -82,6 +80,22 @@ const Index = () => {
 
       {/* Delivery road transition */}
       <DeliveryRoad />
+
+      <div className="commerce-trust-strip">
+        <div className="container mx-auto px-3 grid grid-cols-2 md:grid-cols-4 divide-x divide-border/60">
+          {[
+            ['🚚', 'Free Delivery', 'On eligible orders'],
+            ['↩️', 'Easy Returns', 'Simple return policy'],
+            ['🔒', 'Secure Shopping', 'Protected checkout'],
+            ['🎧', 'Customer Support', 'Dedicated help'],
+          ].map(([icon, title, detail]) => (
+            <div key={title} className="commerce-trust-item">
+              <span aria-hidden="true">{icon}</span>
+              <span><strong>{title}</strong><small>{detail}</small></span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Ad banner — desktop leaderboard / mobile banner */}
       <div className="container mx-auto px-3 py-2 flex justify-center">
@@ -175,40 +189,6 @@ const Index = () => {
 
       <div className="section-separator" />
 
-      {/* Trust Badges - Flipkart style */}
-      <div className="container mx-auto px-3">
-        <section className="py-6">
-          <ScrollReveal variant="fadeUp">
-            <div className="bg-card shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-foreground mb-5 text-center">
-                <EditableText contentKey="home.trust.title" defaultValue="Why Shop with Trendra?" />
-              </h2>
-              <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-6" staggerDelay={0.1}>
-                {[
-                  { keyBase: 'home.trust.1', icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹499' },
-                  { keyBase: 'home.trust.2', icon: '💵', title: 'Cash on Delivery', desc: 'Pay when you receive' },
-                  { keyBase: 'home.trust.3', icon: '↩️', title: '7 Days Return', desc: 'Easy return policy' },
-                  { keyBase: 'home.trust.4', icon: '🔒', title: 'Trendra Assured', desc: 'Quality guaranteed' },
-                ].map((item, i) => (
-                  <StaggerItem key={i}>
-                    <div className="flex items-center gap-3 p-3">
-                      <span className="text-2xl">{item.icon}</span>
-                      <div>
-                        <h3 className="text-sm font-semibold text-foreground">
-                          <EditableText contentKey={`${item.keyBase}.title`} defaultValue={item.title} />
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          <EditableText contentKey={`${item.keyBase}.desc`} defaultValue={item.desc} />
-                        </p>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-          </ScrollReveal>
-        </section>
-      </div>
     </Layout>
   );
 };

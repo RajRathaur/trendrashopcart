@@ -3,7 +3,6 @@ import { Product } from '@/types';
 import { ProductCard } from '@/components/products/ProductCard';
 import { ChevronRight, Zap, Clock, TrendingUp, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/scroll-reveal';
 
 interface DealsSectionProps {
   products: Product[];
@@ -50,35 +49,31 @@ export const DealsSection = ({ products, title, type, loading }: DealsSectionPro
   if (products.length === 0) return null;
 
   return (
-    <ScrollReveal variant="fadeUp">
-      <section className="py-3">
-        <div className="bg-card shadow-sm">
+      <section className="py-2 sm:py-3">
+        <div className={`commerce-product-section commerce-product-section-${type}`}>
           {/* Header - Flipkart style: simple bg with title + view all */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
+          <div className="commerce-section-heading flex items-center justify-between px-3 sm:px-4 py-3 border-b border-border/50">
             <div className="flex items-center gap-3">
               <Icon className={`h-5 w-5 ${config.color}`} />
               <div>
-                <h2 className="text-lg md:text-xl font-semibold text-foreground">{title}</h2>
+                <h2 className="text-base md:text-xl font-semibold text-foreground">{title}</h2>
                 <span className="text-xs text-muted-foreground">{config.badge}</span>
               </div>
             </div>
             <Link to={`/products?type=${type}`}>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-sm h-8 px-6 text-sm font-medium">
+              <Button className="rounded-sm h-8 px-3 sm:px-5 text-xs sm:text-sm font-medium">
                 View All
               </Button>
             </Link>
           </div>
 
           {/* Products - Flipkart grid with dividers */}
-          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 divide-x divide-border/30" staggerDelay={0.05}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 divide-x divide-border/30">
             {products.slice(0, 6).map((product) => (
-              <StaggerItem key={product.id}>
-                <ProductCard product={product} className="shadow-none border-0 hover:shadow-none" />
-              </StaggerItem>
+              <ProductCard key={product.id} product={product} className="shadow-none border-0 hover:shadow-none" />
             ))}
-          </StaggerContainer>
+          </div>
         </div>
       </section>
-    </ScrollReveal>
   );
 };

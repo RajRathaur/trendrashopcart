@@ -33,17 +33,17 @@ export const CategoryGrid = () => {
   if (categories.length === 0) return null;
 
   return (
-    <section className="w-full py-12">
+    <section className="w-full py-5 sm:py-7">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="flex justify-between items-end mb-6"
+        className="flex justify-between items-end mb-4"
       >
         <div className="space-y-1">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Curated Categories</h2>
-          <p className="text-foreground/50 text-sm">Shop by category.</p>
+          <h2 className="text-xl md:text-2xl font-bold">Shop by Category</h2>
+          <p className="text-muted-foreground text-xs sm:text-sm">Find what you love.</p>
         </div>
         <Link
           to="/products"
@@ -56,7 +56,7 @@ export const CategoryGrid = () => {
       </motion.div>
 
       {/* Mobile: horizontal scroll. Desktop: one row of up to 9. */}
-      <div className="flex md:grid md:grid-cols-9 gap-3 overflow-x-auto md:overflow-visible no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
+      <div className="commerce-category-rail flex md:grid md:grid-cols-9 gap-3 overflow-x-auto md:overflow-visible no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
         {categories.slice(0, 9).map((cat, i) => {
           const tone = i % 2 === 0 ? 'hsl(var(--primary))' : 'hsl(var(--accent))';
           const image = cat.image_url || fallbackImages[i % fallbackImages.length];
@@ -74,7 +74,7 @@ export const CategoryGrid = () => {
                 className="group flex flex-col items-center gap-2"
               >
                 <div
-                  className="relative w-[72px] h-[72px] md:w-full md:aspect-square overflow-hidden glass-card transition-all duration-300 group-hover:scale-105"
+                  className="commerce-category-image relative w-[72px] h-[72px] md:w-full md:aspect-square overflow-hidden transition-transform duration-300 group-hover:scale-105"
                   style={{ borderColor: 'hsl(0 0% 100% / 0.06)' }}
                 >
                   <img
