@@ -43,27 +43,31 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
     <>
     <Link
       to={`/product/${product.id}`}
-      className={cn('product-card block group', className)}
+      className={cn('product-card block group h-full', className)}
     >
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-white">
+      <div className="product-image-shell relative aspect-square overflow-hidden">
         <img
           src={imageUrl}
           alt={product.name}
-          className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-contain p-2.5 transition-transform duration-300 group-hover:scale-[1.03]"
           loading="lazy"
         />
 
         {/* Wishlist Button */}
-        <button
+        <Button
           onClick={handleWishlistToggle}
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
           className={cn(
-            'absolute top-2 right-2 p-2 rounded-full bg-card/95 shadow-sm transition-all duration-200',
+            'absolute top-2 right-2 h-8 w-8 rounded-sm bg-card/95 shadow-sm transition-colors',
             isWishlisted ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'
           )}
         >
           <Heart className={cn('h-4 w-4', isWishlisted && 'fill-current')} />
-        </button>
+        </Button>
 
         {/* Discount Badge */}
         {product.discount_percent > 0 && (
@@ -74,14 +78,14 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
       </div>
 
       {/* Content - Flipkart style: compact, info-dense */}
-      <div className="p-3">
+      <div className="p-2.5 sm:p-3">
         {/* Brand/Category */}
-        <p className="text-[11px] text-muted-foreground font-medium mb-1">
+        <p className="text-[10px] text-muted-foreground font-medium mb-1 truncate">
           {product.category?.name || 'Trendra'}
         </p>
 
         {/* Product Name */}
-        <h3 className="text-sm text-foreground line-clamp-2 mb-1.5 min-h-[2.5rem] group-hover:text-primary transition-colors">
+        <h3 className="text-xs sm:text-sm font-medium text-foreground line-clamp-2 mb-1.5 min-h-[2.25rem] sm:min-h-[2.5rem] group-hover:text-primary transition-colors">
           {product.name}
         </h3>
 
@@ -131,7 +135,7 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
         )}
 
         {/* Quick Action Buttons - Shows on hover */}
-        <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+        <div className="flex gap-1.5 mt-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
           <Button
             onClick={handleAddToCart}
             variant="outline"
