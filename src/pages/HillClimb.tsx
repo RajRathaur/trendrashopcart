@@ -18,6 +18,8 @@ const ENGINE = 420;
 const BRAKE = 500;
 const DRAG = 0.35;
 const MAX_FUEL = 100;
+const LEVEL_M = 100; // every 100m = 1 level
+const COINS_PER_LEVEL = 3;
 
 type Pickup = { x: number; kind: 'coin' | 'fuel'; taken: boolean };
 
@@ -31,10 +33,15 @@ const makePickups = (): Pickup[] => {
 const HillClimb = () => {
   const { user } = useAuth();
   const { addCoins } = useCoinWallet();
+  const addCoinsRef = useRef(addCoins);
+  addCoinsRef.current = addCoins;
+  const userRef = useRef(user);
+  userRef.current = user;
+  const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const input = useRef({ gas: false, brake: false });
   const [state, setState] = useState<'menu' | 'playing' | 'over'>('menu');
-  const [hud, setHud] = useState({ dist: 0, coins: 0, fuel: MAX_FUEL });
+  const [hud, setHud] = useState({ dist: 0, coins: 0, fuel: MAX_FUEL, level: 1 });
   const [best, setBest] = useState(() => parseInt(localStorage.getItem('hillClimbBest') || '0'));
   const [reason, setReason] = useState('');
 
@@ -56,7 +63,8 @@ const HillClimb = () => {
     if (state !== 'playing') return;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d')!;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    ctx.imageSmoothingQuality = 'high';
     const resize = () => {
       canvas.width = canvas.clientWidth * dpr;
       canvas.height = canvas.clientHeight * dpr;
@@ -77,16 +85,18 @@ const HillClimb = () => {
       ended = true;
       const dist = Math.floor(car.x / 10);
       setReason(why);
-      setHud({ dist, coins, fuel: Math.max(0, fuel) });
+      const levels = Math.floor(dist / LEVEL_M);
+      setHud({ dist, coins, fuel: Math.max(0, fuel), level: levels + 1 });
       setBest((b) => {
         const nb = Math.max(b, dist);
         localStorage.setItem('hillClimbBest', String(nb));
         return nb;
       });
       setState('over');
-      const earned = Math.min(coins + Math.floor(dist / 50), 200);
-      if (earned > 0 && user) {
-        addCoins(earned).then((r) => r !== null && toast({ title: `🪙 ${earned} coins wallet me jude!` }));
+      const earned = levels * COINS_PER_LEVEL;
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      if (earned > 0 && userRef.current) {
+        addCoinsRef.current(earned).then((r) => r !== null && toast({ title: `🪙 ${earned} coins wallet me jude! (${levels} level × 3)` }));
       }
     };
 
@@ -194,8 +204,13 @@ const HillClimb = () => {
       ctx.save();
       ctx.translate(sx(car.x), sy(car.y));
       ctx.rotate(-car.angle);
-      ctx.fillStyle = '#e53935';
-      ctx.beginPath(); ctx.roundRect(-30, -30, 60, 18, 5); ctx.fill();
+      ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+      const body = ctx.createLinearGradient(0, -30, 0, -12);
+      body.addColorStop(0, '#ff6b5e'); body.addColorStop(1, '#b71c1c');
+      ctx.fillStyle = body;
+      ctx.beginPath(); ctx.roundRect(-30, -30, 60, 18, 6); ctx.fill();
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(-26, -28, 52, 3);
       ctx.fillStyle = '#ffca28';
       ctx.beginPath(); ctx.roundRect(-14, -44, 26, 15, 4); ctx.fill();
       ctx.font = '16px sans-serif'; ctx.fillText('🧒', 0, -38);
@@ -209,12 +224,20 @@ const HillClimb = () => {
       ctx.restore();
 
       hudTimer += dt;
-      if (hudTimer > 0.1) { hudTimer = 0; setHud({ dist: Math.floor(car.x / 10), coins, fuel: Math.max(0, fuel) }); }
+      if (hudTimer > 0.1) { hudTimer = 0; const d = Math.floor(car.x / 10); setHud({ dist: d, coins, fuel: Math.max(0, fuel), level: Math.floor(d / LEVEL_M) + 1 }); }
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
-  }, [state, user, addCoins]);
+  }, [state]);
+
+  const start = () => {
+    const el = wrapRef.current as any;
+    if (el && !document.fullscreenElement && el.requestFullscreen) {
+      el.requestFullscreen().then(() => (screen.orientation as any)?.lock?.('landscape').catch(() => {})).catch(() => {});
+    }
+    setState('playing');
+  };
 
   const pedal = (k: 'gas' | 'brake') => ({
     onPointerDown: (e: React.PointerEvent) => { e.preventDefault(); input.current[k] = true; },
@@ -232,11 +255,12 @@ const HillClimb = () => {
           <span className="text-xs text-muted-foreground">Best: {best}m</span>
         </div>
 
-        <div className="relative w-full h-[60svh] min-h-[320px] rounded-xl overflow-hidden bg-secondary select-none touch-none">
+        <div ref={wrapRef} className={`${state === 'playing' ? 'fixed inset-0 z-[100] rounded-none' : 'relative w-full h-[60svh] min-h-[320px] rounded-xl'} overflow-hidden bg-secondary select-none touch-none`}>
           <canvas ref={canvasRef} className="w-full h-full block" />
           {state === 'playing' && (
             <>
               <div className="absolute top-2 left-2 right-2 flex items-center gap-2 text-sm font-bold">
+                <span className="px-2 py-1 rounded bg-card/90 text-foreground">Lv {hud.level}</span>
                 <span className="px-2 py-1 rounded bg-card/90 text-foreground">{hud.dist}m</span>
                 <span className="px-2 py-1 rounded bg-card/90 text-foreground inline-flex items-center gap-1"><Coins className="w-4 h-4" />{hud.coins}</span>
                 <div className="flex-1 h-3 rounded-full bg-card/90 overflow-hidden">
@@ -253,17 +277,17 @@ const HillClimb = () => {
               {state === 'menu' ? (
                 <>
                   <div className="text-5xl">🏎️⛰️</div>
-                  <p className="text-foreground font-semibold">Pahadon par gaadi chalao, coins aur petrol uthao!</p>
+                  <p className="text-foreground font-semibold">Pahadon par gaadi chalao! Har 100m = 1 level, har level paar karne par 3 coins.</p>
                   <p className="text-xs text-muted-foreground">GAS = aage / hawa me peeche jhuko · BRAKE = peeche / hawa me aage jhuko · Gaadi palti to game over</p>
                 </>
               ) : (
                 <>
                   <p className="text-2xl font-bold text-foreground">{reason}</p>
-                  <p className="text-foreground">{hud.dist}m · 🪙 {hud.coins}</p>
+                  <p className="text-foreground">{hud.dist}m · Level {hud.level - 1} paar · +{(hud.level - 1) * 3} coins</p>
                   <p className="text-xs text-muted-foreground">{user ? 'Coins aapke wallet me jud gaye' : 'Login karke khelein to coins wallet me judenge'}</p>
                 </>
               )}
-              <Button size="lg" onClick={() => setState('playing')}>{state === 'menu' ? 'Start' : 'Phir khelo'}</Button>
+              <Button size="lg" onClick={start}>{state === 'menu' ? 'Start' : 'Phir khelo'}</Button>
             </div>
           )}
         </div>
