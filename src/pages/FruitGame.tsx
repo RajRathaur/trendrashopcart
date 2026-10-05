@@ -250,9 +250,9 @@ const FruitGame = () => {
         setHighScore(score);
         localStorage.setItem('fruitGameHighScore', score.toString());
       }
-      // Credit coins to wallet (1 score point = 1 coin)
+      // Win reward: flat 5 coins per game
       if (user && score > 0) {
-        addCoins(score).then(() => setCoinsAwarded(score));
+        addCoins(5).then((r) => r !== null && setCoinsAwarded(5));
       }
     }
   }, [lives, gameState, score, highScore, user, addCoins]);

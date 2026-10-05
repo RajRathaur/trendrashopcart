@@ -3,8 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 
-export const COINS_PER_RUPEE = 20;
-export const MIN_REDEEM_COINS = 200;
+export const COINS_PER_RUPEE = 100;
+export const MIN_REDEEM_COINS = 1000;
 
 export interface RedeemRequest {
   id: string;

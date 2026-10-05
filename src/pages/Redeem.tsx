@@ -12,16 +12,16 @@ import { useCoinWallet, COINS_PER_RUPEE, MIN_REDEEM_COINS } from '@/hooks/useCoi
 import { toast } from '@/hooks/use-toast';
 
 const PRESETS = [
-  { coins: 200, rupees: 10 },
-  { coins: 600, rupees: 30 },
-  { coins: 1000, rupees: 50 },
-  { coins: 2000, rupees: 100 },
+  { coins: 1000, rupees: 10 },
+  { coins: 2000, rupees: 20 },
+  { coins: 5000, rupees: 50 },
+  { coins: 10000, rupees: 100 },
 ];
 
 const Redeem = () => {
   const { user } = useAuth();
   const { balance, totalEarned, requests, requestRedeem, loading } = useCoinWallet();
-  const [selected, setSelected] = useState<number>(200);
+  const [selected, setSelected] = useState<number>(1000);
   const [email, setEmail] = useState(user?.email || '');
   const [submitting, setSubmitting] = useState(false);
 
