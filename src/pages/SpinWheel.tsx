@@ -9,14 +9,14 @@ import { useCoinWallet } from '@/hooks/useCoinWallet';
 import { toast } from '@/hooks/use-toast';
 
 const SEGMENTS = [
-  { coins: 10, color: 'hsl(14 90% 60%)' },
-  { coins: 50, color: 'hsl(45 95% 55%)' },
-  { coins: 5, color: 'hsl(140 60% 50%)' },
-  { coins: 100, color: 'hsl(200 85% 55%)' },
-  { coins: 20, color: 'hsl(280 70% 60%)' },
+  { coins: 5, color: 'hsl(14 90% 60%)' },
+  { coins: 2, color: 'hsl(45 95% 55%)' },
+  { coins: 1, color: 'hsl(140 60% 50%)' },
+  { coins: 10, color: 'hsl(200 85% 55%)' },
+  { coins: 3, color: 'hsl(280 70% 60%)' },
   { coins: 0, color: 'hsl(0 0% 70%)' },
-  { coins: 30, color: 'hsl(330 80% 60%)' },
-  { coins: 15, color: 'hsl(170 70% 45%)' },
+  { coins: 8, color: 'hsl(330 80% 60%)' },
+  { coins: 4, color: 'hsl(170 70% 45%)' },
 ];
 const SEG = 360 / SEGMENTS.length;
 const KEY = 'trendra:spin-last';
@@ -67,7 +67,7 @@ const SpinWheel = () => {
           <ArrowLeft className="w-4 h-4" /> Home
         </Link>
         <h1 className="text-2xl font-bold text-foreground">🎡 Spin the Wheel</h1>
-        <p className="text-sm text-muted-foreground mt-1">Roz ek free spin — coins jeeto!</p>
+        <p className="text-sm text-muted-foreground mt-1">Roz ek free spin — 10 coins tak jeeto!</p>
         {user && (
           <div className="inline-flex items-center gap-1 mt-3 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold">
             <Coins className="w-4 h-4" /> {balance} coins
