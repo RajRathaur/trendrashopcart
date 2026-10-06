@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { CartItem, Product } from '@/types';
 import { toast } from 'sonner';
+import { getLineTotal } from '@/lib/pricing';
 
 interface CartContextType {
   items: CartItem[];
@@ -25,8 +26,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalAmount = items.reduce((sum, item) => {
-    const price = item.product?.price ?? 0;
-    return sum + price * item.quantity;
+    return sum + getLineTotal(item.product, item.quantity);
   }, 0);
 
   const fetchCart = async () => {
