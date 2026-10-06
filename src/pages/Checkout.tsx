@@ -12,6 +12,7 @@ import { ChevronRight, Truck, Shield, CreditCard, Tag, X, ShoppingBag, Package, 
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { loadRazorpay } from '@/lib/razorpay';
+import { getLineTotal } from '@/lib/pricing';
 
 const CheckoutPage = () => {
   const { items, totalAmount, clearCart } = useCart();
@@ -521,7 +522,7 @@ const CheckoutPage = () => {
                         <p className="text-xs text-muted-foreground mt-0.5">Qty: {item.quantity}</p>
                       </div>
                       <span className="font-semibold text-sm whitespace-nowrap">
-                        ₹{((item.product?.price ?? 0) * item.quantity).toLocaleString('en-IN')}
+                        ₹{getLineTotal(item.product, item.quantity).toLocaleString('en-IN')}
                       </span>
                     </div>
                   ))}

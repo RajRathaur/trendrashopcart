@@ -5,6 +5,7 @@ import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
 import { Trash2, Plus, Minus, ShoppingBag, ChevronRight, Truck, Shield, Tag, Package, CreditCard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getLineTotal } from '@/lib/pricing';
 
 const CartPage = () => {
   const { items, itemCount, totalAmount, removeFromCart, updateQuantity, isLoading } = useCart();
@@ -21,7 +22,7 @@ const CartPage = () => {
   const finalAmount = totalAmount + deliveryFee;
   const totalSavings = items.reduce((sum, item) => {
     const mrp = (item.product?.mrp ?? 0) * item.quantity;
-    const price = (item.product?.price ?? 0) * item.quantity;
+    const price = getLineTotal(item.product, item.quantity);
     return sum + (mrp - price);
   }, 0);
 
