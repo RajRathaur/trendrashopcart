@@ -148,7 +148,7 @@ const handler = createAuthEmailHandler({
         }),
     },
     magiclink: {
-      subject: 'Your login link',
+      subject: 'Your Trendra login OTP',
       render: (data) =>
         React.createElement(MagicLinkEmail, {
           siteName: SITE_NAME,
