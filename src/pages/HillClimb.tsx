@@ -26,7 +26,7 @@ type Pickup = { x: number; kind: 'coin' | 'fuel'; taken: boolean };
 
 const makePickups = (): Pickup[] => {
   const out: Pickup[] = [];
-  for (let x = 400; x < 60000; x += 140) out.push({ x, kind: 'coin', taken: false });
+  for (let x = 400; x < 60000; x += 400) out.push({ x, kind: 'coin', taken: false });
   for (let x = 1500; x < 60000; x += 1500 + Math.floor(x / 20)) out.push({ x, kind: 'fuel', taken: false });
   return out;
 };
