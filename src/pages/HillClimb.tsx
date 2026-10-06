@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Coins } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
@@ -79,6 +80,7 @@ const HillClimb = () => {
     let raf = 0;
     let hudTimer = 0;
     let ended = false;
+    let camY = car.y;
 
     const end = (why: string) => {
       if (ended) return;
@@ -139,7 +141,7 @@ const HillClimb = () => {
         car.av += throttle * 3 * dt;
         car.angle += car.av * dt;
         const g = terrain(car.x);
-        if (car.y <= g) {
+        if (car.y <= g && car.vy <= 0) {
           const s = Math.atan2(terrain(car.x + 4) - terrain(car.x - 4), 8);
           let diff = Math.abs(((car.angle - s + Math.PI) % (Math.PI * 2)) - Math.PI);
           if (diff > 1.6) { end('Gaadi palat gayi! 🙃'); return; }
@@ -175,9 +177,10 @@ const HillClimb = () => {
         ctx.beginPath(); ctx.ellipse(cx, 40 + i * 18, 40, 14, 0, 0, 7); ctx.fill();
       }
       const camX = car.x - W * 0.3;
-      const camY = car.y - H * 0.45;
+      camY += (car.y - camY) * Math.min(1, dt * 6);
+      const camTop = camY - H * 0.45;
       const sx = (x: number) => x - camX;
-      const sy = (y: number) => H - (y - camY);
+      const sy = (y: number) => H - (y - camTop);
       // far hills
       ctx.fillStyle = '#9fd39a';
       ctx.beginPath(); ctx.moveTo(0, H);
@@ -232,29 +235,21 @@ const HillClimb = () => {
   }, [state]);
 
   const start = () => {
-    const el = wrapRef.current as any;
-    if (el && !document.fullscreenElement && el.requestFullscreen) {
-      el.requestFullscreen().then(() => (screen.orientation as any)?.lock?.('landscape').catch(() => {})).catch(() => {});
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().then(() => (screen.orientation as any)?.lock?.('landscape').catch(() => {})).catch(() => {});
     }
     setState('playing');
   };
 
   const pedal = (k: 'gas' | 'brake') => ({
-    onPointerDown: (e: React.PointerEvent) => { e.preventDefault(); input.current[k] = true; },
+    onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => { e.preventDefault(); e.currentTarget.setPointerCapture?.(e.pointerId); input.current[k] = true; },
     onPointerUp: () => { input.current[k] = false; },
-    onPointerLeave: () => { input.current[k] = false; },
+    onLostPointerCapture: () => { input.current[k] = false; },
+    onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
     onPointerCancel: () => { input.current[k] = false; },
   });
 
-  return (
-    <Layout hideFooter>
-      <div className="container mx-auto px-3 py-4 max-w-3xl">
-        <div className="flex items-center justify-between mb-2">
-          <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground"><ArrowLeft className="w-4 h-4" /> Home</Link>
-          <h1 className="text-lg font-bold text-foreground">🏎️ Hill Climb Racing</h1>
-          <span className="text-xs text-muted-foreground">Best: {best}m</span>
-        </div>
-
+  const gameBox = (
         <div ref={wrapRef} className={`${state === 'playing' ? 'fixed inset-0 z-[100] rounded-none' : 'relative w-full h-[60svh] min-h-[320px] rounded-xl'} overflow-hidden bg-secondary select-none touch-none`}>
           <canvas ref={canvasRef} className="w-full h-full block" />
           {state === 'playing' && (
@@ -291,6 +286,18 @@ const HillClimb = () => {
             </div>
           )}
         </div>
+  );
+
+  return (
+    <Layout hideFooter>
+      <div className="container mx-auto px-3 py-4 max-w-3xl">
+        <div className="flex items-center justify-between mb-2">
+          <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground"><ArrowLeft className="w-4 h-4" /> Home</Link>
+          <h1 className="text-lg font-bold text-foreground">🏎️ Hill Climb Racing</h1>
+          <span className="text-xs text-muted-foreground">Best: {best}m</span>
+        </div>
+
+        {state === 'playing' ? createPortal(gameBox, document.body) : gameBox}
         <div className="mt-4 flex gap-2 justify-center">
           <Button asChild variant="outline"><Link to="/spin-wheel">🎡 Spin the Wheel</Link></Button>
           <Button asChild variant="outline"><Link to="/fruit-game">🍉 Fruit Slicer</Link></Button>
