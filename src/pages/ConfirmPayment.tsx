@@ -95,6 +95,7 @@ const ConfirmPayment = () => {
         confirmedProductName = product?.name || confirmedProductName;
         const totalAmount = paymentAmount || Number(product?.price || 0) * quantity;
 
+        const delivery_fields = await getValidatedDeliveryFields(phone, address);
         const { data: order, error: orderError } = await supabase
           .from('orders')
           .insert({
