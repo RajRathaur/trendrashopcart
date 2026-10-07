@@ -1,3 +1,4 @@
+import { GameAdBanner } from '@/components/ads/GameAdBanner';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -62,6 +63,7 @@ const SpinWheel = () => {
 
   return (
     <Layout>
+      <GameAdBanner />
       <div className="container mx-auto px-4 py-6 max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-3">
           <ArrowLeft className="w-4 h-4" /> Home
