@@ -1,3 +1,4 @@
+import { getValidatedDeliveryFields } from '@/lib/deliveryDetails';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
@@ -174,6 +175,7 @@ const CheckoutPage = () => {
         return;
       }
 
+      const delivery_fields = await getValidatedDeliveryFields(formData.phone, formData.address);
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -184,7 +186,7 @@ const CheckoutPage = () => {
           shipping_city: formData.city,
           shipping_state: formData.state,
           shipping_pincode: formData.pincode,
-          shipping_phone: formData.phone,
+          ...delivery_fields,
           payment_method: paymentMethod,
           notes: formData.notes,
         })

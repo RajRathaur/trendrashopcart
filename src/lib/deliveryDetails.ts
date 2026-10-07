@@ -35,3 +35,19 @@ export const requestCurrentLocation = () => new Promise<DeliveryCoordinates>((re
     { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
   );
 });
+/**
+ * Captures GPS, validates phone/address/coordinates, and returns the order
+ * columns to spread into an orders insert. Throws a user-readable Error.
+ */
+export const getValidatedDeliveryFields = async (phone: string, address: string) => {
+  const coords = await requestCurrentLocation();
+  const parsed = deliveryDetailsSchema.safeParse({ phone: phone.replace(/\D/g, '').slice(-10), address, ...coords });
+  if (!parsed.success) throw new Error(parsed.error.errors[0]?.message || 'Invalid delivery details');
+  return {
+    shipping_phone: parsed.data.phone,
+    shipping_address: parsed.data.address,
+    delivery_latitude: parsed.data.latitude,
+    delivery_longitude: parsed.data.longitude,
+    delivery_location_accuracy: parsed.data.accuracy ?? null,
+  };
+};
