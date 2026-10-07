@@ -84,6 +84,7 @@ const ConfirmPayment = () => {
       const paymentAmount = parseFloat(productPrice) || 0;
 
       if (!orderId && productId) {
+        // eslint-disable-next-line no-use-before-define
         const { data: product, error: productError } = await supabase
           .from('products')
           .select('id, name, price, images, seller_id')
