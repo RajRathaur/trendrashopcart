@@ -1,3 +1,4 @@
+import { getValidatedDeliveryFields } from '@/lib/deliveryDetails';
 import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
@@ -72,6 +73,7 @@ const CodCheckout = () => {
       const addressParts = address.trim().split(',').map((part) => part.trim()).filter(Boolean);
       const shippingCity = addressParts.length >= 2 ? addressParts[addressParts.length - 1] : 'Not provided';
 
+      const delivery_fields = await getValidatedDeliveryFields(phone, address);
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -82,7 +84,7 @@ const CodCheckout = () => {
           shipping_city: shippingCity,
           shipping_state: 'Not provided',
           shipping_pincode: pincode,
-          shipping_phone: phone.trim(),
+          ...delivery_fields,
           payment_method: 'cod',
           notes: `COD Buy Now customer: ${customerName.trim()} | Delivery: ₹${delivery}${couponCode ? ` | Coupon: ${couponCode} (-₹${couponDiscount})` : ''}`,
         })

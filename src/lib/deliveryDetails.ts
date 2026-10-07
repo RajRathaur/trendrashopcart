@@ -41,7 +41,7 @@ export const requestCurrentLocation = () => new Promise<DeliveryCoordinates>((re
  */
 export const getValidatedDeliveryFields = async (phone: string, address: string) => {
   const coords = await requestCurrentLocation();
-  const parsed = deliveryDetailsSchema.safeParse({ phone, address, ...coords });
+  const parsed = deliveryDetailsSchema.safeParse({ phone: phone.replace(/\D/g, '').slice(-10), address, ...coords });
   if (!parsed.success) throw new Error(parsed.error.errors[0]?.message || 'Invalid delivery details');
   return {
     shipping_phone: parsed.data.phone,

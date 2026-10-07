@@ -1,3 +1,4 @@
+import { getValidatedDeliveryFields } from '@/lib/deliveryDetails';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -136,6 +137,7 @@ export const BuyNowDialog = ({
       const noteParts = [`Buy Now: ${productName}`, `Delivery: ₹${delivery}`];
       if (appliedCoupon) noteParts.push(`Coupon: ${appliedCoupon.code} (-₹${couponDiscount.toFixed(2)})`);
 
+      const delivery_fields = await getValidatedDeliveryFields(shippingPhone, shippingAddress);
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -146,7 +148,7 @@ export const BuyNowDialog = ({
           shipping_city: shippingCity,
           shipping_state: shippingState,
           shipping_pincode: shippingPincode,
-          shipping_phone: shippingPhone,
+          ...delivery_fields,
           payment_method: 'razorpay',
           notes: noteParts.join(' | '),
         })
