@@ -1,3 +1,4 @@
+import { GameAdBanner } from '@/components/ads/GameAdBanner';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -149,6 +150,7 @@ const CoinGame = () => {
 
   return (
     <div className="fixed inset-0 bg-background z-50 flex flex-col">
+      <div className="shrink-0 bg-card"><GameAdBanner /></div>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-card border-b shrink-0">
         <div className="flex items-center gap-2">

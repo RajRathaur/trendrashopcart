@@ -1,3 +1,4 @@
+import { GameAdBanner } from '@/components/ads/GameAdBanner';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
@@ -290,6 +291,7 @@ const HillClimb = () => {
 
   return (
     <Layout hideFooter>
+      <GameAdBanner />
       <div className="container mx-auto px-3 py-4 max-w-3xl">
         <div className="flex items-center justify-between mb-2">
           <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground"><ArrowLeft className="w-4 h-4" /> Home</Link>

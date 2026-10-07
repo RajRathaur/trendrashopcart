@@ -1,3 +1,4 @@
+import { GameAdBanner } from '@/components/ads/GameAdBanner';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -272,6 +273,7 @@ const FruitGame = () => {
 
   return (
     <Layout>
+      <GameAdBanner />
       <div className="container mx-auto px-3 py-4">
         <div className="max-w-lg mx-auto">
           {/* Header */}
