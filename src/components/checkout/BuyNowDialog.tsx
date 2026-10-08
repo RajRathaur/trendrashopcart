@@ -191,7 +191,7 @@ export const BuyNowDialog = ({
         currency: rzp.currency || 'INR',
         name: 'Trendra',
         description: `Order ${order.order_number}`,
-        prefill: { name: profile?.full_name || '', contact: shippingPhone, email: user.email || '' },
+        prefill: { name: details.name.trim(), contact: shippingPhone, email: user.email || '' },
         theme: { color: '#2874f0' },
         handler: async (resp: any) => {
           try {
@@ -234,7 +234,7 @@ export const BuyNowDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Order Summary</DialogTitle>
           <DialogDescription className="line-clamp-2">{productName}</DialogDescription>
