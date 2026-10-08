@@ -50,9 +50,9 @@ Deno.serve(async (req) => {
       const { error: updErr } = await admin
         .from('orders')
         .update({
-          payment_status: 'paid',
           payment_method: 'razorpay',
           status: 'confirmed',
+          notes: `Razorpay paid: ${razorpay_payment_id}`,
           updated_at: new Date().toISOString(),
         })
         .eq('id', trendraOrderId)
