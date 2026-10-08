@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Upload, CheckCircle2, Loader2, Shield, ArrowRight, Package } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { getValidatedDeliveryFields } from '@/lib/deliveryDetails';
 
 const ConfirmPayment = () => {
   const [searchParams] = useSearchParams();
