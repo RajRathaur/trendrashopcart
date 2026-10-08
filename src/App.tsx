@@ -39,6 +39,7 @@ import ShippingPolicy from "./pages/ShippingPolicy";
 import FruitGame from "./pages/FruitGame";
 import SpinWheel from "./pages/SpinWheel";
 import HillClimb from "./pages/HillClimb";
+import DeadRoads from "./pages/DeadRoads";
 import Redeem from "./pages/Redeem";
 import Assistant from "./pages/Assistant";
 import CodCheckout from "./pages/CodCheckout";
@@ -119,6 +120,7 @@ const AppRoutes = () => (
       <Route path="/fruit-game" element={<FruitGame />} />
       <Route path="/spin-wheel" element={<SpinWheel />} />
       <Route path="/hill-climb" element={<HillClimb />} />
+      <Route path="/dead-roads" element={<DeadRoads />} />
       <Route path="/redeem" element={<Redeem />} />
       <Route path="/assistant" element={<Assistant />} />
       <Route path="/assistant/:threadId" element={<Assistant />} />
