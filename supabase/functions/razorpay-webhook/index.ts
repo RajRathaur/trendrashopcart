@@ -42,29 +42,13 @@ Deno.serve(async (req) => {
     const payment = event.payload?.payment?.entity;
     const trendraOrderId = payment?.notes?.trendra_order_id || null;
 
-    if (type === 'payment.captured' || type === 'order.paid') {
-      if (trendraOrderId) {
-        await admin.from('orders').update({
-          payment_status: 'paid',
-          status: 'confirmed',
-          updated_at: new Date().toISOString(),
-        }).eq('id', trendraOrderId);
-      }
-    } else if (type === 'payment.failed') {
-      if (trendraOrderId) {
-        await admin.from('orders').update({
-          payment_status: 'failed',
-          updated_at: new Date().toISOString(),
-        }).eq('id', trendraOrderId);
-      }
-    } else if (type === 'refund.processed') {
-      if (trendraOrderId) {
-        await admin.from('orders').update({
-          payment_status: 'refunded',
-          status: 'refunded',
-          updated_at: new Date().toISOString(),
-        }).eq('id', trendraOrderId);
-      }
+    if ((type === 'payment.captured' || type === 'order.paid') && trendraOrderId) {
+      const { error } = await admin.from('orders').update({
+        status: 'confirmed',
+        payment_method: 'razorpay',
+        updated_at: new Date().toISOString(),
+      }).eq('id', trendraOrderId).eq('status', 'pending');
+      if (error) console.error('webhook order update:', error);
     }
 
     // Log every event for reconciliation (best-effort).
