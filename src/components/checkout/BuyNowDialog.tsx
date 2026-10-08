@@ -44,9 +44,21 @@ export const BuyNowDialog = ({
     void loadRazorpay().catch(() => undefined);
   }, []);
 
+  const [details, setDetails] = useState({ name: '', phone: '', address: '', city: '', state: '', pincode: '' });
+  const setField = (k: keyof typeof details) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setDetails((d) => ({ ...d, [k]: e.target.value }));
+
   useEffect(() => {
-    if (!open) { setCouponCode(''); setAppliedCoupon(null); }
-  }, [open]);
+    if (!open) { setCouponCode(''); setAppliedCoupon(null); return; }
+    setDetails((d) => ({
+      name: d.name || profile?.full_name || '',
+      phone: d.phone || profile?.phone || '',
+      address: d.address || profile?.address || '',
+      city: d.city || profile?.city || '',
+      state: d.state || profile?.state || '',
+      pincode: d.pincode || profile?.pincode || '',
+    }));
+  }, [open, profile]);
 
   const subtotal = amount;
   const delivery = freeDelivery ? 0 : (deliveryCharge != null ? Number(deliveryCharge) : DEFAULT_DELIVERY);
@@ -121,20 +133,17 @@ export const BuyNowDialog = ({
         .eq('id', productId).single();
       if (prodErr) throw prodErr;
 
-      const shippingAddress = profile?.address || 'To be collected';
-      const shippingCity = profile?.city || 'N/A';
-      const shippingState = profile?.state || 'N/A';
-      const shippingPincode = profile?.pincode || '000000';
-      const shippingPhone = (profile?.phone || '').trim();
+      const shippingAddress = details.address.trim();
+      const shippingCity = details.city.trim();
+      const shippingState = details.state.trim();
+      const shippingPincode = details.pincode.trim();
+      const shippingPhone = details.phone.trim();
 
-      if (!/^[+0-9 ().\-]{7,20}$/.test(shippingPhone)) {
-        toast.error('Please add a valid phone number in your profile before paying online.');
-        onOpenChange(false);
-        navigate('/profile');
-        return;
-      }
+      if (details.name.trim().length < 2) { toast.error('Apna naam likhein'); return; }
+      if (!shippingCity || !shippingState) { toast.error('City aur State bharein'); return; }
+      if (!/^\d{6}$/.test(shippingPincode)) { toast.error('6-digit pincode daalein'); return; }
 
-      const noteParts = [`Buy Now: ${productName}`, `Delivery: ₹${delivery}`];
+      const noteParts = [`Buy Now: ${productName}`, `Customer: ${details.name.trim()}`, `Delivery: ₹${delivery}`];
       if (appliedCoupon) noteParts.push(`Coupon: ${appliedCoupon.code} (-₹${couponDiscount.toFixed(2)})`);
 
       const delivery_fields = await getValidatedDeliveryFields(shippingPhone, shippingAddress);
@@ -230,6 +239,20 @@ export const BuyNowDialog = ({
           <DialogTitle>Order Summary</DialogTitle>
           <DialogDescription className="line-clamp-2">{productName}</DialogDescription>
         </DialogHeader>
+
+        {/* Delivery details */}
+        <div className="space-y-2">
+          <div className="text-sm font-semibold">Delivery Details</div>
+          <Input placeholder="Pura naam *" value={details.name} onChange={setField('name')} className="h-9 text-sm" />
+          <Input placeholder="10-digit mobile number *" inputMode="numeric" maxLength={10} value={details.phone} onChange={setField('phone')} className="h-9 text-sm" />
+          <Input placeholder="Pura address (ghar no., gali, area) *" value={details.address} onChange={setField('address')} className="h-9 text-sm" />
+          <div className="grid grid-cols-3 gap-2">
+            <Input placeholder="City *" value={details.city} onChange={setField('city')} className="h-9 text-sm" />
+            <Input placeholder="State *" value={details.state} onChange={setField('state')} className="h-9 text-sm" />
+            <Input placeholder="Pincode *" inputMode="numeric" maxLength={6} value={details.pincode} onChange={setField('pincode')} className="h-9 text-sm" />
+          </div>
+          <p className="text-[11px] text-muted-foreground">Pay karte waqt location permission "Allow" karein.</p>
+        </div>
 
         {/* Coupon */}
         <div className="pt-1">
