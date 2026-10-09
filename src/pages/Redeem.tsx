@@ -21,7 +21,7 @@ const PRESETS = [
 
 const Redeem = () => {
   const { user } = useAuth();
-  const { balance, totalEarned, requests, requestRedeem, loading } = useCoinWallet();
+  const { balance, totalEarned, requests, requestRedeem, loading, fetchWallet } = useCoinWallet();
   const [selected, setSelected] = useState<number>(1000);
   const [email, setEmail] = useState(user?.email || '');
   const [submitting, setSubmitting] = useState(false);
