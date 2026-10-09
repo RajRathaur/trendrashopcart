@@ -236,6 +236,39 @@ export type Database = {
         }
         Relationships: []
       }
+      coin_purchases: {
+        Row: {
+          amount_inr: number
+          coins: number
+          created_at: string
+          id: string
+          razorpay_order_id: string
+          razorpay_payment_id: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_inr: number
+          coins: number
+          created_at?: string
+          id?: string
+          razorpay_order_id: string
+          razorpay_payment_id?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_inr?: number
+          coins?: number
+          created_at?: string
+          id?: string
+          razorpay_order_id?: string
+          razorpay_payment_id?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       coin_wallet: {
         Row: {
           balance: number
