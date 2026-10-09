@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Coins, Gift, Clock, CheckCircle2, XCircle, Copy, LogIn } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCoinWallet, COINS_PER_RUPEE, MIN_REDEEM_COINS } from '@/hooks/useCoinWallet';
+import { BuyCoins } from '@/components/wallet/BuyCoins';
 import { toast } from '@/hooks/use-toast';
 
 const PRESETS = [
@@ -77,6 +78,9 @@ const Redeem = () => {
             <Link to="/fruit-game"><Button variant="outline" className="gap-2"><Coins className="w-4 h-4" />Play & Earn</Button></Link>
           </div>
         </Card>
+
+        {/* Buy coins with Razorpay */}
+        <BuyCoins onCredited={fetchWallet} />
 
         {/* Redeem form */}
         <Card className="p-6 mb-6">
