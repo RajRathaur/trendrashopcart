@@ -57,6 +57,14 @@ export const GamePromoBanner = () => {
           <div className="text-xs text-white/85">Pahad par race, coins kamao</div>
         </Link>
       </div>
+      <Link to="/ludo" className="mt-3 flex items-center gap-3 rounded-xl p-4 bg-gradient-to-r from-rose-500 via-orange-500 to-amber-400 text-white shadow active:scale-95 transition">
+        <div className="text-3xl">🎲</div>
+        <div className="flex-1 min-w-0">
+          <div className="font-bold">Ludo Classic</div>
+          <div className="text-xs text-white/85">Computer ke against khelo, jeet par coins kamao</div>
+        </div>
+        <ArrowRight className="w-4 h-4 text-white/90 shrink-0" />
+      </Link>
       <Link to="/dead-roads" className="mt-3 flex items-center gap-3 rounded-xl p-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-cyan-900 text-white shadow active:scale-95 transition border border-cyan-500/30">
         <div className="text-3xl">🛣️</div>
         <div className="flex-1 min-w-0">
