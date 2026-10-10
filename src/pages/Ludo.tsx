@@ -1,8 +1,8 @@
 import { GameAdBanner } from '@/components/ads/GameAdBanner';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Coins, ArrowLeft, Dices } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Coins, ArrowLeft, Dices, Trophy, Star } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -51,15 +51,64 @@ function movableTokens(tokens: number[], dice: number): number[] {
   return out;
 }
 
+const freshTokens = (): Tokens => ({ red: [-1, -1, -1, -1], green: [-1, -1, -1, -1] });
+
+// Dice pip layouts (positions in a 3x3 grid, 0..8)
+const PIPS: Record<number, number[]> = {
+  1: [4],
+  2: [0, 8],
+  3: [0, 4, 8],
+  4: [0, 2, 6, 8],
+  5: [0, 2, 4, 6, 8],
+  6: [0, 2, 3, 5, 6, 8],
+};
+
+const DiceFace = ({ value, rolling }: { value: number | null; rolling: boolean }) => {
+  if (rolling) {
+    return (
+      <motion.div
+        animate={{ rotate: [0, 180, 360], scale: [1, 1.15, 1] }}
+        transition={{ duration: 0.55, ease: 'easeInOut' }}
+        className="w-16 h-16 rounded-2xl bg-white shadow-[0_6px_16px_rgba(0,0,0,0.25),inset_0_-3px_6px_rgba(0,0,0,0.12)] border border-slate-200 flex items-center justify-center"
+      >
+        <Dices className="w-8 h-8 text-slate-700" />
+      </motion.div>
+    );
+  }
+  if (value === null) {
+    return (
+      <div className="w-16 h-16 rounded-2xl bg-white/60 border-2 border-dashed border-slate-300 flex items-center justify-center text-2xl">
+        🎲
+      </div>
+    );
+  }
+  return (
+    <motion.div
+      key={value}
+      initial={{ scale: 0.6, rotate: -30 }}
+      animate={{ scale: 1, rotate: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+      className="w-16 h-16 rounded-2xl bg-white shadow-[0_6px_16px_rgba(0,0,0,0.25),inset_0_-3px_6px_rgba(0,0,0,0.12)] border border-slate-200 p-2.5 grid grid-cols-3 grid-rows-3"
+    >
+      {Array.from({ length: 9 }, (_, i) => (
+        <div key={i} className="flex items-center justify-center">
+          {PIPS[value].includes(i) && <div className="w-2.5 h-2.5 rounded-full bg-slate-800 shadow-inner" />}
+        </div>
+      ))}
+    </motion.div>
+  );
+};
+
 const Ludo = () => {
   const { user } = useAuth();
   const { balance, addCoins } = useCoinWallet();
-  const [tokens, setTokens] = useState<Tokens>({ red: [-1, -1], green: [-1, -1] });
+  const [tokens, setTokens] = useState<Tokens>(freshTokens);
   const [turn, setTurn] = useState<Color>('red');
   const [dice, setDice] = useState<number | null>(null);
   const [rolling, setRolling] = useState(false);
   const [message, setMessage] = useState('Dice roll karke shuru karein! 🎲');
   const [winner, setWinner] = useState<Color | null>(null);
+  const [lastMoved, setLastMoved] = useState<{ color: Color; idx: number } | null>(null);
   const [winsToday, setWinsToday] = useState(() => {
     try {
       const raw = JSON.parse(localStorage.getItem(WINS_KEY) || '{}');
@@ -174,6 +223,7 @@ const Ludo = () => {
     if (!movableTokens(tokens.red, dice).includes(idx)) return;
     const { next, extra, note } = applyMove('red', idx, dice, tokens);
     setTokens(next);
+    setLastMoved({ color: 'red', idx });
     setDice(null);
     if (extra && !finishIfWon(next)) {
       setMessage(note ? `${note} Ek aur roll!` : 'Ek aur roll!');
@@ -202,7 +252,7 @@ const Ludo = () => {
             setTimeout(() => { if (!cancelled) endTurn(current, 'red', ''); }, 900);
             return current;
           }
-          // Simple AI: capture > leave base > token closest to home
+          // Simple AI: capture > reach home > leave base > token closest to home
           let pick = moves[0];
           let best = -Infinity;
           for (const i of moves) {
@@ -217,6 +267,7 @@ const Ludo = () => {
             if (score > best) { best = score; pick = i; }
           }
           const { next, extra, note } = applyMove('green', pick, val, current);
+          setLastMoved({ color: 'green', idx: pick });
           setMessage(note || `🤖 Computer ne ${val} khela.`);
           setTimeout(() => {
             if (cancelled) return;
@@ -232,22 +283,23 @@ const Ludo = () => {
   }, [turn, winner, applyMove, endTurn, finishIfWon]);
 
   const reset = () => {
-    setTokens({ red: [-1, -1], green: [-1, -1] });
+    setTokens(freshTokens());
     setTurn('red');
     setDice(null);
     setWinner(null);
+    setLastMoved(null);
     setMessage('Naya game — dice roll karein! 🎲');
   };
 
   // ---- Board rendering ----
   const cellClass = (r: number, c: number): string => {
-    if (r >= 9 && r <= 14 && c <= 5) return 'bg-red-500/90'; // red yard
-    if (r <= 5 && c >= 9) return 'bg-green-500/90'; // green yard
-    if (r <= 5 && c <= 5) return 'bg-amber-300/40'; // unused yards (decor)
-    if (r >= 9 && c >= 9) return 'bg-sky-300/40';
-    if (r === 7 && c >= 1 && c <= 5) return 'bg-red-300'; // red home stretch
-    if (c === 7 && r >= 9 && r <= 13) return 'bg-green-300'; // green home stretch
-    if (r >= 6 && r <= 8 && c >= 6 && c <= 8) return 'bg-slate-800'; // center
+    if (r >= 9 && r <= 14 && c <= 5) return 'bg-gradient-to-br from-red-500 to-red-600'; // red yard
+    if (r <= 5 && c >= 9) return 'bg-gradient-to-br from-green-500 to-green-600'; // green yard
+    if (r <= 5 && c <= 5) return 'bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700';
+    if (r >= 9 && c >= 9) return 'bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700';
+    if (r === 7 && c >= 1 && c <= 5) return 'bg-red-200 dark:bg-red-300'; // red home stretch
+    if (c === 7 && r >= 9 && r <= 13) return 'bg-green-200 dark:bg-green-300'; // green home stretch
+    if (r >= 6 && r <= 8 && c >= 6 && c <= 8) return 'bg-slate-900'; // center
     return 'bg-white dark:bg-slate-100';
   };
 
@@ -272,36 +324,49 @@ const Ludo = () => {
     ? movableTokens(tokens.red, dice)
     : [];
 
+  const homeCount = (color: Color) => tokens[color].filter((p) => p >= HOME).length;
+
   const cells = [];
   for (let r = 0; r < 15; r++) {
     for (let c = 0; c < 15; c++) {
       const here = tokensAt(r, c);
       const yardInner =
         (r >= 10 && r <= 13 && c >= 1 && c <= 4) || (r >= 1 && r <= 4 && c >= 10 && c <= 13);
+      const isCenter = r >= 6 && r <= 8 && c >= 6 && c <= 8;
       cells.push(
         <div
           key={`${r}-${c}`}
-          className={`relative aspect-square border border-slate-300/60 flex items-center justify-center ${cellClass(r, c)} ${yardInner ? 'bg-white/90 dark:bg-white/90' : ''}`}
+          className={`relative aspect-square border border-slate-300/50 flex items-center justify-center ${cellClass(r, c)} ${yardInner ? '!bg-white dark:!bg-slate-50 rounded-full scale-[0.92] shadow-inner' : ''}`}
         >
-          {isSafeCell(r, c) && <span className="text-[8px] sm:text-[10px] text-slate-500">★</span>}
-          {isStartCell(r, c, 'red') && <span className="absolute inset-0 bg-red-400/50" />}
-          {isStartCell(r, c, 'green') && <span className="absolute inset-0 bg-green-400/50" />}
-          {r === 7 && c === 7 && <span className="text-[10px]">🏆</span>}
-          <div className="absolute inset-0 flex flex-wrap items-center justify-center gap-[1px]">
+          {isSafeCell(r, c) && <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-500 fill-amber-400" />}
+          {isStartCell(r, c, 'red') && <span className="absolute inset-0 bg-red-400/60" />}
+          {isStartCell(r, c, 'green') && <span className="absolute inset-0 bg-green-400/60" />}
+          {r === 7 && c === 7 && <Trophy className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 fill-amber-400" />}
+          {isCenter && r === 6 && c === 6 && <span className="absolute inset-0 bg-gradient-to-br from-red-500/70 to-transparent" />}
+          {isCenter && r === 8 && c === 8 && <span className="absolute inset-0 bg-gradient-to-tl from-green-500/70 to-transparent" />}
+          <div className="absolute inset-0 flex flex-wrap items-center justify-center gap-[1px] p-[1px]">
             {here.map(({ color, idx }) => {
               const canPlay = color === 'red' && playable.includes(idx);
+              const justMoved = lastMoved?.color === color && lastMoved?.idx === idx;
               return (
-                <button
+                <motion.button
                   key={`${color}-${idx}`}
                   onClick={() => canPlay && playToken(idx)}
                   disabled={!canPlay}
-                  className={`rounded-full border-2 shadow transition-transform ${
-                    color === 'red' ? 'bg-red-600 border-red-900' : 'bg-green-600 border-green-900'
+                  initial={justMoved ? { scale: 0.3 } : false}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+                  className={`relative rounded-full shadow-[0_2px_4px_rgba(0,0,0,0.35),inset_0_-2px_3px_rgba(0,0,0,0.3),inset_0_2px_2px_rgba(255,255,255,0.4)] transition-transform ${
+                    color === 'red'
+                      ? 'bg-gradient-to-br from-red-400 to-red-700 border border-red-900'
+                      : 'bg-gradient-to-br from-green-400 to-green-700 border border-green-900'
                   } ${here.length > 1 ? 'w-2.5 h-2.5 sm:w-3 sm:h-3' : 'w-3.5 h-3.5 sm:w-5 sm:h-5'} ${
-                    canPlay ? 'ring-2 ring-yellow-400 animate-pulse scale-110 cursor-pointer' : ''
+                    canPlay ? 'ring-2 ring-yellow-300 ring-offset-1 animate-bounce cursor-pointer z-10' : ''
                   }`}
                   aria-label={`${color} goti ${idx + 1}`}
-                />
+                >
+                  <span className="absolute top-[15%] left-[20%] w-[35%] h-[25%] rounded-full bg-white/50" />
+                </motion.button>
               );
             })}
           </div>
@@ -314,60 +379,89 @@ const Ludo = () => {
     <Layout>
       <GameAdBanner />
       <div className="container mx-auto px-4 py-6 max-w-xl text-center">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-3">
+        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-3 hover:text-foreground transition-colors">
           <ArrowLeft className="w-4 h-4" /> Home
         </Link>
-        <h1 className="text-2xl font-bold text-foreground">🎲 Trendra Ludo</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-red-600 via-amber-500 to-green-600 bg-clip-text text-transparent">
+          🎲 Trendra Ludo
+        </h1>
         <p className="text-sm text-muted-foreground mt-1">
           Free game — computer ke against! Jeetne par {WIN_COINS} coins (din me {MAX_WINS_PER_DAY} baar tak). Koi entry fee nahi.
         </p>
         {user && (
-          <div className="inline-flex items-center gap-1 mt-3 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold">
+          <div className="inline-flex items-center gap-1 mt-3 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-950 text-sm font-bold shadow-md">
             <Coins className="w-4 h-4" /> {balance} coins
           </div>
         )}
 
-        <div className="mt-4 mx-auto w-full max-w-[520px] rounded-xl overflow-hidden shadow-xl border border-border">
+        {/* Turn indicator */}
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+            turn === 'red' && !winner ? 'bg-red-500 text-white shadow-lg scale-105' : 'bg-muted text-muted-foreground'
+          }`}>
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 border border-red-900" />
+            Aap ({homeCount('red')}/4 🏠)
+          </div>
+          <span className="text-muted-foreground text-xs font-semibold">VS</span>
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+            turn === 'green' && !winner ? 'bg-green-500 text-white shadow-lg scale-105' : 'bg-muted text-muted-foreground'
+          }`}>
+            <span className="w-2.5 h-2.5 rounded-full bg-green-500 border border-green-900" />
+            Computer ({homeCount('green')}/4 🏠)
+          </div>
+        </div>
+
+        <div className="mt-4 mx-auto w-full max-w-[520px] rounded-2xl overflow-hidden shadow-2xl ring-4 ring-slate-700/20 border border-border">
           <div className="grid" style={{ gridTemplateColumns: 'repeat(15, 1fr)' }}>
             {cells}
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-center gap-4">
-          <motion.div
-            key={dice ?? 'idle'}
-            initial={{ rotate: rolling ? 360 : 0, scale: rolling ? 1.2 : 1 }}
-            animate={{ rotate: 0, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="w-16 h-16 rounded-xl bg-card border-2 border-primary shadow-lg flex items-center justify-center text-3xl font-extrabold text-foreground"
-          >
-            {rolling ? <Dices className="w-8 h-8 animate-spin" /> : dice ?? '🎲'}
-          </motion.div>
+        <div className="mt-5 flex items-center justify-center gap-5">
+          <DiceFace value={dice} rolling={rolling} />
           <Button
             size="lg"
             onClick={rollDice}
             disabled={turn !== 'red' || rolling || dice !== null || !!winner}
-            className="font-bold"
+            className="font-bold rounded-xl px-6 shadow-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0"
           >
-            {turn === 'red' ? (dice !== null ? 'Goti chunein' : 'Roll karein') : '🤖 Computer khel raha...'}
+            {turn === 'red' ? (dice !== null ? 'Goti chunein 👆' : '🎲 Roll karein') : '🤖 Computer khel raha...'}
           </Button>
         </div>
 
-        <p className="mt-3 text-sm font-medium text-foreground min-h-[1.5rem]">{message}</p>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={message}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="mt-3 text-sm font-medium text-foreground min-h-[1.5rem]"
+          >
+            {message}
+          </motion.p>
+        </AnimatePresence>
 
         {winner && (
-          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mt-2">
-            <p className="text-xl font-bold text-foreground">
+          <motion.div
+            initial={{ scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 16 }}
+            className="mt-3 p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-amber-950/40 dark:to-yellow-950/40 border-2 border-amber-300 shadow-xl"
+          >
+            <p className="text-2xl font-extrabold text-foreground">
               {winner === 'red' ? '🎉 Aap jeet gaye!' : '🤖 Computer jeet gaya!'}
             </p>
-            <Button onClick={reset} className="mt-3">Naya game</Button>
+            <p className="text-sm text-muted-foreground mt-1">
+              {winner === 'red' ? `+${WIN_COINS} coins (limit: ${MAX_WINS_PER_DAY}/din)` : 'Koi baat nahi — ek aur game?'}
+            </p>
+            <Button onClick={reset} className="mt-3 font-bold">🔄 Naya game</Button>
           </motion.div>
         )}
 
         <div className="mt-6 flex gap-2 justify-center flex-wrap">
-          <Button asChild variant="outline"><Link to="/spin-wheel">🎡 Spin Wheel</Link></Button>
-          <Button asChild variant="outline"><Link to="/hill-climb">🏎️ Hill Climb</Link></Button>
-          <Button asChild variant="outline"><Link to="/redeem">Coins redeem</Link></Button>
+          <Button asChild variant="outline" className="rounded-xl"><Link to="/spin-wheel">🎡 Spin Wheel</Link></Button>
+          <Button asChild variant="outline" className="rounded-xl"><Link to="/hill-climb">🏎️ Hill Climb</Link></Button>
+          <Button asChild variant="outline" className="rounded-xl"><Link to="/redeem">💰 Coins redeem</Link></Button>
         </div>
       </div>
     </Layout>
