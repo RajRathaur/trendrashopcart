@@ -69,12 +69,6 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
           <Heart className={cn('h-4 w-4', isWishlisted && 'fill-current')} />
         </Button>
 
-        {/* Discount Badge */}
-        {product.discount_percent > 0 && (
-          <div className="absolute top-2 left-2 deal-badge">
-            {product.discount_percent}% OFF
-          </div>
-        )}
       </div>
 
       {/* Content - Flipkart style: compact, info-dense */}
