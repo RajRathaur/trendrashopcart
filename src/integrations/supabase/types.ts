@@ -79,6 +79,7 @@ export type Database = {
           color: string | null
           created_at: string
           id: string
+          print_design: Json | null
           product_id: string
           quantity: number | null
           size: string | null
@@ -88,6 +89,7 @@ export type Database = {
           color?: string | null
           created_at?: string
           id?: string
+          print_design?: Json | null
           product_id: string
           quantity?: number | null
           size?: string | null
@@ -97,6 +99,7 @@ export type Database = {
           color?: string | null
           created_at?: string
           id?: string
+          print_design?: Json | null
           product_id?: string
           quantity?: number | null
           size?: string | null
@@ -602,6 +605,7 @@ export type Database = {
           id: string
           order_id: string
           price: number
+          print_design: Json | null
           product_id: string | null
           product_image: string | null
           product_name: string
@@ -615,6 +619,7 @@ export type Database = {
           id?: string
           order_id: string
           price: number
+          print_design?: Json | null
           product_id?: string | null
           product_image?: string | null
           product_name: string
@@ -628,6 +633,7 @@ export type Database = {
           id?: string
           order_id?: string
           price?: number
+          print_design?: Json | null
           product_id?: string | null
           product_image?: string | null
           product_name?: string
@@ -864,6 +870,7 @@ export type Database = {
           cod_available: boolean
           colors: string[] | null
           created_at: string
+          customization_enabled: boolean
           delivery_charge: number | null
           description: string | null
           discount_percent: number | null
@@ -891,6 +898,7 @@ export type Database = {
           cod_available?: boolean
           colors?: string[] | null
           created_at?: string
+          customization_enabled?: boolean
           delivery_charge?: number | null
           description?: string | null
           discount_percent?: number | null
@@ -918,6 +926,7 @@ export type Database = {
           cod_available?: boolean
           colors?: string[] | null
           created_at?: string
+          customization_enabled?: boolean
           delivery_charge?: number | null
           description?: string | null
           discount_percent?: number | null
