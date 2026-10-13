@@ -36,6 +36,13 @@
       "when": 1791165173979,
       "tag": "0004_coins_100_per_rupee",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791892878669,
+      "tag": "0005_add_custom_product_print_designs",
+      "breakpoints": true
     }
   ]
 }
