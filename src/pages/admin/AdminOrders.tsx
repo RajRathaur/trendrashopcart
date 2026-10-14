@@ -1,3 +1,4 @@
+import { PrintDesignDetails } from '@/components/products/PrintDesignDetails';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -585,6 +586,7 @@ const AdminOrders = () => {
                                             {item.size && ` • ${item.size}`}
                                             {item.color && ` • ${item.color}`}
                                           </p>
+<PrintDesignDetails design={(item as any).print_design} />
                                         </div>
                                       </div>
                                     ))}

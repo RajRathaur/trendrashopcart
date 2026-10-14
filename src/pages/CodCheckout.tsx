@@ -1,3 +1,4 @@
+import { readPrintDraft, printDesignJson } from '@/lib/printDesign';
 import { getValidatedDeliveryFields } from '@/lib/deliveryDetails';
 import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -27,6 +28,7 @@ const CodCheckout = () => {
   const quantity = Math.max(1, Number(searchParams.get('quantity')) || 1);
   const selectedSize = searchParams.get('size');
   const selectedColor = searchParams.get('color');
+  const printDesign = readPrintDraft(searchParams.get('print'), productId);
 
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
@@ -105,6 +107,7 @@ const CodCheckout = () => {
           price: itemPrice,
           size: selectedSize,
           color: selectedColor,
+          print_design: printDesignJson(printDesign),
         });
 
       if (itemError) throw itemError;

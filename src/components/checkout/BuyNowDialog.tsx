@@ -1,3 +1,4 @@
+import { PrintDesign, printDesignJson, savePrintDraft } from '@/lib/printDesign';
 import { getValidatedDeliveryFields } from '@/lib/deliveryDetails';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -23,13 +24,14 @@ interface BuyNowDialogProps {
   freeDelivery?: boolean;
   deliveryCharge?: number | null;
   codAvailable?: boolean;
+  printDesign?: PrintDesign | null;
 }
 
 const DEFAULT_DELIVERY = 40;
 
 export const BuyNowDialog = ({
   open, onOpenChange, productId, productName, amount, quantity, size, color,
-  freeDelivery = false, deliveryCharge = null, codAvailable = true,
+  freeDelivery = false, deliveryCharge = null, codAvailable = true, printDesign = null,
 }: BuyNowDialogProps) => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
@@ -108,6 +110,7 @@ export const BuyNowDialog = ({
     }
     if (size) params.set('size', size);
     if (color) params.set('color', color);
+    if (printDesign) params.set('print', savePrintDraft(productId, printDesign));
     return `/cod-checkout?${params.toString()}`;
   };
 
@@ -174,6 +177,7 @@ export const BuyNowDialog = ({
         price: quantity > 0 ? subtotal / quantity : subtotal,
         size: size || null,
         color: color || null,
+        print_design: printDesignJson(printDesign),
       });
       if (itemError) throw itemError;
 

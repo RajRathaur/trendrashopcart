@@ -13,6 +13,8 @@ import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Seo } from '@/components/Seo';
+import { PrintDesignEditor } from '@/components/products/PrintDesignEditor';
+import { PrintDesign } from '@/lib/printDesign';
 import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
 
 const ProductDetail = () => {
@@ -26,6 +28,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [printDesign, setPrintDesign] = useState<PrintDesign | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState<'available' | 'unavailable' | null>(null);
@@ -166,7 +169,7 @@ const ProductDetail = () => {
       toast.error('Please select a color');
       return;
     }
-    addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
+    addToCart(product.id, quantity, selectedSize || undefined, selectedColor || undefined, printDesign);
   };
 
   const [buyNowOpen, setBuyNowOpen] = useState(false);
@@ -407,6 +410,10 @@ const ProductDetail = () => {
               </div>
             )}
 
+            {(product as any).customization_enabled && (
+              <PrintDesignEditor images={product.images || []} productId={product.id} value={printDesign} onChange={setPrintDesign} />
+            )}
+
             {/* Quantity */}
             <div>
               <h3 className="font-semibold mb-2">Quantity</h3>
@@ -572,6 +579,7 @@ const ProductDetail = () => {
         freeDelivery={(product as any).free_delivery}
         deliveryCharge={(product as any).delivery_charge}
         codAvailable={(product as any).cod_available !== false}
+        printDesign={printDesign}
       />
     </Layout>
   );
