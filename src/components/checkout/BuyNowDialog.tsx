@@ -9,7 +9,7 @@ import { CreditCard, Banknote, ChevronRight, Loader2, Tag, X } from 'lucide-reac
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { loadRazorpay } from '@/lib/razorpay';
+import { loadRazorpay, releaseBodyLock, verifyRazorpayPayment } from '@/lib/razorpay';
 
 interface BuyNowDialogProps {
   open: boolean;
@@ -199,16 +199,14 @@ export const BuyNowDialog = ({
         theme: { color: '#2874f0' },
         handler: async (resp: any) => {
           try {
-            await supabase.functions.invoke('verify-razorpay-payment', {
-              body: {
+            await verifyRazorpayPayment((n, o) => supabase.functions.invoke(n, o as any), {
                 order_id: order.id,
                 orderId: order.id,
                 trendra_order_id: order.id,
                 razorpay_order_id: resp.razorpay_order_id,
                 razorpay_payment_id: resp.razorpay_payment_id,
                 razorpay_signature: resp.razorpay_signature,
-              },
-            });
+              });
             if (appliedCoupon) {
               try { await (supabase as any).rpc('increment_coupon_usage', { _code: appliedCoupon.code }); } catch (err) { console.warn('coupon increment failed', err); }
             }
@@ -227,7 +225,8 @@ export const BuyNowDialog = ({
           },
         },
       });
-      rz.open();
+      releaseBodyLock();
+      setTimeout(() => { releaseBodyLock(); rz.open(); }, 50);
     } catch (err: any) {
       console.error('Buy Now error:', err);
       toast.error(err?.message || 'Something went wrong. Try again.');
