@@ -165,6 +165,11 @@ const CartPage = () => {
                         )}
                       </div>
                     )}
+                    {(item as any).print_design && (
+                      <div className="mt-1">
+                        <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-md font-medium">🎨 Custom print</span>
+                      </div>
+                    )}
 
                     <div className="flex items-center gap-2 mt-2">
                       <span className="font-bold text-foreground">
