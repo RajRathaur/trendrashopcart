@@ -58,3 +58,24 @@ export const loadRazorpay = async () => {
   }
   return window.Razorpay;
 };
+
+/** Radix dialogs can leave `pointer-events: none` on <body>, which blocks the Razorpay iframe. */
+export const releaseBodyLock = () => {
+  document.body.style.pointerEvents = '';
+  document.body.removeAttribute('data-scroll-locked');
+};
+
+/** Verify a completed payment on the server, retrying transient failures. */
+export const verifyRazorpayPayment = async (
+  invoke: (name: string, opts: { body: unknown }) => Promise<{ data: any; error: any }>,
+  body: Record<string, unknown>,
+) => {
+  let lastErr: unknown;
+  for (let i = 0; i < 3; i++) {
+    const { data, error } = await invoke('verify-razorpay-payment', { body });
+    if (!error && data?.verified) return true;
+    lastErr = error || new Error(data?.error || 'Verification failed');
+    await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
+  }
+  throw lastErr;
+};
