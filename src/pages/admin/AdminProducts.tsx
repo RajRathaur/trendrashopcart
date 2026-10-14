@@ -84,13 +84,14 @@ const AdminProducts = () => {
     deliveryCharge: '',
     freeDelivery: false,
     codAvailable: true,
+    customizationEnabled: false,
     tiers: [] as { qty: string; price: string }[],
   });
 
   const emptyForm = {
     name: '', price: '', mrp: '', stock: '', description: '', images: [] as string[],
     isFeatured: false, categoryId: '', sizes: [] as string[], colors: [] as string[],
-    deliveryCharge: '', freeDelivery: false, codAvailable: true, tiers: [] as { qty: string; price: string }[],
+    deliveryCharge: '', freeDelivery: false, codAvailable: true, customizationEnabled: false, tiers: [] as { qty: string; price: string }[],
   };
 
   const selectedCategory = categories.find((c) => c.id === formData.categoryId);
@@ -189,6 +190,7 @@ const AdminProducts = () => {
         colors: formData.colors.length ? formData.colors : null,
         free_delivery: formData.freeDelivery,
         cod_available: formData.codAvailable,
+        customization_enabled: formData.customizationEnabled,
         delivery_charge: formData.freeDelivery
           ? 0
           : (formData.deliveryCharge.trim() !== '' ? parseFloat(formData.deliveryCharge) : null),
@@ -251,6 +253,7 @@ const AdminProducts = () => {
       deliveryCharge: product.delivery_charge != null ? String(product.delivery_charge) : '',
       freeDelivery: !!product.free_delivery,
       codAvailable: product.cod_available !== false,
+      customizationEnabled: product.customization_enabled === true,
       tiers: parseTiers(product.price_tiers).map((t) => ({ qty: String(t.qty), price: String(t.price) })),
     });
     setDialogOpen(true);
@@ -399,6 +402,14 @@ const AdminProducts = () => {
                       onChange={(e) => setFormData({ ...formData, codAvailable: e.target.checked })}
                     />
                     Cash on Delivery (COD) available
+                  </label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.customizationEnabled}
+                      onChange={(e) => setFormData({ ...formData, customizationEnabled: e.target.checked })}
+                    />
+                    Custom print allowed (customer apna logo/design laga sake)
                   </label>
                   <label className="flex items-center gap-2 text-sm cursor-pointer">
                     <input

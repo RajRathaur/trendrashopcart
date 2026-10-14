@@ -1,3 +1,4 @@
+import { PrintDesignDetails } from '@/components/products/PrintDesignDetails';
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
@@ -341,6 +342,7 @@ const OrderDetail = () => {
                     {item.size && ` • Size: ${item.size}`}
                     {item.color && ` • ${item.color}`}
                   </p>
+<PrintDesignDetails design={(item as any).print_design} />
                   <p className="text-sm font-semibold mt-1">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
                 </div>
               </div>

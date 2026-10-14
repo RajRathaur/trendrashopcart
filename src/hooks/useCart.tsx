@@ -4,13 +4,14 @@ import { useAuth } from './useAuth';
 import { CartItem, Product } from '@/types';
 import { toast } from 'sonner';
 import { getLineTotal } from '@/lib/pricing';
+import { PrintDesign, printDesignJson } from '@/lib/printDesign';
 
 interface CartContextType {
   items: CartItem[];
   isLoading: boolean;
   itemCount: number;
   totalAmount: number;
-  addToCart: (productId: string, quantity?: number, size?: string, color?: string) => Promise<void>;
+  addToCart: (productId: string, quantity?: number, size?: string, color?: string, printDesign?: PrintDesign | null) => Promise<void>;
   removeFromCart: (itemId: string) => Promise<void>;
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
@@ -59,7 +60,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     fetchCart();
   }, [user]);
 
-  const addToCart = async (productId: string, quantity = 1, size?: string, color?: string) => {
+  const addToCart = async (productId: string, quantity = 1, size?: string, color?: string, printDesign?: PrintDesign | null) => {
     if (!user) {
       toast.error('Please login to add items to cart');
       return;
@@ -69,12 +70,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const normSize = size && size.length > 0 ? size : null;
       const normColor = color && color.length > 0 ? color : null;
 
+      if (printDesign) {
+        // Each custom design is its own cart line
+        const { error } = await supabase.from('cart_items').insert({
+          user_id: user.id, product_id: productId, quantity, size: normSize, color: normColor,
+          print_design: printDesignJson(printDesign),
+        });
+        if (error) throw error;
+        toast.success('Custom design ke saath cart me add ho gaya!');
+        await fetchCart();
+        return;
+      }
       // Check if item already exists (NULL-safe match on size/color)
       let query = supabase
         .from('cart_items')
         .select('*')
         .eq('user_id', user.id)
-        .eq('product_id', productId);
+        .eq('product_id', productId)
+        .is('print_design', null);
       query = normSize === null ? query.is('size', null) : query.eq('size', normSize);
       query = normColor === null ? query.is('color', null) : query.eq('color', normColor);
 

@@ -1,3 +1,4 @@
+import { printDesignJson } from '@/lib/printDesign';
 import { getValidatedDeliveryFields } from '@/lib/deliveryDetails';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -205,6 +206,7 @@ const CheckoutPage = () => {
         price: item.product?.price || 0,
         size: item.size,
         color: item.color,
+        print_design: printDesignJson((item as any).print_design),
       }));
 
       const { error: itemsError } = await supabase
