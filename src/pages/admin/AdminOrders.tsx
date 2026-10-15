@@ -97,6 +97,7 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<Record<string, OrderItem[]>>({});
+  const [customers, setCustomers] = useState<Record<string, { name: string; email: string }>>({});
   const [trackingDrafts, setTrackingDrafts] = useState<Record<string, { courier: string; awb: string }>>({});
   const [savingTracking, setSavingTracking] = useState<string | null>(null);
   const [pushingQikInk, setPushingQikInk] = useState<string | null>(null);
@@ -164,6 +165,10 @@ const AdminOrders = () => {
 
       if (error) throw error;
       setOrders(data || []);
+      const { data: users } = await supabase.rpc('get_admin_users_overview');
+      const map: Record<string, { name: string; email: string }> = {};
+      (users || []).forEach((u: any) => { map[u.user_id] = { name: u.full_name || '', email: u.email || '' }; });
+      setCustomers(map);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast.error('Failed to fetch orders');
@@ -441,7 +446,14 @@ const AdminOrders = () => {
                   orders.map((order) => (
                     <>
                       <TableRow key={order.id}>
-                        <TableCell className="font-medium">{order.order_number}</TableCell>
+                        <TableCell className="font-medium">
+                          {order.order_number}
+                          <div className="text-xs font-normal text-muted-foreground">
+                            {customers[order.user_id]?.name || customers[order.user_id]?.email || 'Customer'}
+                            {customers[order.user_id]?.email && customers[order.user_id]?.name ? ` · ${customers[order.user_id].email}` : ''}
+                          </div>
+                          {order.user_id && <div className="text-[10px] font-mono text-muted-foreground" title={order.user_id}>ID: {order.user_id.slice(0, 8)}</div>}
+                        </TableCell>
                         <TableCell>
                           {format(new Date(order.created_at), 'dd MMM yyyy')}
                         </TableCell>
