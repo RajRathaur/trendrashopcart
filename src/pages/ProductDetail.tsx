@@ -411,7 +411,12 @@ const ProductDetail = () => {
             )}
 
             {(product as any).customization_enabled && (
-              <PrintDesignEditor images={product.images || []} productId={product.id} value={printDesign} onChange={setPrintDesign} />
+              <>
+                <PrintDesignEditor images={product.images || []} productId={product.id} value={printDesign} onChange={setPrintDesign} />
+                <p className="text-xs text-muted-foreground bg-muted rounded-md px-3 py-2">
+                  🎨 Custom print wale products par sirf online payment (prepaid) available hai — COD nahi milega.
+                </p>
+              </>
             )}
 
             {/* Quantity */}
