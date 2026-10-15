@@ -43,6 +43,13 @@
       "when": 1791892878669,
       "tag": "0005_add_custom_product_print_designs",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792059430963,
+      "tag": "0006_fix_print_design_owner_ambiguity",
+      "breakpoints": true
     }
   ]
 }
