@@ -58,7 +58,7 @@ export function PrintDesignEditor({ images, productId, value, onChange }: {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="font-semibold">Your custom print</h3>
         <div className="flex gap-1" role="group" aria-label="Print side">
-          {(['front', 'back'] as const).map((s) => <Button key={s} size="sm" variant={side === s ? 'default' : 'outline'} aria-pressed={side === s} onClick={() => setSide(s)} disabled={uploading || (s === 'back' && images.length < 2)}>{s === 'front' ? 'Front' : 'Back'}{value?.[s] ? ' ✓' : ''}</Button>)}
+          {(['front', 'back'] as const).map((s) => <Button key={s} size="sm" variant={side === s ? 'default' : 'outline'} aria-pressed={side === s} onClick={() => setSide(s)} disabled={uploading}>{s === 'front' ? 'Front' : 'Back'}{value?.[s] ? ' ✓' : ''}</Button>)}
         </div>
       </div>
       <div className="relative aspect-square max-w-sm mx-auto bg-muted overflow-hidden rounded-md" data-testid="print-preview">

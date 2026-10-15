@@ -194,7 +194,7 @@ const AdminUsers = () => {
                     className="cursor-pointer"
                     onClick={() => { setSelectedUser(u); setSheetOpen(true); }}
                   >
-                    <TableCell className="font-medium">{u.full_name || 'Unnamed'}</TableCell>
+                    <TableCell className="font-medium">{u.full_name || 'Unnamed'}<div className="text-[10px] font-mono text-muted-foreground" title={u.user_id}>ID: {u.user_id.slice(0, 8)}</div></TableCell>
                     <TableCell className="text-sm">
                       {u.email ? <a href={`mailto:${u.email}`} onClick={(e) => e.stopPropagation()} className="hover:underline">{u.email}</a> : '—'}
                     </TableCell>
