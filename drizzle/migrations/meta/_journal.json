@@ -50,6 +50,13 @@
       "when": 1792059430963,
       "tag": "0006_fix_print_design_owner_ambiguity",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792060720567,
+      "tag": "0007_print_on_demand_prepaid_only",
+      "breakpoints": true
     }
   ]
 }
