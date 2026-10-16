@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 export { supabase };
 
 // Auth helpers
-export const signUp = async (email: string, password: string, fullName: string) => {
+export const signUp = async (email: string, password: string, fullName: string, phone?: string) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -11,6 +11,7 @@ export const signUp = async (email: string, password: string, fullName: string) 
       emailRedirectTo: window.location.origin,
       data: {
         full_name: fullName,
+        ...(phone ? { phone } : {}),
       },
     },
   });

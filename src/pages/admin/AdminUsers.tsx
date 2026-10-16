@@ -199,7 +199,7 @@ const AdminUsers = () => {
                       {u.email ? <a href={`mailto:${u.email}`} onClick={(e) => e.stopPropagation()} className="hover:underline">{u.email}</a> : '—'}
                     </TableCell>
                     <TableCell className="text-sm">
-                      {u.phone ? <a href={`tel:${u.phone}`} onClick={(e) => e.stopPropagation()} className="hover:underline">{u.phone}</a> : <span className="text-muted-foreground">—</span>}
+                      {u.phone ? <a href={`tel:${u.phone}`} onClick={(e) => e.stopPropagation()} className="hover:underline">{u.phone}</a> : <span className="text-xs text-destructive font-medium">Missing</span>}
                     </TableCell>
                     <TableCell className="text-sm max-w-[220px]">
                       {u.address || u.city || u.state || u.pincode ? (

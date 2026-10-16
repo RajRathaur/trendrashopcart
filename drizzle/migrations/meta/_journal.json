@@ -57,6 +57,13 @@
       "when": 1792060720567,
       "tag": "0007_print_on_demand_prepaid_only",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792117163280,
+      "tag": "0008_handle_new_user_saves_phone",
+      "breakpoints": true
     }
   ]
 }
