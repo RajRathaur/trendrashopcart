@@ -176,6 +176,11 @@ const ProductDetail = () => {
 
   const handleBuyNow = async () => {
     if (!product) return;
+    if (!user) {
+      toast.error('Khareedne ke liye pehle login karein');
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
     if (product.sizes?.length && !selectedSize) {
       toast.error('Please select a size');
       return;

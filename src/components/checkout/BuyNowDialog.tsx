@@ -52,6 +52,12 @@ export const BuyNowDialog = ({
 
   useEffect(() => {
     if (!open) { setCouponCode(''); setAppliedCoupon(null); return; }
+    if (!user) {
+      toast.error('Khareedne ke liye pehle login karein');
+      onOpenChange(false);
+      navigate('/login');
+      return;
+    }
     setDetails((d) => ({
       name: d.name || profile?.full_name || '',
       phone: d.phone || profile?.phone || '',

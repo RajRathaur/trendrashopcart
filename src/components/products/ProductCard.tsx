@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
 import { Heart, Star, ShoppingCart, BadgeCheck, Zap } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -15,6 +17,8 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, className }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [buyNowOpen, setBuyNowOpen] = useState(false);
   const isWishlisted = isInWishlist(product.id);
@@ -34,6 +38,11 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) {
+      toast.error('Khareedne ke liye pehle login karein');
+      navigate('/login', { state: { from: `/product/${product.id}` } });
+      return;
+    }
     setBuyNowOpen(true);
   };
 
