@@ -13,6 +13,7 @@ import { SiteContentProvider } from "@/hooks/useSiteContent";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AdminGuard } from "@/components/AdminGuard";
+import { PhoneGate } from "@/components/PhoneGate";
 
 // Public pages — eager (part of first paint)
 import Index from "./pages/Index";
@@ -178,6 +179,7 @@ const App = () => {
                     <Toaster />
                     <Sonner />
                     <AppRoutes />
+                    <PhoneGate />
                   </MotionConfig>
                 </SiteContentProvider>
               </WishlistProvider>
