@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
 import { Heart, Star, ShoppingCart, BadgeCheck, Zap } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
