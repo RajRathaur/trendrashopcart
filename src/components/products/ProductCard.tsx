@@ -15,6 +15,8 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, className }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [buyNowOpen, setBuyNowOpen] = useState(false);
   const isWishlisted = isInWishlist(product.id);
@@ -34,6 +36,11 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) {
+      toast.error('Khareedne ke liye pehle login karein');
+      navigate('/login', { state: { from: `/product/${product.id}` } });
+      return;
+    }
     setBuyNowOpen(true);
   };
 
