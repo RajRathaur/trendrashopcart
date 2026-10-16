@@ -21,6 +21,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
+    phone: '',
     email: '',
     password: '',
   });
@@ -202,6 +203,11 @@ const LoginPage = () => {
       return;
     }
 
+    if (!isLogin && !/^[6-9]\d{9}$/.test(formData.phone)) {
+      toast.error('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -212,7 +218,7 @@ const LoginPage = () => {
         // Redirect effect will handle navigation
       } else {
 
-        const { error } = await signUp(formData.email, formData.password, formData.fullName);
+        const { error } = await signUp(formData.email, formData.password, formData.fullName, formData.phone);
         if (error) throw error;
         toast.success('Account created! Please check your email to verify.');
         navigate(redirect);
@@ -323,6 +329,27 @@ const LoginPage = () => {
                           required={!isLogin}
                         />
                       </div>
+                    </div>
+                  )}
+
+                  {!isLogin && (
+                    <div>
+                      <Label htmlFor="phone">Mobile Number *</Label>
+                      <div className="relative mt-1">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="phone"
+                          type="tel"
+                          inputMode="numeric"
+                          placeholder="10-digit mobile number"
+                          className="pl-10"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                          required={!isLogin}
+                          maxLength={10}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">Order aur delivery updates ke liye zaroori hai.</p>
                     </div>
                   )}
 
