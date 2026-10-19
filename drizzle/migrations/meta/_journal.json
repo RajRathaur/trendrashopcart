@@ -64,6 +64,13 @@
       "when": 1792117163280,
       "tag": "0008_handle_new_user_saves_phone",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792378575058,
+      "tag": "0009_orders_delivery_fee_preserved",
+      "breakpoints": true
     }
   ]
 }
