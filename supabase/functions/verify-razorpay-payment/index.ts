@@ -47,33 +47,33 @@ Deno.serve(async (req) => {
     );
 
     if (trendraOrderId) {
+      // Append the payment id to existing notes instead of overwriting them,
+      // so customer/coupon details saved at order creation are preserved.
+      const { data: existing } = await admin
+        .from('orders')
+        .select('notes')
+        .eq('id', trendraOrderId)
+        .eq('user_id', userId)
+        .maybeSingle();
+      const prevNotes = (existing?.notes as string | null) ?? '';
+      const paidNote = `Razorpay paid: ${razorpay_payment_id}`;
+      const notes = prevNotes.includes(paidNote)
+        ? prevNotes
+        : prevNotes
+          ? `${prevNotes} | ${paidNote}`
+          : paidNote;
+
       const { error: updErr } = await admin
         .from('orders')
         .update({
           payment_method: 'razorpay',
           status: 'confirmed',
-          notes: `Razorpay paid: ${razorpay_payment_id}`,
+          notes,
           updated_at: new Date().toISOString(),
         })
         .eq('id', trendraOrderId)
         .eq('user_id', userId);
       if (updErr) console.error('order update error:', updErr);
-    }
-
-    // Best-effort payment confirmation row. Await + try/catch — Supabase
-    // query builders are thenables, not Promises, so `.catch()` is invalid.
-    try {
-      const { error: pcErr } = await admin.from('payment_confirmations').insert({
-        user_id: userId,
-        order_id: trendraOrderId ?? null,
-        provider: 'razorpay',
-        provider_order_id: razorpay_order_id,
-        provider_payment_id: razorpay_payment_id,
-        status: 'verified',
-      } as never);
-      if (pcErr) console.error('payment_confirmations insert:', pcErr);
-    } catch (e) {
-      console.error('payment_confirmations insert threw:', e);
     }
 
     return json({ verified: true });
