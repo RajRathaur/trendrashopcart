@@ -163,6 +163,7 @@ const AppRoutes = () => (
       <Route path="/careers" element={<About />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </AuthGate>
   </BrowserRouter>
 );
 
