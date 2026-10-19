@@ -14,6 +14,7 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AdminGuard } from "@/components/AdminGuard";
 import { PhoneGate } from "@/components/PhoneGate";
+import { AuthGate } from "@/components/AuthGate";
 
 // Public pages — eager (part of first paint)
 import Index from "./pages/Index";

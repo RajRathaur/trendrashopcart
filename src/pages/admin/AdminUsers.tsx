@@ -224,7 +224,9 @@ const AdminUsers = () => {
                     </TableCell>
                     <TableCell className="text-xs">
                       <div>{new Date(u.created_at).toLocaleDateString()}</div>
-                      {u.last_sign_in_at && <div className="text-muted-foreground">seen {new Date(u.last_sign_in_at).toLocaleDateString()}</div>}
+                      {u.last_sign_in_at
+                        ? <div className="text-muted-foreground">last login {new Date(u.last_sign_in_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+                        : <div className="text-muted-foreground">kabhi login nahi</div>}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
