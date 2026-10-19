@@ -96,6 +96,7 @@ const seller = (el: React.ReactNode) => (
 
 const AppRoutes = () => (
   <BrowserRouter>
+    <AuthGate>
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/products" element={<Products />} />
@@ -179,9 +180,7 @@ const App = () => {
                   <MotionConfig reducedMotion={prefersReducedMotion ? "always" : "user"}>
                     <Toaster />
                     <Sonner />
-                    <AuthGate>
-                      <AppRoutes />
-                    </AuthGate>
+                    <AppRoutes />
                     <PhoneGate />
                   </MotionConfig>
                 </SiteContentProvider>
