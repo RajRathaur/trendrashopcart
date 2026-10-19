@@ -14,6 +14,7 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AdminGuard } from "@/components/AdminGuard";
 import { PhoneGate } from "@/components/PhoneGate";
+import { AuthGate } from "@/components/AuthGate";
 
 // Public pages — eager (part of first paint)
 import Index from "./pages/Index";
@@ -95,6 +96,7 @@ const seller = (el: React.ReactNode) => (
 
 const AppRoutes = () => (
   <BrowserRouter>
+    <AuthGate>
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/products" element={<Products />} />
@@ -161,6 +163,7 @@ const AppRoutes = () => (
       <Route path="/careers" element={<About />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </AuthGate>
   </BrowserRouter>
 );
 
