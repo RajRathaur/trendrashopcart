@@ -162,6 +162,7 @@ export const BuyNowDialog = ({
           user_id: user.id,
           order_number: `ORD${Date.now()}`,
           total_amount: total,
+          delivery_fee: delivery,
           shipping_address: shippingAddress,
           shipping_city: shippingCity,
           shipping_state: shippingState,
