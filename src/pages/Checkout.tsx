@@ -183,6 +183,7 @@ const CheckoutPage = () => {
           user_id: user.id,
           order_number: `ORD${Date.now()}`,
           total_amount: finalAmount,
+          delivery_fee: deliveryFee,
           shipping_address: formData.address,
           shipping_city: formData.city,
           shipping_state: formData.state,
