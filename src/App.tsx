@@ -179,7 +179,9 @@ const App = () => {
                   <MotionConfig reducedMotion={prefersReducedMotion ? "always" : "user"}>
                     <Toaster />
                     <Sonner />
-                    <AppRoutes />
+                    <AuthGate>
+                      <AppRoutes />
+                    </AuthGate>
                     <PhoneGate />
                   </MotionConfig>
                 </SiteContentProvider>
