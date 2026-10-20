@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, CreditCard, Image, FolderTree, Gift, Shield, Mail, Megaphone, Users, UserCircle, MailCheck, KeyRound, Sparkles, Tag } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, CreditCard, Image, FolderTree, Gift, Shield, Mail, Megaphone, Users, UserCircle, MailCheck, KeyRound, Sparkles, Tag, PartyPopper } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
@@ -20,6 +20,7 @@ const navItems = [
   { href: '/admin/banners', label: 'Banners', icon: Image },
   { href: '/admin/redeems', label: 'Redeems', icon: Gift },
   { href: '/admin/coupons', label: 'Coupons', icon: Tag },
+  { href: '/admin/festival-sale', label: 'Festival Sale', icon: PartyPopper },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/broadcast', label: 'Broadcast', icon: Megaphone },
   { href: '/admin/email-monitor', label: 'Email Monitor', icon: MailCheck },

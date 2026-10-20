@@ -72,6 +72,7 @@ const AdminOtpDebug = lazy(() => import("./pages/admin/AdminOtpDebug"));
 const AdminEmailTemplates = lazy(() => import("./pages/admin/AdminEmailTemplates"));
 const AdminAnimations = lazy(() => import("./pages/admin/AdminAnimations"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
+const AdminFestivalSale = lazy(() => import("./pages/admin/AdminFestivalSale"));
 
 
 const queryClient = new QueryClient();
@@ -154,6 +155,7 @@ const AppRoutes = () => (
       <Route path="/admin/email-templates" element={admin(<AdminEmailTemplates />)} />
       <Route path="/admin/animations" element={admin(<AdminAnimations />)} />
       <Route path="/admin/coupons" element={admin(<AdminCoupons />)} />
+      <Route path="/admin/festival-sale" element={admin(<AdminFestivalSale />)} />
 
 
       {/* Redirect common paths */}
