@@ -59,6 +59,12 @@ export default {
   				DEFAULT: 'hsl(var(--deal))',
   				foreground: 'hsl(var(--deal-foreground))'
   			},
+  			festive: {
+  				DEFAULT: 'hsl(var(--festive))',
+  				deep: 'hsl(var(--festive-deep))',
+  				gold: 'hsl(var(--festive-gold))',
+  				foreground: 'hsl(var(--festive-foreground))'
+  			},
   			rating: 'hsl(var(--rating))',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',

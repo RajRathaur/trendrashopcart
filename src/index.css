@@ -53,6 +53,12 @@
     --deal: 0 72% 55%;
     --deal-foreground: 0 0% 98%;
 
+    /* Festival sale (saffron + maroon + gold) */
+    --festive: 24 95% 52%;
+    --festive-deep: 345 72% 32%;
+    --festive-gold: 45 96% 60%;
+    --festive-foreground: 40 100% 97%;
+
     --rating: 142 60% 45%;
 
     /* Premium Gradients */
@@ -132,6 +138,10 @@
     --success: 142 71% 40%;
     --warning: 37 100% 50%;
     --deal: 0 72% 55%;
+    --festive: 24 92% 50%;
+    --festive-deep: 345 65% 26%;
+    --festive-gold: 45 96% 58%;
+    --festive-foreground: 40 100% 97%;
     --rating: 142 71% 40%;
 
     --sidebar-background: 0 0% 6%;
