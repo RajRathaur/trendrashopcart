@@ -7,6 +7,7 @@ import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { GamePromoBanner } from '@/components/home/GamePromoBanner';
 import { AiSuggestBox } from '@/components/home/AiSuggestBox';
+import { FestivalSaleBanner } from '@/components/home/FestivalSaleBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { Seo } from '@/components/Seo';
@@ -82,6 +83,11 @@ const Index = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Festival sale (admin controlled, hides itself when off/ended) */}
+      <div className="container mx-auto px-3 pt-4 empty:hidden">
+        <FestivalSaleBanner />
       </div>
 
       {/* AI Suggestion Box */}
