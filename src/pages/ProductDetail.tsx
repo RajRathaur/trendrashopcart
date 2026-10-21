@@ -228,6 +228,14 @@ const ProductDetail = () => {
 
   const images = product.images?.length ? product.images : ['/placeholder.svg'];
   const isWishlisted = isInWishlist(product.id);
+  const showTryOn =
+    images[0] !== '/placeholder.svg' &&
+    isTryOnEligible({
+      name: product.name,
+      categoryName: product.category?.name,
+      categorySlug: product.category?.slug,
+      customizationEnabled: (product as any).customization_enabled,
+    });
 
   const productSchema = {
     "@context": "https://schema.org",
