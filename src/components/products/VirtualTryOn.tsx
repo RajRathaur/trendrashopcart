@@ -627,7 +627,7 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
               </div>
 
               <p className="text-xs text-muted-foreground">
-                Tip: good lighting and a plain wall behind you give the best fit.
+                Tip: good lighting and a plain wall behind you give the best fit. Flat product photos (without a model) look most realistic.
               </p>
             </div>
           </div>
