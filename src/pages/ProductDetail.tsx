@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -9,13 +9,16 @@ import { Product } from '@/types';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useAuth } from '@/hooks/useAuth';
-import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus, Minus, Check, X } from 'lucide-react';
+import { Heart, Star, ShoppingCart, Truck, Shield, RotateCcw, ChevronRight, Plus, Minus, Check, X, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Seo } from '@/components/Seo';
 import { PrintDesignEditor } from '@/components/products/PrintDesignEditor';
 import { PrintDesign } from '@/lib/printDesign';
 import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
+import { isTryOnEligible } from '@/lib/tryOnFit';
+
+const VirtualTryOn = lazy(() => import('@/components/products/VirtualTryOn'));
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -173,6 +176,7 @@ const ProductDetail = () => {
   };
 
   const [buyNowOpen, setBuyNowOpen] = useState(false);
+  const [tryOnOpen, setTryOnOpen] = useState(false);
 
   const handleBuyNow = async () => {
     if (!product) return;
@@ -224,6 +228,14 @@ const ProductDetail = () => {
 
   const images = product.images?.length ? product.images : ['/placeholder.svg'];
   const isWishlisted = isInWishlist(product.id);
+  const showTryOn =
+    images[0] !== '/placeholder.svg' &&
+    isTryOnEligible({
+      name: product.name,
+      categoryName: product.category?.name,
+      categorySlug: product.category?.slug,
+      customizationEnabled: (product as any).customization_enabled,
+    });
 
   const productSchema = {
     "@context": "https://schema.org",
@@ -469,6 +481,23 @@ const ProductDetail = () => {
               </Button>
             </div>
 
+            {showTryOn && (
+              <button
+                type="button"
+                onClick={() => setTryOnOpen(true)}
+                className="group w-full flex items-center gap-3 rounded-lg border-2 border-primary/30 bg-primary/5 px-4 py-3 text-left transition-all hover:border-primary hover:bg-primary/10 hover:shadow-md"
+              >
+                <span className="h-10 w-10 shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center transition-transform group-hover:scale-110">
+                  <Sparkles className="h-5 w-5" />
+                </span>
+                <span className="flex-1">
+                  <span className="block font-semibold text-foreground">Virtual Try-On</span>
+                  <span className="block text-xs text-muted-foreground">See it on you with your camera or a photo</span>
+                </span>
+                <ChevronRight className="h-5 w-5 text-primary" />
+              </button>
+            )}
+
             {/* Delivery Check */}
             <div className="border rounded-lg p-4">
               <h3 className="font-semibold mb-2 flex items-center gap-2">
@@ -591,6 +620,11 @@ const ProductDetail = () => {
         codAvailable={(product as any).cod_available !== false}
         printDesign={printDesign}
       />
+      {tryOnOpen && (
+        <Suspense fallback={null}>
+          <VirtualTryOn open={tryOnOpen} onOpenChange={setTryOnOpen} productName={product.name} images={images} />
+        </Suspense>
+      )}
     </Layout>
   );
 };
