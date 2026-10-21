@@ -166,6 +166,15 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
     }
   }, [open]);
 
+  // Leaving camera mode stops the camera; reset its state for the next start.
+  useEffect(() => {
+    if (mode !== 'camera') {
+      setCameraReady(false);
+      setCameraError(null);
+    }
+    placementRef.current = null;
+  }, [mode]);
+
   // Load the garment overlay.
   useEffect(() => {
     if (!open || !garmentSrc) return;
