@@ -13,12 +13,18 @@ import {
   applyAdjust,
   computeAutoPlacement,
   DEFAULT_ADJUST,
-  hasShoulders,
+  extractTorso,
+  nextAutoTarget,
+  opaqueBounds,
+  SHOULDER_LINE,
+  SHOULDER_LINE_TRIMMED,
   smoothPlacement,
-  type NormPoint,
   type Placement,
+  type TorsoLandmarks,
   type TryOnAdjust,
 } from '@/lib/tryOnFit';
+
+type Garment = { source: CanvasImageSource; aspect: number; safe: boolean; trimmed: boolean };
 
 const WASM_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1/wasm';
 const MODEL_URL =
@@ -49,8 +55,11 @@ function loadPoseLandmarker() {
   return landmarkerPromise;
 }
 
-/** Loads a product photo and fades out its plain studio background (flood fill from the edges). */
-async function loadGarment(src: string, removeBg: boolean): Promise<{ source: CanvasImageSource; aspect: number; safe: boolean }> {
+/**
+ * Loads a product photo, removes its plain studio background (flood fill from the edges)
+ * and trims the empty margins so the garment's collar sits right on the shoulders.
+ */
+async function loadGarment(src: string, removeBg: boolean): Promise<Garment> {
   const load = (cors: boolean) =>
     new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image();
@@ -69,7 +78,7 @@ async function loadGarment(src: string, removeBg: boolean): Promise<{ source: Ca
     safe = false;
   }
   const aspect = img.naturalHeight / img.naturalWidth || 1.2;
-  if (!removeBg || !safe) return { source: img, aspect, safe };
+  if (!removeBg || !safe) return { source: img, aspect, safe, trimmed: false };
 
   try {
     const maxW = 600;
@@ -104,9 +113,19 @@ async function loadGarment(src: string, removeBg: boolean): Promise<{ source: Ca
       if (i < w * (h - 1)) stack.push(i + w);
     }
     ctx.putImageData(data, 0, 0);
-    return { source: c, aspect, safe };
+
+    // Trim empty margins (only when the garment is a sensible part of the photo).
+    const box = opaqueBounds(px, w, h);
+    if (box && box.w * box.h > w * h * 0.15 && (box.w < w || box.h < h)) {
+      const t = document.createElement('canvas');
+      t.width = box.w;
+      t.height = box.h;
+      t.getContext('2d')!.drawImage(c, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h);
+      return { source: t, aspect: box.h / box.w, safe, trimmed: true };
+    }
+    return { source: c, aspect, safe, trimmed: false };
   } catch {
-    return { source: img, aspect, safe: false };
+    return { source: img, aspect, safe: false, trimmed: false };
   }
 }
 
