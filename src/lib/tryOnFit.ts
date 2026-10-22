@@ -160,6 +160,42 @@ export function applyAdjust(base: Placement, adj: TryOnAdjust, canvasW: number, 
   };
 }
 
+/**
+ * Bounding box of the visible (non-transparent) pixels of an RGBA buffer,
+ * used to trim empty studio margins so the collar line sits where we expect.
+ * Returns null when nothing is visible.
+ */
+export function opaqueBounds(px: ArrayLike<number>, w: number, h: number, minAlpha = 16) {
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (px[(y * w + x) * 4 + 3] >= minAlpha) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (x1 < 0) return null;
+  return { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
+
+/**
+ * Chooses the auto-fit target for this frame. When the body is briefly lost
+ * (turning, motion blur) the garment stays where it was instead of jumping
+ * to the centre of the screen.
+ */
+export function nextAutoTarget(
+  prev: Placement | null,
+  torso: TorsoLandmarks | null,
+  compute: (t: TorsoLandmarks | null) => Placement,
+  shoulderLine: number,
+): Placement {
+  if (!torso && prev && prev.shoulderLine === shoulderLine) return prev;
+  return compute(torso);
+}
+
 /** Exponential smoothing so the garment does not jitter between frames. */
 export function smoothPlacement(prev: Placement | null, next: Placement, alpha = 0.35): Placement {
   if (!prev || prev.shoulderLine !== next.shoulderLine) return next;
