@@ -15,7 +15,6 @@ import {
   DEFAULT_ADJUST,
   extractTorso,
   nextAutoTarget,
-  opaqueBounds,
   SHOULDER_LINE,
   SHOULDER_LINE_TRIMMED,
   smoothPlacement,
@@ -91,31 +90,20 @@ async function loadGarment(src: string, removeBg: boolean): Promise<Garment> {
     ctx.drawImage(img, 0, 0, w, h);
     const data = ctx.getImageData(0, 0, w, h);
     const px = data.data;
-    // Background colour = average of the 4 corners.
-    const corners = [0, w - 1, (h - 1) * w, h * w - 1];
-    const bg = [0, 1, 2].map((k) => corners.reduce((s, i) => s + px[i * 4 + k], 0) / 4);
-    const tol = 42;
-    const near = (i: number) =>
-      Math.abs(px[i * 4] - bg[0]) + Math.abs(px[i * 4 + 1] - bg[1]) + Math.abs(px[i * 4 + 2] - bg[2]) < tol * 1.5;
-    const seen = new Uint8Array(w * h);
-    const stack: number[] = [];
-    for (let x = 0; x < w; x++) stack.push(x, (h - 1) * w + x);
-    for (let y = 0; y < h; y++) stack.push(y * w, y * w + w - 1);
-    while (stack.length) {
-      const i = stack.pop()!;
-      if (seen[i] || !near(i)) continue;
-      seen[i] = 1;
-      px[i * 4 + 3] = 0;
-      const x = i % w;
-      if (x > 0) stack.push(i - 1);
-      if (x < w - 1) stack.push(i + 1);
-      if (i >= w) stack.push(i - w);
-      if (i < w * (h - 1)) stack.push(i + w);
+    const mask = backgroundMask(px, w, h);
+    let removed = 0;
+    for (let i = 0; i < mask.length; i++) {
+      if (mask[i]) {
+        px[i * 4 + 3] = 0;
+        removed++;
+      }
     }
+    // Almost nothing left means the cut-out failed (e.g. garment same colour as backdrop): use the plain photo.
+    if (removed > mask.length * 0.92) return { source: img, aspect, safe, trimmed: false };
     ctx.putImageData(data, 0, 0);
 
     // Trim empty margins (only when the garment is a sensible part of the photo).
-    const box = opaqueBounds(px, w, h);
+    const box = garmentBounds(px, w, h);
     if (box && box.w * box.h > w * h * 0.15 && (box.w < w || box.h < h)) {
       const t = document.createElement('canvas');
       t.width = box.w;
