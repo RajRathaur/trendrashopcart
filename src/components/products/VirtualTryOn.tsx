@@ -239,14 +239,9 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
     try {
       await setRunningMode('IMAGE');
       const res = lm.detect(img);
-      const pts = res.landmarks?.[0];
-      if (pts && hasShoulders(pts[11], pts[12])) {
-        shouldersRef.current = { l: pts[11], r: pts[12] };
-        setBodyFound(true);
-      } else {
-        shouldersRef.current = null;
-        setBodyFound(false);
-      }
+      const torso = extractTorso(res.landmarks?.[0]);
+      torsoRef.current = torso;
+      setBodyFound(!!torso);
       placementRef.current = null;
     } catch (e) {
       console.error('Photo detection failed', e);
@@ -315,9 +310,9 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
           lastDetectRef.current = now;
           try {
             const res = lm.detectForVideo(source as HTMLVideoElement, now);
-            const pts = res.landmarks?.[0];
-            const found = !!pts && hasShoulders(pts[11], pts[12]);
-            shouldersRef.current = found ? { l: pts![11], r: pts![12] } : null;
+            const torso = extractTorso(res.landmarks?.[0]);
+            torsoRef.current = torso;
+            const found = !!torso;
             if (found !== bodyFoundRef.current) {
               bodyFoundRef.current = found;
               setBodyFound(found);
@@ -330,16 +325,23 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
 
       const g = garmentRef.current;
       if (!g) return;
-      const sh2 = autoFitRef.current ? shouldersRef.current : null;
-      const auto = computeAutoPlacement({
-        leftShoulder: sh2?.l,
-        rightShoulder: sh2?.r,
-        canvasW: W,
-        canvasH: H,
-        garmentAspect: g.aspect,
-        mirror,
-      });
-      placementRef.current = smoothPlacement(placementRef.current, auto, mode === 'camera' ? 0.35 : 1);
+      const line = g.trimmed ? SHOULDER_LINE_TRIMMED : SHOULDER_LINE;
+      const compute = (t: TorsoLandmarks | null) =>
+        computeAutoPlacement({
+          leftShoulder: t?.l,
+          rightShoulder: t?.r,
+          leftHip: t?.lh,
+          rightHip: t?.rh,
+          canvasW: W,
+          canvasH: H,
+          garmentAspect: g.aspect,
+          shoulderLine: line,
+          mirror,
+        });
+      const target = autoFitRef.current
+        ? nextAutoTarget(placementRef.current, torsoRef.current, compute, line)
+        : compute(null);
+      placementRef.current = smoothPlacement(placementRef.current, target, mode === 'camera' ? 0.35 : 1);
       const p = applyAdjust(placementRef.current, adjustRef.current, W, H);
 
       ctx.save();
