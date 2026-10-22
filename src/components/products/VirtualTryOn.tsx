@@ -22,6 +22,7 @@ import {
   type TorsoLandmarks,
   type TryOnAdjust,
 } from '@/lib/tryOnFit';
+import { backgroundMask, garmentBounds } from '@/lib/garmentCutout';
 
 type Garment = { source: CanvasImageSource; aspect: number; safe: boolean; trimmed: boolean };
 

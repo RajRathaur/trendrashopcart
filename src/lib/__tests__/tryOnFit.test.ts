@@ -8,7 +8,6 @@ import {
   GARMENT_TO_SHOULDER,
   isTryOnEligible,
   nextAutoTarget,
-  opaqueBounds,
   type NormPoint,
 } from '../tryOnFit';
 
@@ -62,12 +61,6 @@ describe('torso-anchored fit', () => {
     expect(held).toBe(last);
   });
 
-  it('finds the visible garment area for trimming', () => {
-    const w = 4, h = 4;
-    const px = new Uint8ClampedArray(w * h * 4);
-    px[(1 * w + 1) * 4 + 3] = 255;
-    px[(2 * w + 2) * 4 + 3] = 255;
-    expect(opaqueBounds(px, w, h)).toEqual({ x: 1, y: 1, w: 2, h: 2 });
   });
 });
 
