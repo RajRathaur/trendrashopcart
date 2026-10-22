@@ -60,8 +60,6 @@ describe('torso-anchored fit', () => {
     const held = nextAutoTarget(last, null, () => computeAutoPlacement({ ...base }), 0.17);
     expect(held).toBe(last);
   });
-
-  });
 });
 
 const base = { canvasW: 1000, canvasH: 1000, garmentAspect: 1.2 };
