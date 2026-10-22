@@ -157,9 +157,10 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
   const fileRef = useRef<HTMLInputElement>(null);
   const landmarkerRef = useRef<PoseLandmarker | null>(null);
   const runningModeRef = useRef<'VIDEO' | 'IMAGE'>('VIDEO');
-  const garmentRef = useRef<{ source: CanvasImageSource; aspect: number; safe: boolean } | null>(null);
+  const garmentRef = useRef<Garment | null>(null);
   const photoRef = useRef<HTMLImageElement | null>(null);
-  const shouldersRef = useRef<{ l: NormPoint; r: NormPoint } | null>(null);
+  /** Shoulders + hips from the body-pose model (never face points). */
+  const torsoRef = useRef<TorsoLandmarks | null>(null);
   const placementRef = useRef<Placement | null>(null);
   const adjustRef = useRef(adjust);
   const autoFitRef = useRef(autoFit);
