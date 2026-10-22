@@ -43,11 +43,11 @@ export interface Placement {
 export const DEFAULT_ADJUST: TryOnAdjust = { scale: 100, offsetX: 0, offsetY: 0, rotation: 0 };
 
 /** Garment width (sleeve tip to sleeve tip) relative to the shoulder-joint distance. */
-export const GARMENT_TO_SHOULDER = 1.9;
+export const GARMENT_TO_SHOULDER = 2.05;
 /** Where the shoulder seam / collar sits, as a fraction of garment height from the top (uncropped photo). */
 export const SHOULDER_LINE = 0.17;
 /** Same, for a photo already trimmed to the garment outline. */
-export const SHOULDER_LINE_TRIMMED = 0.08;
+export const SHOULDER_LINE_TRIMMED = 0.15;
 /** The hem should end this much below the hips (relative to shoulder→hip length). */
 export const HEM_BELOW_HIPS = 1.22;
 /** How far the garment may stretch away from its natural proportions to reach the hips. */
