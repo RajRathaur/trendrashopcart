@@ -23,6 +23,7 @@
     "@ai-sdk/react": "^3.0.211",
     "@fontsource/space-grotesk": "^5.2.10",
     "@hookform/resolvers": "^3.10.0",
+    "@lovable.dev/ai-gateway": "^0.1.8",
     "@lovable.dev/cloud-auth-js": "^1.2.0",
     "@lovable.dev/mcp-js": "^0.20.0",
     "@mediapipe/tasks-vision": "^1.1.1",
