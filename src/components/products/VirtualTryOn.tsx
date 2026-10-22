@@ -181,7 +181,7 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
       setHasPhoto(false);
       setAdjust(DEFAULT_ADJUST);
       photoRef.current = null;
-      shouldersRef.current = null;
+      torsoRef.current = null;
       placementRef.current = null;
     }
   }, [open]);
@@ -374,7 +374,7 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
     const img = new Image();
     img.onload = () => {
       photoRef.current = img;
-      shouldersRef.current = null;
+      torsoRef.current = null;
       placementRef.current = null;
       setBodyFound(false);
       setHasPhoto(true);
