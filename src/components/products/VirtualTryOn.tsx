@@ -333,13 +333,16 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
       placementRef.current = smoothPlacement(placementRef.current, target, mode === 'camera' ? 0.35 : 1);
       const p = applyAdjust(placementRef.current, adjustRef.current, W, H);
 
+      // Body-like shading so the garment looks worn, not pasted on.
+      const shaded = shadeGarment(shadeRef, g.source, p.width, p.height, line);
+
       ctx.save();
       ctx.translate(p.cx, p.cy);
       ctx.rotate(p.angle);
-      ctx.shadowColor = 'rgba(0,0,0,0.25)';
-      ctx.shadowBlur = 18;
-      ctx.shadowOffsetY = 6;
-      ctx.drawImage(g.source, -p.width / 2, -p.height / 2, p.width, p.height);
+      ctx.shadowColor = 'rgba(0,0,0,0.28)';
+      ctx.shadowBlur = Math.max(8, p.width * 0.04);
+      ctx.shadowOffsetY = Math.max(2, p.width * 0.012);
+      ctx.drawImage(shaded ?? g.source, -p.width / 2, -p.height / 2, p.width, p.height);
       ctx.restore();
     };
     raf = requestAnimationFrame(draw);
