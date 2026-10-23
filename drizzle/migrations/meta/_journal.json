@@ -71,6 +71,13 @@
       "when": 1792378575058,
       "tag": "0009_orders_delivery_fee_preserved",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792767370187,
+      "tag": "0010_ai_tryon_usage",
+      "breakpoints": true
     }
   ]
 }
