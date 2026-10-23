@@ -282,7 +282,69 @@ const VirtualTryOn = ({ open, onOpenChange, productId, productName, images }: Vi
       setCameraError(null);
     }
     placementRef.current = null;
+    aiRequestRef.current++;
+    setAiResult(null);
+    setAiState('idle');
   }, [mode]);
+
+  const aiRequestRef = useRef(0);
+
+  /** Sends the customer's photo (or current camera frame) to the AI Pro Try-On. */
+  const runAiTryOn = async () => {
+    if (aiState === 'loading') return;
+    let frame: { base64: string; aspect: number } | null = null;
+    try {
+      if (mode === 'photo' && photoRef.current) {
+        const img = photoRef.current;
+        frame = frameToJpeg(img, img.naturalWidth, img.naturalHeight);
+      } else if (mode === 'camera') {
+        const v = webcamRef.current?.video;
+        if (v && v.videoWidth) frame = frameToJpeg(v, v.videoWidth, v.videoHeight);
+      }
+    } catch {
+      frame = null;
+    }
+    if (!frame) {
+      toast.error('Pehle apni photo upload karein ya camera chalu karein.');
+      return;
+    }
+
+    const reqId = ++aiRequestRef.current;
+    setAiState('loading');
+    const { data, error } = await supabase.functions.invoke('ai-tryon', {
+      body: { productId, photo: frame.base64, garmentIndex: garmentIdx, aspect: frame.aspect },
+    });
+    if (reqId !== aiRequestRef.current) return;
+
+    if (error || !data?.image) {
+      let msg = 'AI Try-On nahi ho paya. Dobara try karein.';
+      let remaining: number | undefined;
+      try {
+        const ctx = (error as { context?: Response } | null)?.context;
+        const body = ctx ? await ctx.json() : data;
+        if (body?.error) msg = body.error;
+        if (typeof body?.remaining === 'number') remaining = body.remaining;
+      } catch {
+        /* keep default message */
+      }
+      if (remaining !== undefined) setAiRemaining(remaining);
+      setAiState('idle');
+      toast.error(msg);
+      return;
+    }
+    setAiResult(data.image);
+    if (typeof data.remaining === 'number') setAiRemaining(data.remaining);
+    setAiState('done');
+  };
+
+  const downloadAiResult = () => {
+    if (!aiResult) return;
+    const a = document.createElement('a');
+    a.href = aiResult;
+    a.download = `trendra-ai-tryon-${Date.now()}.jpg`;
+    a.click();
+    toast.success('Photo saved');
+  };
 
   // Load the garment overlay.
   useEffect(() => {
