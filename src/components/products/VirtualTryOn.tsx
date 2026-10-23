@@ -118,17 +118,92 @@ async function loadGarment(src: string, removeBg: boolean): Promise<Garment> {
   }
 }
 
+/**
+ * Draws the garment into a reusable offscreen canvas and adds soft light/shadow:
+ * darker sides (body curving away), a collar shadow, light on the chest and
+ * slightly darker hem. Only the garment's own pixels are shaded (source-atop).
+ */
+function shadeGarment(
+  ref: { current: HTMLCanvasElement | null },
+  source: CanvasImageSource,
+  width: number,
+  height: number,
+  shoulderLine: number,
+): HTMLCanvasElement | null {
+  const w = Math.round(width);
+  const h = Math.round(height);
+  if (w < 8 || h < 8 || w > 4000 || h > 4000) return null;
+  try {
+    const c = ref.current ?? (ref.current = document.createElement('canvas'));
+    if (c.width !== w || c.height !== h) {
+      c.width = w;
+      c.height = h;
+    }
+    const x = c.getContext('2d');
+    if (!x) return null;
+    x.globalCompositeOperation = 'source-over';
+    x.clearRect(0, 0, w, h);
+    x.drawImage(source, 0, 0, w, h);
+    x.globalCompositeOperation = 'source-atop';
+
+    const side = x.createLinearGradient(0, 0, w, 0);
+    side.addColorStop(0, 'rgba(0,0,0,0.26)');
+    side.addColorStop(0.22, 'rgba(0,0,0,0.04)');
+    side.addColorStop(0.5, 'rgba(0,0,0,0)');
+    side.addColorStop(0.78, 'rgba(0,0,0,0.04)');
+    side.addColorStop(1, 'rgba(0,0,0,0.26)');
+    x.fillStyle = side;
+    x.fillRect(0, 0, w, h);
+
+    const top = h * shoulderLine;
+    const vert = x.createLinearGradient(0, 0, 0, h);
+    vert.addColorStop(0, 'rgba(0,0,0,0.10)');
+    vert.addColorStop(Math.min(0.9, shoulderLine + 0.12), 'rgba(255,255,255,0.07)');
+    vert.addColorStop(0.6, 'rgba(0,0,0,0)');
+    vert.addColorStop(1, 'rgba(0,0,0,0.16)');
+    x.fillStyle = vert;
+    x.fillRect(0, 0, w, h);
+
+    const collar = x.createRadialGradient(w / 2, top * 0.6, 0, w / 2, top * 0.6, w * 0.22);
+    collar.addColorStop(0, 'rgba(0,0,0,0.18)');
+    collar.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = collar;
+    x.fillRect(0, 0, w, h);
+
+    x.globalCompositeOperation = 'source-over';
+    return c;
+  } catch {
+    return null;
+  }
+}
+
+/** Shrinks a photo/video frame to a JPEG for the AI try-on (longest side ≤ 1024px). */
+function frameToJpeg(source: CanvasImageSource, sw: number, sh: number) {
+  const scale = Math.min(1, 1024 / Math.max(sw, sh));
+  const w = Math.round(sw * scale);
+  const h = Math.round(sh * scale);
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  c.getContext('2d')!.drawImage(source, 0, 0, w, h);
+  const dataUrl = c.toDataURL('image/jpeg', 0.9);
+  return { base64: dataUrl.slice(dataUrl.indexOf(',') + 1), aspect: h / w };
+}
+
 type Mode = 'choose' | 'camera' | 'photo';
 type ModelState = 'idle' | 'loading' | 'ready' | 'failed';
+type AiState = 'idle' | 'loading' | 'done';
 
 interface VirtualTryOnProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  productId: string;
   productName: string;
   images: string[];
 }
 
-const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnProps) => {
+const VirtualTryOn = ({ open, onOpenChange, productId, productName, images }: VirtualTryOnProps) => {
+  const { user } = useAuth();
   const [mode, setMode] = useState<Mode>('choose');
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -140,8 +215,12 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
   const [autoFit, setAutoFit] = useState(true);
   const [adjust, setAdjust] = useState<TryOnAdjust>(DEFAULT_ADJUST);
   const [hasPhoto, setHasPhoto] = useState(false);
+  const [aiState, setAiState] = useState<AiState>('idle');
+  const [aiResult, setAiResult] = useState<string | null>(null);
+  const [aiRemaining, setAiRemaining] = useState<number | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const shadeRef = useRef<HTMLCanvasElement | null>(null);
   const webcamRef = useRef<Webcam>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const landmarkerRef = useRef<PoseLandmarker | null>(null);
@@ -160,6 +239,24 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
   autoFitRef.current = autoFit;
 
   const garmentSrc = images[garmentIdx] ?? images[0];
+
+  // How many AI Pro Try-Ons are left today.
+  useEffect(() => {
+    if (!open || !user) return;
+    let cancelled = false;
+    supabase
+      .from('ai_tryon_usage')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .neq('status', 'failed')
+      .gte('created_at', istDayStart().toISOString())
+      .then(({ count, error }) => {
+        if (!cancelled && !error) setAiRemaining(remainingTryOns(count ?? 0));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, user]);
 
   // Reset when the dialog closes.
   useEffect(() => {
