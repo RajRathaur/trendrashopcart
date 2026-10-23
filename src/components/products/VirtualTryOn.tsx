@@ -528,6 +528,9 @@ const VirtualTryOn = ({ open, onOpenChange, productId, productName, images }: Vi
     const img = new Image();
     img.onload = () => {
       photoRef.current = img;
+      aiRequestRef.current++;
+      setAiResult(null);
+      setAiState('idle');
       torsoRef.current = null;
       placementRef.current = null;
       setBodyFound(false);
@@ -640,7 +643,7 @@ const VirtualTryOn = ({ open, onOpenChange, productId, productName, images }: Vi
               </button>
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              Your camera and photos stay on your device — nothing is uploaded or saved.
+              Live fit runs on your device — nothing is uploaded. Only “AI Pro Try-On” sends your photo to AI, and it is never saved.
             </p>
           </div>
         ) : (
