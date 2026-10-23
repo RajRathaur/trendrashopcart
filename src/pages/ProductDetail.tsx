@@ -622,7 +622,7 @@ const ProductDetail = () => {
       />
       {tryOnOpen && (
         <Suspense fallback={null}>
-          <VirtualTryOn open={tryOnOpen} onOpenChange={setTryOnOpen} productName={product.name} images={images} />
+          <VirtualTryOn open={tryOnOpen} onOpenChange={setTryOnOpen} productId={product.id} productName={product.name} images={images} />
         </Suspense>
       )}
     </Layout>

@@ -6,9 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Camera, Upload, Download, RotateCcw, ArrowLeft, Loader2, ScanLine, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
+import { Camera, Upload, Download, RotateCcw, ArrowLeft, Loader2, ScanLine, CheckCircle2, AlertTriangle, Sparkles, Wand2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { AI_TRYON_DAILY_LIMIT, istDayStart, remainingTryOns } from '../../../supabase/functions/ai-tryon/limit';
 import {
   applyAdjust,
   computeAutoPlacement,
@@ -118,17 +121,92 @@ async function loadGarment(src: string, removeBg: boolean): Promise<Garment> {
   }
 }
 
+/**
+ * Draws the garment into a reusable offscreen canvas and adds soft light/shadow:
+ * darker sides (body curving away), a collar shadow, light on the chest and
+ * slightly darker hem. Only the garment's own pixels are shaded (source-atop).
+ */
+function shadeGarment(
+  ref: { current: HTMLCanvasElement | null },
+  source: CanvasImageSource,
+  width: number,
+  height: number,
+  shoulderLine: number,
+): HTMLCanvasElement | null {
+  const w = Math.round(width);
+  const h = Math.round(height);
+  if (w < 8 || h < 8 || w > 4000 || h > 4000) return null;
+  try {
+    const c = ref.current ?? (ref.current = document.createElement('canvas'));
+    if (c.width !== w || c.height !== h) {
+      c.width = w;
+      c.height = h;
+    }
+    const x = c.getContext('2d');
+    if (!x) return null;
+    x.globalCompositeOperation = 'source-over';
+    x.clearRect(0, 0, w, h);
+    x.drawImage(source, 0, 0, w, h);
+    x.globalCompositeOperation = 'source-atop';
+
+    const side = x.createLinearGradient(0, 0, w, 0);
+    side.addColorStop(0, 'rgba(0,0,0,0.26)');
+    side.addColorStop(0.22, 'rgba(0,0,0,0.04)');
+    side.addColorStop(0.5, 'rgba(0,0,0,0)');
+    side.addColorStop(0.78, 'rgba(0,0,0,0.04)');
+    side.addColorStop(1, 'rgba(0,0,0,0.26)');
+    x.fillStyle = side;
+    x.fillRect(0, 0, w, h);
+
+    const top = h * shoulderLine;
+    const vert = x.createLinearGradient(0, 0, 0, h);
+    vert.addColorStop(0, 'rgba(0,0,0,0.10)');
+    vert.addColorStop(Math.min(0.9, shoulderLine + 0.12), 'rgba(255,255,255,0.07)');
+    vert.addColorStop(0.6, 'rgba(0,0,0,0)');
+    vert.addColorStop(1, 'rgba(0,0,0,0.16)');
+    x.fillStyle = vert;
+    x.fillRect(0, 0, w, h);
+
+    const collar = x.createRadialGradient(w / 2, top * 0.6, 0, w / 2, top * 0.6, w * 0.22);
+    collar.addColorStop(0, 'rgba(0,0,0,0.18)');
+    collar.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = collar;
+    x.fillRect(0, 0, w, h);
+
+    x.globalCompositeOperation = 'source-over';
+    return c;
+  } catch {
+    return null;
+  }
+}
+
+/** Shrinks a photo/video frame to a JPEG for the AI try-on (longest side ≤ 1024px). */
+function frameToJpeg(source: CanvasImageSource, sw: number, sh: number) {
+  const scale = Math.min(1, 1024 / Math.max(sw, sh));
+  const w = Math.round(sw * scale);
+  const h = Math.round(sh * scale);
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  c.getContext('2d')!.drawImage(source, 0, 0, w, h);
+  const dataUrl = c.toDataURL('image/jpeg', 0.9);
+  return { base64: dataUrl.slice(dataUrl.indexOf(',') + 1), aspect: h / w };
+}
+
 type Mode = 'choose' | 'camera' | 'photo';
 type ModelState = 'idle' | 'loading' | 'ready' | 'failed';
+type AiState = 'idle' | 'loading' | 'done';
 
 interface VirtualTryOnProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  productId: string;
   productName: string;
   images: string[];
 }
 
-const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnProps) => {
+const VirtualTryOn = ({ open, onOpenChange, productId, productName, images }: VirtualTryOnProps) => {
+  const { user } = useAuth();
   const [mode, setMode] = useState<Mode>('choose');
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -140,8 +218,12 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
   const [autoFit, setAutoFit] = useState(true);
   const [adjust, setAdjust] = useState<TryOnAdjust>(DEFAULT_ADJUST);
   const [hasPhoto, setHasPhoto] = useState(false);
+  const [aiState, setAiState] = useState<AiState>('idle');
+  const [aiResult, setAiResult] = useState<string | null>(null);
+  const [aiRemaining, setAiRemaining] = useState<number | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const shadeRef = useRef<HTMLCanvasElement | null>(null);
   const webcamRef = useRef<Webcam>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const landmarkerRef = useRef<PoseLandmarker | null>(null);
@@ -160,6 +242,24 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
   autoFitRef.current = autoFit;
 
   const garmentSrc = images[garmentIdx] ?? images[0];
+
+  // How many AI Pro Try-Ons are left today.
+  useEffect(() => {
+    if (!open || !user) return;
+    let cancelled = false;
+    supabase
+      .from('ai_tryon_usage')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .neq('status', 'failed')
+      .gte('created_at', istDayStart().toISOString())
+      .then(({ count, error }) => {
+        if (!cancelled && !error) setAiRemaining(remainingTryOns(count ?? 0));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, user]);
 
   // Reset when the dialog closes.
   useEffect(() => {
@@ -182,7 +282,69 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
       setCameraError(null);
     }
     placementRef.current = null;
+    aiRequestRef.current++;
+    setAiResult(null);
+    setAiState('idle');
   }, [mode]);
+
+  const aiRequestRef = useRef(0);
+
+  /** Sends the customer's photo (or current camera frame) to the AI Pro Try-On. */
+  const runAiTryOn = async () => {
+    if (aiState === 'loading') return;
+    let frame: { base64: string; aspect: number } | null = null;
+    try {
+      if (mode === 'photo' && photoRef.current) {
+        const img = photoRef.current;
+        frame = frameToJpeg(img, img.naturalWidth, img.naturalHeight);
+      } else if (mode === 'camera') {
+        const v = webcamRef.current?.video;
+        if (v && v.videoWidth) frame = frameToJpeg(v, v.videoWidth, v.videoHeight);
+      }
+    } catch {
+      frame = null;
+    }
+    if (!frame) {
+      toast.error('Pehle apni photo upload karein ya camera chalu karein.');
+      return;
+    }
+
+    const reqId = ++aiRequestRef.current;
+    setAiState('loading');
+    const { data, error } = await supabase.functions.invoke('ai-tryon', {
+      body: { productId, photo: frame.base64, garmentIndex: garmentIdx, aspect: frame.aspect },
+    });
+    if (reqId !== aiRequestRef.current) return;
+
+    if (error || !data?.image) {
+      let msg = 'AI Try-On nahi ho paya. Dobara try karein.';
+      let remaining: number | undefined;
+      try {
+        const ctx = (error as { context?: Response } | null)?.context;
+        const body = ctx ? await ctx.json() : data;
+        if (body?.error) msg = body.error;
+        if (typeof body?.remaining === 'number') remaining = body.remaining;
+      } catch {
+        /* keep default message */
+      }
+      if (remaining !== undefined) setAiRemaining(remaining);
+      setAiState('idle');
+      toast.error(msg);
+      return;
+    }
+    setAiResult(data.image);
+    if (typeof data.remaining === 'number') setAiRemaining(data.remaining);
+    setAiState('done');
+  };
+
+  const downloadAiResult = () => {
+    if (!aiResult) return;
+    const a = document.createElement('a');
+    a.href = aiResult;
+    a.download = `trendra-ai-tryon-${Date.now()}.jpg`;
+    a.click();
+    toast.success('Photo saved');
+  };
 
   // Load the garment overlay.
   useEffect(() => {
@@ -333,13 +495,16 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
       placementRef.current = smoothPlacement(placementRef.current, target, mode === 'camera' ? 0.35 : 1);
       const p = applyAdjust(placementRef.current, adjustRef.current, W, H);
 
+      // Body-like shading so the garment looks worn, not pasted on.
+      const shaded = shadeGarment(shadeRef, g.source, p.width, p.height, line);
+
       ctx.save();
       ctx.translate(p.cx, p.cy);
       ctx.rotate(p.angle);
-      ctx.shadowColor = 'rgba(0,0,0,0.25)';
-      ctx.shadowBlur = 18;
-      ctx.shadowOffsetY = 6;
-      ctx.drawImage(g.source, -p.width / 2, -p.height / 2, p.width, p.height);
+      ctx.shadowColor = 'rgba(0,0,0,0.28)';
+      ctx.shadowBlur = Math.max(8, p.width * 0.04);
+      ctx.shadowOffsetY = Math.max(2, p.width * 0.012);
+      ctx.drawImage(shaded ?? g.source, -p.width / 2, -p.height / 2, p.width, p.height);
       ctx.restore();
     };
     raf = requestAnimationFrame(draw);
@@ -363,6 +528,9 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
     const img = new Image();
     img.onload = () => {
       photoRef.current = img;
+      aiRequestRef.current++;
+      setAiResult(null);
+      setAiState('idle');
       torsoRef.current = null;
       placementRef.current = null;
       setBodyFound(false);
@@ -475,7 +643,7 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
               </button>
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              Your camera and photos stay on your device — nothing is uploaded or saved.
+              Live fit runs on your device — nothing is uploaded. Only “AI Pro Try-On” sends your photo to AI, and it is never saved.
             </p>
           </div>
         ) : (
@@ -545,13 +713,41 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
                 </div>
               )}
 
-              {stageReady && (
+              {aiResult && (
+                <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                  <img
+                    src={aiResult}
+                    alt={`AI try-on of ${productName}`}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                  <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-background/85 backdrop-blur px-3 py-1.5 text-xs font-semibold text-primary shadow-md">
+                    <Wand2 className="h-3.5 w-3.5" /> AI Pro Try-On
+                  </span>
+                </div>
+              )}
+
+              {aiState === 'loading' && (
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm p-6 text-center"
+                  role="status"
+                >
+                  <div className="relative h-16 w-16">
+                    <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+                    <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+                    <Wand2 className="absolute inset-0 m-auto h-6 w-6 text-primary" />
+                  </div>
+                  <p className="text-sm font-semibold text-foreground">AI aapko kapde pehna raha hai…</p>
+                  <p className="text-xs text-muted-foreground">Isme 20–60 second lag sakte hain. Window band na karein.</p>
+                </div>
+              )}
+
+              {stageReady && aiState !== 'loading' && (
                 <Button
-                  onClick={takeSnapshot}
+                  onClick={aiResult ? downloadAiResult : takeSnapshot}
                   size="lg"
                   className="btn-deal absolute bottom-4 left-1/2 -translate-x-1/2 shadow-xl rounded-full px-6"
                 >
-                  <Download className="h-5 w-5 mr-2" /> Take Snapshot
+                  <Download className="h-5 w-5 mr-2" /> {aiResult ? 'Download Photo' : 'Take Snapshot'}
                 </Button>
               )}
             </div>
@@ -572,6 +768,45 @@ const VirtualTryOn = ({ open, onOpenChange, productName, images }: VirtualTryOnP
                   </Button>
                 )}
               </div>
+
+              <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <Wand2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">AI Pro Try-On</p>
+                    <p className="text-xs text-muted-foreground">
+                      AI aapki photo par ye kapda asli jaisa pehna dega — silvatein, roshni aur fitting ke saath.
+                    </p>
+                  </div>
+                </div>
+                {aiResult ? (
+                  <Button variant="outline" className="w-full" onClick={() => { setAiResult(null); setAiState('idle'); }}>
+                    <ArrowLeft className="h-4 w-4 mr-2" /> Live fit par wapas
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-full"
+                    onClick={runAiTryOn}
+                    disabled={!stageReady || aiState === 'loading' || aiRemaining === 0}
+                  >
+                    {aiState === 'loading' ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 mr-2" />
+                    )}
+                    {aiState === 'loading' ? 'Ban raha hai…' : 'AI se pehna kar dekhein'}
+                  </Button>
+                )}
+                <p className="text-[11px] text-muted-foreground">
+                  {aiRemaining === null
+                    ? `Roz ${AI_TRYON_DAILY_LIMIT} AI Try-On free.`
+                    : aiRemaining === 0
+                      ? 'Aaj ke saare AI Try-On ho gaye. Kal phir try karein.'
+                      : `Aaj ${aiRemaining} / ${AI_TRYON_DAILY_LIMIT} AI Try-On baaki.`}{' '}
+                  Aapki photo sirf is try-on ke liye AI ko bheji jaati hai, save nahi hoti.
+                </p>
+              </div>
+
 
               {images.length > 1 && (
                 <div>
