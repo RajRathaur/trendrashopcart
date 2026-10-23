@@ -710,13 +710,41 @@ const VirtualTryOn = ({ open, onOpenChange, productId, productName, images }: Vi
                 </div>
               )}
 
-              {stageReady && (
+              {aiResult && (
+                <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                  <img
+                    src={aiResult}
+                    alt={`AI try-on of ${productName}`}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                  <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-background/85 backdrop-blur px-3 py-1.5 text-xs font-semibold text-primary shadow-md">
+                    <Wand2 className="h-3.5 w-3.5" /> AI Pro Try-On
+                  </span>
+                </div>
+              )}
+
+              {aiState === 'loading' && (
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm p-6 text-center"
+                  role="status"
+                >
+                  <div className="relative h-16 w-16">
+                    <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+                    <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+                    <Wand2 className="absolute inset-0 m-auto h-6 w-6 text-primary" />
+                  </div>
+                  <p className="text-sm font-semibold text-foreground">AI aapko kapde pehna raha hai…</p>
+                  <p className="text-xs text-muted-foreground">Isme 20–60 second lag sakte hain. Window band na karein.</p>
+                </div>
+              )}
+
+              {stageReady && aiState !== 'loading' && (
                 <Button
-                  onClick={takeSnapshot}
+                  onClick={aiResult ? downloadAiResult : takeSnapshot}
                   size="lg"
                   className="btn-deal absolute bottom-4 left-1/2 -translate-x-1/2 shadow-xl rounded-full px-6"
                 >
-                  <Download className="h-5 w-5 mr-2" /> Take Snapshot
+                  <Download className="h-5 w-5 mr-2" /> {aiResult ? 'Download Photo' : 'Take Snapshot'}
                 </Button>
               )}
             </div>
@@ -737,6 +765,45 @@ const VirtualTryOn = ({ open, onOpenChange, productId, productName, images }: Vi
                   </Button>
                 )}
               </div>
+
+              <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <Wand2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">AI Pro Try-On</p>
+                    <p className="text-xs text-muted-foreground">
+                      AI aapki photo par ye kapda asli jaisa pehna dega — silvatein, roshni aur fitting ke saath.
+                    </p>
+                  </div>
+                </div>
+                {aiResult ? (
+                  <Button variant="outline" className="w-full" onClick={() => { setAiResult(null); setAiState('idle'); }}>
+                    <ArrowLeft className="h-4 w-4 mr-2" /> Live fit par wapas
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-full"
+                    onClick={runAiTryOn}
+                    disabled={!stageReady || aiState === 'loading' || aiRemaining === 0}
+                  >
+                    {aiState === 'loading' ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 mr-2" />
+                    )}
+                    {aiState === 'loading' ? 'Ban raha hai…' : 'AI se pehna kar dekhein'}
+                  </Button>
+                )}
+                <p className="text-[11px] text-muted-foreground">
+                  {aiRemaining === null
+                    ? `Roz ${AI_TRYON_DAILY_LIMIT} AI Try-On free.`
+                    : aiRemaining === 0
+                      ? 'Aaj ke saare AI Try-On ho gaye. Kal phir try karein.'
+                      : `Aaj ${aiRemaining} / ${AI_TRYON_DAILY_LIMIT} AI Try-On baaki.`}{' '}
+                  Aapki photo sirf is try-on ke liye AI ko bheji jaati hai, save nahi hoti.
+                </p>
+              </div>
+
 
               {images.length > 1 && (
                 <div>
