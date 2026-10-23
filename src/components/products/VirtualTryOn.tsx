@@ -6,9 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Camera, Upload, Download, RotateCcw, ArrowLeft, Loader2, ScanLine, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
+import { Camera, Upload, Download, RotateCcw, ArrowLeft, Loader2, ScanLine, CheckCircle2, AlertTriangle, Sparkles, Wand2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { AI_TRYON_DAILY_LIMIT, istDayStart, remainingTryOns } from '../../../supabase/functions/ai-tryon/limit';
 import {
   applyAdjust,
   computeAutoPlacement,
