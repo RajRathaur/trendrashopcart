@@ -8,7 +8,7 @@ import { defineMcp } from "npm:@lovable.dev/mcp-js@0.20.1";
 // src/lib/mcp/tools/search-products.ts
 import { createClient } from "npm:@supabase/supabase-js@^2.118.0";
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z } from "npm:zod@^3.25.76";
+import { z } from "npm:zod@^4.6.6";
 function db() {
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false }
@@ -43,7 +43,7 @@ var search_products_default = defineTool({
 // src/lib/mcp/tools/get-product.ts
 import { createClient as createClient2 } from "npm:@supabase/supabase-js@^2.118.0";
 import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z2 } from "npm:zod@^3.25.76";
+import { z as z2 } from "npm:zod@^4.6.6";
 function db2() {
   return createClient2(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false }
