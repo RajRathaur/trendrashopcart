@@ -53,6 +53,22 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Escape every user-supplied value before it goes into the HTML email.
+    const safeName = escapeHtml(customerName);
+    const safePhone = escapeHtml(phoneNumber);
+    const safeAddress = escapeHtml(deliveryAddress);
+    const safeProduct = escapeHtml(productName);
+    // Only link to http(s) screenshot URLs; anything else is dropped.
+    let safeScreenshotUrl = "";
+    if (screenshotUrl) {
+      try {
+        const u = new URL(screenshotUrl);
+        if (u.protocol === "https:" || u.protocol === "http:") safeScreenshotUrl = escapeHtml(u.href);
+      } catch { /* invalid URL: omit link */ }
+    }
+    // Plain-text subject: strip control characters and angle brackets.
+    const subjectName = customerName.replace(/[\u0000-\u001f\u007f<>]/g, "").slice(0, 60);
+
     // Testing mode: send all emails to test account only
     const adminEmails = ["aksahuakhil@gmail.com"];
 
@@ -83,15 +99,15 @@ Deno.serve(async (req) => {
                   <table width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                       <td style="color:#71717a;font-size:13px;padding-bottom:12px;">Customer Name</td>
-                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:12px;">${customerName}</td>
+                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:12px;">${safeName}</td>
                     </tr>
                     <tr>
                       <td style="color:#71717a;font-size:13px;padding-bottom:12px;">Phone Number</td>
-                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:12px;">${phoneNumber}</td>
+                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:12px;">${safePhone}</td>
                     </tr>
                     <tr>
                       <td style="color:#71717a;font-size:13px;padding-bottom:12px;">Product</td>
-                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:12px;">${productName}</td>
+                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;padding-bottom:12px;">${safeProduct}</td>
                     </tr>
                     <tr>
                       <td style="color:#71717a;font-size:13px;padding-bottom:12px;">Amount</td>
@@ -99,16 +115,16 @@ Deno.serve(async (req) => {
                     </tr>
                     <tr>
                       <td style="color:#71717a;font-size:13px;">Address</td>
-                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;">${deliveryAddress}</td>
+                      <td align="right" style="color:#18181b;font-size:14px;font-weight:600;">${safeAddress}</td>
                     </tr>
                   </table>
                 </td></tr>
               </table>
 
-              ${screenshotUrl ? `
+              ${safeScreenshotUrl ? `
               <div style="margin-bottom:24px;">
                 <p style="color:#71717a;font-size:13px;margin:0 0 8px;">Payment Screenshot:</p>
-                <a href="${screenshotUrl}" target="_blank" style="color:#2563eb;font-size:14px;text-decoration:underline;">View Screenshot</a>
+                <a href="${safeScreenshotUrl}" rel="noopener noreferrer" target="_blank" style="color:#2563eb;font-size:14px;text-decoration:underline;">View Screenshot</a>
               </div>
               ` : ""}
 
@@ -142,7 +158,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: "Trendra <onboarding@resend.dev>",
         to: adminEmails,
-        subject: `🔔 New Payment: ₹${Number(paymentAmount).toLocaleString("en-IN")} - ${customerName}`,
+        subject: `🔔 New Payment: ₹${Number(paymentAmount).toLocaleString("en-IN")} - ${subjectName}`,
         html: htmlContent,
       }),
     });
@@ -151,7 +167,7 @@ Deno.serve(async (req) => {
 
     if (!resendRes.ok) {
       console.error("Resend API error:", resendData);
-      throw new Error(`Resend error: ${JSON.stringify(resendData)}`);
+      throw new Error("Email provider rejected the message");
     }
 
     return new Response(JSON.stringify({ success: true, id: resendData.id }), {
@@ -160,10 +176,14 @@ Deno.serve(async (req) => {
     });
   } catch (error: unknown) {
     console.error("Error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    return new Response(JSON.stringify({ error: "Could not send payment alert" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
+
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+}
