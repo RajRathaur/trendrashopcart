@@ -2,20 +2,18 @@ import { type ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
-
-// Pages jo bina login khul sakti hain
-const PUBLIC_PATHS = ['/login', '/forgot-password', '/reset-password'];
+import { isPublicPath, loginPath } from '@/lib/publicPaths';
 
 /**
- * Poori site ke liye login gate — bina login koi page touch nahi hoga.
- * Bina login ke har request /login par chali jaati hai, aur login ke baad
- * user wapas usi page par aa jaata hai.
+ * Login gate — home, product list and product pages are open to everyone.
+ * Every other page (cart, checkout, orders, games…) sends logged-out
+ * shoppers to /login, and brings them back to the same page afterwards.
  */
 export const AuthGate = ({ children }: { children: ReactNode }) => {
   const { user, isLoading } = useAuth();
   const location = useLocation();
 
-  if (PUBLIC_PATHS.some((p) => location.pathname.startsWith(p))) {
+  if (isPublicPath(location.pathname)) {
     return <>{children}</>;
   }
 
@@ -28,8 +26,7 @@ export const AuthGate = ({ children }: { children: ReactNode }) => {
   }
 
   if (!user) {
-    const redirect = location.pathname + location.search;
-    return <Navigate to={`/login?redirect=${encodeURIComponent(redirect)}`} replace />;
+    return <Navigate to={loginPath(location.pathname + location.search)} replace />;
   }
 
   return <>{children}</>;

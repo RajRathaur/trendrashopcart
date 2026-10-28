@@ -9,6 +9,7 @@ import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { cn } from '@/lib/utils';
 import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
+import { loginPath } from '@/lib/publicPaths';
 
 interface ProductCardProps {
   product: Product;
@@ -23,26 +24,29 @@ export const ProductCard = ({ product, className }: ProductCardProps) => {
   const [buyNowOpen, setBuyNowOpen] = useState(false);
   const isWishlisted = isInWishlist(product.id);
 
+  const requireLogin = (msg: string) => {
+    toast.error(msg);
+    navigate(loginPath(`/product/${product.id}`));
+  };
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) return requireLogin('Cart me daalne ke liye pehle login karein');
     addToCart(product.id);
   };
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) return requireLogin('Wishlist ke liye pehle login karein');
     toggleWishlist(product.id);
   };
 
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!user) {
-      toast.error('Khareedne ke liye pehle login karein');
-      navigate('/login', { state: { from: `/product/${product.id}` } });
-      return;
-    }
+    if (!user) return requireLogin('Khareedne ke liye pehle login karein');
     setBuyNowOpen(true);
   };
 

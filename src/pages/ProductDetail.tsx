@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Seo } from '@/components/Seo';
 import { PrintDesignEditor } from '@/components/products/PrintDesignEditor';
+import { loginPath } from '@/lib/publicPaths';
 import { PrintDesign } from '@/lib/printDesign';
 import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
 import { isTryOnEligible } from '@/lib/tryOnFit';
@@ -162,8 +163,14 @@ const ProductDetail = () => {
   }, [pincode, pincodeStatus]);
 
 
+  const requireLogin = (msg: string) => {
+    toast.error(msg);
+    navigate(loginPath(window.location.pathname + window.location.search));
+  };
+
   const handleAddToCart = () => {
     if (!product) return;
+    if (!user) return requireLogin('Cart me daalne ke liye pehle login karein');
     if (product.sizes?.length && !selectedSize) {
       toast.error('Please select a size');
       return;
@@ -180,11 +187,7 @@ const ProductDetail = () => {
 
   const handleBuyNow = async () => {
     if (!product) return;
-    if (!user) {
-      toast.error('Khareedne ke liye pehle login karein');
-      navigate('/login', { state: { from: window.location.pathname } });
-      return;
-    }
+    if (!user) return requireLogin('Khareedne ke liye pehle login karein');
     if (product.sizes?.length && !selectedSize) {
       toast.error('Please select a size');
       return;
@@ -301,7 +304,7 @@ const ProductDetail = () => {
                 type="button"
                 aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                 aria-pressed={isWishlisted}
-                onClick={() => toggleWishlist(product.id)}
+                onClick={() => (user ? toggleWishlist(product.id) : requireLogin('Wishlist ke liye pehle login karein'))}
                 className={cn(
                   'absolute top-4 right-4 p-3 rounded-full bg-card shadow-lg transition-all',
                   isWishlisted ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'
@@ -484,7 +487,7 @@ const ProductDetail = () => {
             {showTryOn && (
               <button
                 type="button"
-                onClick={() => setTryOnOpen(true)}
+                onClick={() => (user ? setTryOnOpen(true) : requireLogin('Try-On ke liye pehle login karein'))}
                 className="group w-full flex items-center gap-3 rounded-lg border-2 border-primary/30 bg-primary/5 px-4 py-3 text-left transition-all hover:border-primary hover:bg-primary/10 hover:shadow-md"
               >
                 <span className="h-10 w-10 shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center transition-transform group-hover:scale-110">
