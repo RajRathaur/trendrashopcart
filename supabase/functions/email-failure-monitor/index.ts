@@ -206,9 +206,7 @@ async function isAuthorized(
   admin: ReturnType<typeof createClient>,
 ): Promise<boolean> {
   const authHeader = req.headers.get('Authorization') ?? '';
-  if (!authHeader.startsWith('Bearer ')) return false;
-  const token = authHeader.slice(7).trim();
-  if (!token) return false;
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
 
   // Backend scheduler: legacy service-role key or a current secret key.
   const secretKeys = [serviceKey];
@@ -219,10 +217,22 @@ async function isAuthorized(
       for (const v of Object.values(parsed ?? {})) if (typeof v === 'string') secretKeys.push(v);
     }
   } catch { /* ignore malformed */ }
-  if (secretKeys.some((k) => k && k === token)) return true;
+  if (token && secretKeys.some((k) => k && k === token)) return true;
   if (req.headers.get('apikey') && secretKeys.includes(req.headers.get('apikey')!)) return true;
 
+  // Scheduled job: private per-job token stored in the database.
+  const jobToken = req.headers.get('x-job-token');
+  if (jobToken) {
+    const { data: row } = await admin
+      .from('internal_job_tokens')
+      .select('token')
+      .eq('name', 'email-failure-monitor')
+      .maybeSingle();
+    return !!row?.token && row.token.length >= 32 && row.token === jobToken;
+  }
+
   // Signed-in admin user.
+  if (!token) return false;
   const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
   const userClient = createClient(supabaseUrl, anonKey, {
     global: { headers: { Authorization: authHeader } },
