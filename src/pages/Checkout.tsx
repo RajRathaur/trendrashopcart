@@ -236,7 +236,7 @@ const CheckoutPage = () => {
         const Razorpay = await loadRazorpay();
         // Create Razorpay order via edge function
         const { data: rzp, error: rzpErr } = await supabase.functions.invoke('create-razorpay-order', {
-          body: { order_id: order.id, orderId: order.id, amount: finalAmount },
+          body: { order_id: order.id, orderId: order.id, amount: finalAmount, coupon_code: appliedCoupon?.code ?? null },
         });
         if (rzpErr || !rzp?.order_id) {
           throw new Error(rzpErr?.message || 'Failed to initiate Razorpay payment');

@@ -189,7 +189,7 @@ export const BuyNowDialog = ({
       if (itemError) throw itemError;
 
       const { data: rzp, error: rzpErr } = await supabase.functions.invoke('create-razorpay-order', {
-        body: { order_id: order.id, orderId: order.id, amount: total },
+        body: { order_id: order.id, orderId: order.id, amount: total, coupon_code: appliedCoupon?.code ?? null },
       });
       if (rzpErr || !rzp?.order_id) throw new Error(rzpErr?.message || 'Payment init failed');
 
