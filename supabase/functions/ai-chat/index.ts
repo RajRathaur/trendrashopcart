@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const threadId: string = body.threadId;
-    const messages: UIMessage[] = body.messages ?? [];
+    const clientMessages: unknown[] = Array.isArray(body.messages) ? body.messages : [];
     if (!threadId || typeof threadId !== "string") {
       return new Response("threadId required", { status: 400, headers: corsHeaders });
     }
@@ -57,9 +57,44 @@ Deno.serve(async (req) => {
       return new Response("Forbidden", { status: 403, headers: corsHeaders });
     }
 
+    // Conversation history comes only from what the server saved earlier.
+    // From the client we accept just the newest message, forced to the
+    // "user" role with text-only parts, so callers cannot forge assistant
+    // or system turns.
+    const { data: saved } = await supabase
+      .from("chat_messages")
+      .select("role,content,created_at")
+      .eq("thread_id", threadId)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true })
+      .limit(100);
+    const history: UIMessage[] = (saved ?? [])
+      .filter((m: any) => (m.role === "user" || m.role === "assistant") && m.content && typeof m.content === "object")
+      .map((m: any) => ({ ...(m.content as UIMessage), role: m.role }));
+
+    const rawLast = clientMessages[clientMessages.length - 1] as any;
+    let newUserMsg: UIMessage | null = null;
+    if (rawLast && rawLast.role === "user" && Array.isArray(rawLast.parts)) {
+      const text = rawLast.parts
+        .filter((p: any) => p && p.type === "text" && typeof p.text === "string")
+        .map((p: any) => p.text)
+        .join("\n")
+        .slice(0, 4000)
+        .trim();
+      if (text) {
+        newUserMsg = {
+          id: typeof rawLast.id === "string" ? rawLast.id.slice(0, 100) : crypto.randomUUID(),
+          role: "user",
+          parts: [{ type: "text", text }],
+        } as UIMessage;
+      }
+    }
+    const alreadySaved = newUserMsg && history.some((m) => m.id === newUserMsg!.id);
+    const messages: UIMessage[] = newUserMsg && !alreadySaved ? [...history, newUserMsg] : history;
+
     // Persist the latest user message
-    const lastMsg = messages[messages.length - 1];
-    if (lastMsg && lastMsg.role === "user") {
+    if (newUserMsg && !alreadySaved) {
+      const lastMsg = newUserMsg;
       await supabase.from("chat_messages").insert({
         thread_id: threadId,
         user_id: userId,
@@ -80,6 +115,10 @@ Deno.serve(async (req) => {
       } else {
         await supabase.from("chat_threads").update({ last_message_at: new Date().toISOString() }).eq("id", threadId);
       }
+    }
+
+    if (messages.length === 0) {
+      return new Response("message required", { status: 400, headers: corsHeaders });
     }
 
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
@@ -105,11 +144,18 @@ Deno.serve(async (req) => {
             .select("id,name,slug,price,mrp,discount_percent,images,category_id,description,stock")
             .eq("is_active", true)
             .limit(8);
-          if (query) q = q.or(`name.ilike.%${query}%,description.ilike.%${query}%`);
-          if (maxPrice) q = q.lte("price", maxPrice);
-          if (minPrice) q = q.gte("price", minPrice);
+          // Keep only letters, numbers, spaces and hyphens so the text can't
+          // change the filter (commas, dots, brackets, wildcards are removed).
+          const term = String(query ?? "")
+            .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+            .slice(0, 80);
+          if (term) q = q.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
+          if (Number.isFinite(maxPrice)) q = q.lte("price", maxPrice);
+          if (Number.isFinite(minPrice)) q = q.gte("price", minPrice);
           const { data, error } = await q;
-          if (error) return { error: error.message, products: [] };
+          if (error) return { error: "Search failed", products: [] };
           return { products: data ?? [] };
         },
       }),
@@ -142,7 +188,7 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error("ai-chat error", e);
-    return new Response(JSON.stringify({ error: String(e) }), {
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
