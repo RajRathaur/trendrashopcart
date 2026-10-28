@@ -3,8 +3,8 @@ import { z } from 'zod';
 export const deliveryDetailsSchema = z.object({
   phone: z.string().trim().regex(/^[6-9]\d{9}$/, 'Enter a valid 10-digit Indian mobile number'),
   address: z.string().trim().min(10, 'Enter a complete delivery address').max(500, 'Address is too long'),
-  latitude: z.number({ required_error: 'Current GPS location is required' }).min(-90).max(90),
-  longitude: z.number({ required_error: 'Current GPS location is required' }).min(-180).max(180),
+  latitude: z.number({ error: 'Current GPS location is required' }).min(-90).max(90),
+  longitude: z.number({ error: 'Current GPS location is required' }).min(-180).max(180),
   accuracy: z.number().nonnegative().optional(),
 });
 
@@ -42,7 +42,7 @@ export const requestCurrentLocation = () => new Promise<DeliveryCoordinates>((re
 export const getValidatedDeliveryFields = async (phone: string, address: string) => {
   const coords = await requestCurrentLocation();
   const parsed = deliveryDetailsSchema.safeParse({ phone: phone.replace(/\D/g, '').slice(-10), address, ...coords });
-  if (!parsed.success) throw new Error(parsed.error.errors[0]?.message || 'Invalid delivery details');
+  if (!parsed.success) throw new Error(parsed.error.issues[0]?.message || 'Invalid delivery details');
   return {
     shipping_phone: parsed.data.phone,
     shipping_address: parsed.data.address,
