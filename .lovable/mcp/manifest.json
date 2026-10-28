@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sdk_version": "0.20.0",
+  "sdk_version": "0.20.1",
   "path": "/functions/v1/mcp",
   "auth": {
     "type": "none"
@@ -22,6 +22,7 @@
           "openWorldHint": false
         },
         "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {
             "query": {
@@ -29,19 +30,17 @@
               "description": "Free-text search across name and description, e.g. 'red kurta'"
             },
             "minPrice": {
-              "type": "number",
-              "description": "Minimum price in INR"
+              "description": "Minimum price in INR",
+              "type": "number"
             },
             "maxPrice": {
-              "type": "number",
-              "description": "Maximum price in INR"
+              "description": "Maximum price in INR",
+              "type": "number"
             }
           },
           "required": [
             "query"
-          ],
-          "additionalProperties": false,
-          "$schema": "http://json-schema.org/draft-07/schema#"
+          ]
         },
         "outputSchema": null
       },
@@ -55,6 +54,7 @@
           "openWorldHint": false
         },
         "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {
             "slugOrId": {
@@ -64,9 +64,7 @@
           },
           "required": [
             "slugOrId"
-          ],
-          "additionalProperties": false,
-          "$schema": "http://json-schema.org/draft-07/schema#"
+          ]
         },
         "outputSchema": null
       },
