@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
     return json({ verified: true });
   } catch (e) {
     console.error('verify-razorpay-payment error:', e);
-    return json({ error: (e as Error).message ?? 'Internal error' }, 500);
+    return json({ error: 'Internal error' }, 500);
   }
 });
 
