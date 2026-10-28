@@ -34,6 +34,11 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceKey);
 
+    // Only the backend scheduler (service key) or a signed-in admin may run it.
+    if (!(await isAuthorized(req, supabaseUrl, serviceKey, admin))) {
+      return json({ ok: false, error: 'Unauthorized' }, 401);
+    }
+
     const since = new Date(Date.now() - WINDOW_MINUTES * 60 * 1000).toISOString();
     const { data: logs, error: logErr } = await admin
       .from('email_send_log')
