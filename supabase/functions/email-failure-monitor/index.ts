@@ -34,6 +34,11 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceKey);
 
+    // Only the backend scheduler (service key) or a signed-in admin may run it.
+    if (!(await isAuthorized(req, supabaseUrl, serviceKey, admin))) {
+      return json({ ok: false, error: 'Unauthorized' }, 401);
+    }
+
     const since = new Date(Date.now() - WINDOW_MINUTES * 60 * 1000).toISOString();
     const { data: logs, error: logErr } = await admin
       .from('email_send_log')
@@ -190,9 +195,58 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('email-failure-monitor error', e);
-    return json({ ok: false, error: (e as Error).message }, 500);
+    return json({ ok: false, error: 'Internal error' }, 500);
   }
 });
+
+async function isAuthorized(
+  req: Request,
+  supabaseUrl: string,
+  serviceKey: string,
+  admin: ReturnType<typeof createClient>,
+): Promise<boolean> {
+  const authHeader = req.headers.get('Authorization') ?? '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+
+  // Backend scheduler: legacy service-role key or a current secret key.
+  const secretKeys = [serviceKey];
+  try {
+    const raw = Deno.env.get('SUPABASE_SECRET_KEYS');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      for (const v of Object.values(parsed ?? {})) if (typeof v === 'string') secretKeys.push(v);
+    }
+  } catch { /* ignore malformed */ }
+  if (token && secretKeys.some((k) => k && k === token)) return true;
+  if (req.headers.get('apikey') && secretKeys.includes(req.headers.get('apikey')!)) return true;
+
+  // Scheduled job: private per-job token stored in the database.
+  const jobToken = req.headers.get('x-job-token');
+  if (jobToken) {
+    const { data: row } = await admin
+      .from('internal_job_tokens')
+      .select('token')
+      .eq('name', 'email-failure-monitor')
+      .maybeSingle();
+    return !!row?.token && row.token.length >= 32 && row.token === jobToken;
+  }
+
+  // Signed-in admin user.
+  if (!token) return false;
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+  const userClient = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+  const { data, error } = await userClient.auth.getUser();
+  if (error || !data?.user) return false;
+  const { data: role } = await admin
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', data.user.id)
+    .eq('role', 'admin')
+    .maybeSingle();
+  return !!role;
+}
 
 function groupCount<T>(items: T[], keyFn: (t: T) => string) {
   const out: Record<string, number> = {};
