@@ -53,6 +53,7 @@ Deno.serve(async (req) => {
 
     let amountPaise: number;
     let purpose: 'order' | 'coins';
+    let orderTotalNote = '';
 
     if (orderId) {
       if (!UUID_RE.test(orderId)) return json({ error: 'Invalid order' }, 400);
@@ -99,6 +100,7 @@ Deno.serve(async (req) => {
 
       const payable = Math.max(1, total - discount);
       amountPaise = Math.round(payable * 100);
+      orderTotalNote = total.toFixed(2);
     } else {
       purpose = 'coins';
       const amountRupees = Number(body?.amount);
@@ -126,6 +128,8 @@ Deno.serve(async (req) => {
           purpose,
           coupon_code: couponCode ?? '',
           server_priced: '1',
+          order_total: orderTotalNote,
+          amount_paise: String(amountPaise),
         },
       }),
     });
