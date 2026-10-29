@@ -1,6 +1,7 @@
 // Razorpay webhook receiver — verifies signature and reconciles orders.
 // Public endpoint: no JWT (verify_jwt=false in config).
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { paidAmountMatchesOrder } from '../_shared/razorpayAmount.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -43,6 +44,17 @@ Deno.serve(async (req) => {
     const trendraOrderId = payment?.notes?.trendra_order_id || null;
 
     if ((type === 'payment.captured' || type === 'order.paid') && trendraOrderId) {
+      const { data: ord } = await admin
+        .from('orders')
+        .select('total_amount')
+        .eq('id', trendraOrderId)
+        .maybeSingle();
+      if (!ord || !paidAmountMatchesOrder(ord.total_amount, payment?.notes, payment?.amount)) {
+        console.error('webhook: paid amount does not match order total', { trendraOrderId });
+        return new Response(JSON.stringify({ received: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       const { error } = await admin.from('orders').update({
         status: 'confirmed',
         payment_method: 'razorpay',

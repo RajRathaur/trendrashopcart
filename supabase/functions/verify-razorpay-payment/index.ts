@@ -1,5 +1,6 @@
 // Verifies Razorpay checkout signature and marks the order paid.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { paidAmountMatchesOrder } from '../_shared/razorpayAmount.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -86,11 +87,17 @@ Deno.serve(async (req) => {
     // so customer/coupon details saved at order creation are preserved.
     const { data: existing } = await admin
       .from('orders')
-      .select('notes, status')
+      .select('notes, status, total_amount')
       .eq('id', trendraOrderId)
       .eq('user_id', userId)
       .maybeSingle();
     if (!existing) return json({ error: 'Order not found' }, 404);
+
+    // The amount actually paid must still match this order's current total.
+    if (!paidAmountMatchesOrder(existing.total_amount, notes, rzpPayment?.amount)) {
+      console.error('Razorpay amount does not match order total', { trendraOrderId, razorpay_order_id });
+      return json({ error: 'Paid amount does not match this order' }, 400);
+    }
 
     const prevNotes = (existing.notes as string | null) ?? '';
     const paidNote = `Razorpay paid: ${razorpay_payment_id}`;
