@@ -18,6 +18,7 @@ import { loginPath } from '@/lib/publicPaths';
 import { PrintDesign } from '@/lib/printDesign';
 import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
 import { isTryOnEligible } from '@/lib/tryOnFit';
+import { SITE_URL } from '@/lib/site';
 
 const VirtualTryOn = lazy(() => import('@/components/products/VirtualTryOn'));
 
