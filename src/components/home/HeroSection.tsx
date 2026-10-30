@@ -61,7 +61,7 @@ export const HeroSection = () => {
           className="inline-flex items-center px-4 py-1.5 bg-card text-[11px] font-semibold tracking-[0.2em] uppercase"
           style={{ color: 'hsl(var(--primary))' }}
         >
-          ✦ Trendra Premium Shopkart ✦
+          ✦ Trendra Premium Store ✦
         </motion.div>
 
         <motion.h1

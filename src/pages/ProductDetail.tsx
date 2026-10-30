@@ -18,6 +18,7 @@ import { loginPath } from '@/lib/publicPaths';
 import { PrintDesign } from '@/lib/printDesign';
 import { BuyNowDialog } from '@/components/checkout/BuyNowDialog';
 import { isTryOnEligible } from '@/lib/tryOnFit';
+import { SITE_URL } from '@/lib/site';
 
 const VirtualTryOn = lazy(() => import('@/components/products/VirtualTryOn'));
 
@@ -253,7 +254,7 @@ const ProductDetail = () => {
       price: product.price,
       priceCurrency: "INR",
       availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      url: `https://trendrashopcart.lovable.app/product/${product.id}`,
+      url: `${SITE_URL}/product/${product.id}`,
     },
     ...(product.rating > 0 ? {
       aggregateRating: {
@@ -267,8 +268,8 @@ const ProductDetail = () => {
   return (
     <Layout>
       <Seo
-        title={`${product.name} — Buy Online at Trendra Shopkart`}
-        description={(product.description || `Buy ${product.name} online at Trendra Shopkart. Best price, Cash on Delivery, fast shipping across India.`).slice(0, 160)}
+        title={`${product.name.slice(0, 60)} — Buy Online at Trendra`}
+        description={(product.description || `Buy ${product.name} online at Trendra. Best price, Cash on Delivery, fast shipping across India.`).slice(0, 160)}
         path={`/product/${product.id}`}
         image={images[0]}
         jsonLd={productSchema}

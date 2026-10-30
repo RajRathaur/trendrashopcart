@@ -1,22 +1,15 @@
-# Trendra Shopkart
+# Trendra
 
-> India's online shopping destination for fashion, electronics, beauty, and home essentials with Cash on Delivery and fast nationwide shipping.
+> Trendra (https://trendra.store) is an Indian online store for fashion, custom print T-shirts, footwear, beauty and home essentials, with low prices, Cash on Delivery on many items and shipping across India.
 
-Trendra Shopkart is a multi-vendor e-commerce platform serving customers across India. Browse curated catalogs, earn rewards from in-app games, and pay on delivery.
+Trendra is a multi-vendor e-commerce store. Shoppers can browse products without an account; an account is needed to order. Some T-shirts can be customised with the shopper's own logo or design (prepaid only).
 
 ## Pages
 
-- [Home](/): Featured deals, banners, and trending categories.
-- [All Products](/products): Full catalog with filters by category, brand and price.
-- [About](/about): Our story, mission, and what makes Trendra different.
-- [Contact](/contact): Customer support via WhatsApp, email, and phone.
-- [Help Center](/help): FAQs covering orders, shipping, returns, and payments.
-- [Become a Seller](/become-seller): Apply to sell your products on Trendra.
-- [Privacy Policy](/privacy-policy): How we handle your data.
-- [Refund Policy](/refund-policy): Returns and refund terms.
-- [Shipping Policy](/shipping-policy): Delivery times and charges.
-
-## Optional
-
-- [Coin Game](/coin-game): Play to earn discount coupons.
-- [Redeem](/redeem): Convert earned coins into rewards.
+- [Home](https://trendra.store/): Featured deals and categories.
+- [All Products](https://trendra.store/products): Full catalog with category and price filters.
+- [About](https://trendra.store/about): About Trendra.
+- [Help Center](https://trendra.store/help): FAQs on orders, shipping, returns and payments.
+- [Privacy Policy](https://trendra.store/privacy-policy)
+- [Refund Policy](https://trendra.store/refund-policy)
+- [Shipping Policy](https://trendra.store/shipping-policy)

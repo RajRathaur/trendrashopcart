@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/lib/site";
 
 interface SeoProps {
   title: string;
@@ -8,7 +9,7 @@ interface SeoProps {
   image?: string;
 }
 
-const SITE = "https://trendrashopcart.lovable.app";
+const SITE = SITE_URL;
 
 export const Seo = ({ title, description, path, jsonLd, image }: SeoProps) => {
   const url = `${SITE}${path}`;

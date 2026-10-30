@@ -89,7 +89,7 @@ const BecomeSellerPage = () => {
             </div>
             <h1 className="text-2xl font-bold mb-2">You're Already a Seller!</h1>
             <p className="text-muted-foreground mb-6">
-              You have an approved seller account. Start selling on ShopKart today!
+              You have an approved seller account. Start selling on Trendra today!
             </p>
             <Button onClick={() => navigate('/seller')} className="btn-primary-gradient">
               Go to Seller Dashboard
@@ -111,7 +111,7 @@ const BecomeSellerPage = () => {
             </div>
             <h1 className="text-2xl font-bold mb-2">Registration Submitted!</h1>
             <p className="text-muted-foreground mb-6">
-              Thank you for your interest in selling on ShopKart. Our team will review your application and get back to you within 2-3 business days.
+              Thank you for your interest in selling on Trendra. Our team will review your application and get back to you within 2-3 business days.
             </p>
             <Button onClick={() => navigate('/')} variant="outline">
               Continue Shopping
@@ -128,7 +128,7 @@ const BecomeSellerPage = () => {
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Start Selling on ShopKart
+            Start Selling on Trendra
           </h1>
           <p className="text-lg text-muted-foreground">
             Join thousands of sellers and grow your business with India's fastest-growing marketplace

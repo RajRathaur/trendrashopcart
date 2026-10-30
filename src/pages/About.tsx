@@ -7,7 +7,7 @@ const AboutPage = () => {
     <Layout>
       <Seo
         title="About Trendra — India's Trusted Online Shopping Destination"
-        description="Learn about Trendra Shopkart, India's growing e-commerce platform offering quality products, Cash on Delivery, and fast nationwide shipping."
+        description="Learn about Trendra, India's growing e-commerce platform offering quality products, Cash on Delivery, and fast nationwide shipping."
         path="/about"
       />
       <div className="container mx-auto px-4 py-8">

@@ -1,9 +1,11 @@
+import { Seo } from '@/components/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { Shield } from 'lucide-react';
 
 const PrivacyPolicy = () => {
   return (
     <Layout>
+      <Seo title="Privacy Policy — Trendra" description="How Trendra collects, uses and protects your personal information when you shop at trendra.store." path="/privacy-policy" />
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="flex items-center gap-3 mb-6">
           <Shield className="h-8 w-8 text-primary" />
