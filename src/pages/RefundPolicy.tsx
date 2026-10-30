@@ -1,9 +1,11 @@
+import { Seo } from '@/components/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { RotateCcw } from 'lucide-react';
 
 const RefundPolicy = () => {
   return (
     <Layout>
+      <Seo title="Refund & Return Policy — Trendra" description="Trendra return, replacement and refund rules, timelines and how to request a refund for your order." path="/refund-policy" />
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="flex items-center gap-3 mb-6">
           <RotateCcw className="h-8 w-8 text-primary" />

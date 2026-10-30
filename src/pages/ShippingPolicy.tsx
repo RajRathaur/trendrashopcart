@@ -1,9 +1,11 @@
+import { Seo } from '@/components/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { Truck } from 'lucide-react';
 
 const ShippingPolicy = () => {
   return (
     <Layout>
+      <Seo title="Shipping Policy — Trendra" description="Trendra delivery times, shipping charges and coverage across India, including Cash on Delivery details." path="/shipping-policy" />
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="flex items-center gap-3 mb-6">
           <Truck className="h-8 w-8 text-primary" />
