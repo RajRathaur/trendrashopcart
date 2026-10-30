@@ -113,7 +113,7 @@ const HelpPage = () => {
   return (
     <Layout>
       <Seo
-        title="Help Center & FAQs — Trendra Shopkart"
+        title="Help Center & FAQs — Trendra"
         description="Get answers about orders, shipping, returns, payments and your Trendra account. Browse FAQs or contact our support team."
         path="/help"
         jsonLd={faqSchema}
