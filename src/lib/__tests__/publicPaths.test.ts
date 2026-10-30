@@ -14,7 +14,14 @@ describe('isPublicPath', () => {
     expect(isPublicPath('/product/ed797879-2731-4a89-b786-689856d57b1c')).toBe(true);
   });
 
-  it.each(['/cart', '/checkout', '/cod-checkout', '/orders', '/order/123', '/ludo', '/hill-climb', '/spin-wheel', '/fruit-game', '/dead-roads', '/redeem', '/wishlist', '/admin', '/product'])(
+  it.each(['/about', '/help', '/privacy-policy', '/refund-policy', '/shipping-policy'])(
+    'opens info page %s without login',
+    (path) => {
+      expect(isPublicPath(path)).toBe(true);
+    },
+  );
+
+  it.each(['/cart', '/checkout', '/cod-checkout', '/orders', '/order/123', '/ludo', '/hill-climb', '/spin-wheel', '/fruit-game', '/dead-roads', '/redeem', '/wishlist', '/admin', '/product', '/contact', '/become-seller'])(
     'keeps %s behind login',
     (path) => {
       expect(isPublicPath(path)).toBe(false);
