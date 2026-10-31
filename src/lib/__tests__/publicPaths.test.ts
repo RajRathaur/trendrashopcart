@@ -21,12 +21,17 @@ describe('isPublicPath', () => {
     },
   );
 
-  it.each(['/cart', '/checkout', '/cod-checkout', '/orders', '/order/123', '/ludo', '/hill-climb', '/spin-wheel', '/fruit-game', '/dead-roads', '/redeem', '/wishlist', '/admin', '/product', '/contact', '/become-seller'])(
+  it.each(['/cart', '/checkout', '/cod-checkout', '/orders', '/order/123', '/ludo', '/hill-climb', '/spin-wheel', '/fruit-game', '/dead-roads', '/redeem', '/wishlist', '/admin', '/product', '/contact', '/become-seller', '/bazaar/sell', '/bazaar/my-ads', '/bazaar/chats', '/bazaar/chats/abc', '/bazaar/edit/abc', '/admin/bazaar'])(
     'keeps %s behind login',
     (path) => {
       expect(isPublicPath(path)).toBe(false);
     },
   );
+
+  it('opens the used-items Bazaar and its ads without login', () => {
+    expect(isPublicPath('/bazaar')).toBe(true);
+    expect(isPublicPath('/bazaar/item/ed797879-2731-4a89-b786-689856d57b1c')).toBe(true);
+  });
 });
 
 describe('loginPath', () => {
