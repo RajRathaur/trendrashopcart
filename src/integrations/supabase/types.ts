@@ -98,6 +98,151 @@ export type Database = {
         }
         Relationships: []
       }
+      bazaar_conversations: {
+        Row: {
+          buyer_id: string
+          buyer_name: string
+          buyer_unread: number
+          created_at: string
+          id: string
+          last_message: string | null
+          last_message_at: string
+          listing_id: string
+          listing_image: string | null
+          listing_title: string
+          seller_id: string
+          seller_name: string
+          seller_unread: number
+        }
+        Insert: {
+          buyer_id: string
+          buyer_name?: string
+          buyer_unread?: number
+          created_at?: string
+          id?: string
+          last_message?: string | null
+          last_message_at?: string
+          listing_id: string
+          listing_image?: string | null
+          listing_title?: string
+          seller_id: string
+          seller_name?: string
+          seller_unread?: number
+        }
+        Update: {
+          buyer_id?: string
+          buyer_name?: string
+          buyer_unread?: number
+          created_at?: string
+          id?: string
+          last_message?: string | null
+          last_message_at?: string
+          listing_id?: string
+          listing_image?: string | null
+          listing_title?: string
+          seller_id?: string
+          seller_name?: string
+          seller_unread?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_conversations_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bazaar_listings: {
+        Row: {
+          admin_note: string | null
+          approved_at: string | null
+          category: string
+          city: string
+          condition: string
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          price: number
+          seller_name: string
+          state: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          approved_at?: string | null
+          category?: string
+          city: string
+          condition?: string
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          price: number
+          seller_name?: string
+          state?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          approved_at?: string | null
+          category?: string
+          city?: string
+          condition?: string
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          price?: number
+          seller_name?: string
+          state?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bazaar_messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cart_items: {
         Row: {
           color: string | null
@@ -1313,6 +1458,10 @@ export type Database = {
         Returns: boolean
       }
       increment_coupon_usage: { Args: { _code: string }; Returns: undefined }
+      is_bazaar_participant: {
+        Args: { _conversation_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_order_owner: {
         Args: { _order_id: string; _user_id: string }
         Returns: boolean
@@ -1334,6 +1483,10 @@ export type Database = {
           _metadata?: Json
         }
         Returns: string
+      }
+      mark_bazaar_read: {
+        Args: { _conversation_id: string }
+        Returns: undefined
       }
       request_redeem: {
         Args: { _coins: number; _email: string }

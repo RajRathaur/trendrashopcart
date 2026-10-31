@@ -92,6 +92,13 @@
       "when": 1793277346603,
       "tag": "0012_lock_coin_wallet_inserts_and_blocked_seller_products",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1793446351289,
+      "tag": "0013_create_bazaar_classifieds",
+      "breakpoints": true
     }
   ]
 }
