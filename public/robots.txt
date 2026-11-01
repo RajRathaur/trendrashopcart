@@ -13,5 +13,9 @@ Disallow: /login
 Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /assistant
+Disallow: /bazaar/sell
+Disallow: /bazaar/edit/
+Disallow: /bazaar/my-ads
+Disallow: /bazaar/chats
 
 Sitemap: https://trendra.store/sitemap.xml
