@@ -51,3 +51,18 @@ describe('formatBazaarPrice', () => {
     expect(formatBazaarPrice(125000)).toBe('₹1,25,000');
   });
 });
+
+import { cleanBazaarMessage } from '../bazaar';
+
+describe('cleanBazaarMessage', () => {
+  it('rejects an empty or spaces-only message', () => {
+    expect(cleanBazaarMessage('   ')).toBe('');
+  });
+  it('trims a normal message', () => {
+    expect(cleanBazaarMessage('  Available hai?  ')).toBe('Available hai?');
+  });
+  it('rejects messages longer than 1000 characters', () => {
+    expect(cleanBazaarMessage('a'.repeat(1001))).toBe('');
+    expect(cleanBazaarMessage('a'.repeat(1000))).toHaveLength(1000);
+  });
+});

@@ -11,6 +11,8 @@ import { FestivalSaleBanner } from '@/components/home/FestivalSaleBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { Seo } from '@/components/Seo';
+import { Link } from 'react-router-dom';
+import { ChevronRight, Recycle } from 'lucide-react';
 
 const Index = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
