@@ -11,6 +11,8 @@ import { FestivalSaleBanner } from '@/components/home/FestivalSaleBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Banner } from '@/types';
 import { Seo } from '@/components/Seo';
+import { Link } from 'react-router-dom';
+import { ChevronRight, Recycle } from 'lucide-react';
 
 const Index = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -93,6 +95,23 @@ const Index = () => {
       {/* AI Suggestion Box */}
       <div className="container mx-auto px-3 py-4 sm:py-6">
         <AiSuggestBox />
+      </div>
+
+      {/* Trendra Bazaar entry (used items) */}
+      <div className="container mx-auto px-3 pb-2">
+        <Link
+          to="/bazaar"
+          className="flex items-center gap-3 rounded-xl border bg-card p-3 transition-colors hover:bg-muted/50 sm:p-4"
+        >
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Recycle className="h-5 w-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold leading-tight">Trendra Bazaar</span>
+            <span className="block text-sm text-muted-foreground">Purana saaman becho, sasta kharido — apne shehar me</span>
+          </span>
+          <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
+        </Link>
       </div>
 
       {/* Banner Slider */}

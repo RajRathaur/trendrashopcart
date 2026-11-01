@@ -73,6 +73,15 @@ const AdminEmailTemplates = lazy(() => import("./pages/admin/AdminEmailTemplates
 const AdminAnimations = lazy(() => import("./pages/admin/AdminAnimations"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 const AdminFestivalSale = lazy(() => import("./pages/admin/AdminFestivalSale"));
+const AdminBazaar = lazy(() => import("./pages/admin/AdminBazaar"));
+
+// Trendra Bazaar (used items) — lazy, separate from the shop bundle
+const BazaarHome = lazy(() => import("./pages/bazaar/BazaarHome"));
+const BazaarItem = lazy(() => import("./pages/bazaar/BazaarItem"));
+const BazaarSell = lazy(() => import("./pages/bazaar/BazaarSell"));
+const BazaarMyAds = lazy(() => import("./pages/bazaar/BazaarMyAds"));
+const BazaarChats = lazy(() => import("./pages/bazaar/BazaarChats"));
+const BazaarChat = lazy(() => import("./pages/bazaar/BazaarChat"));
 
 
 const queryClient = new QueryClient();
@@ -94,6 +103,8 @@ const seller = (el: React.ReactNode) => (
     <Suspense fallback={<RouteFallback />}>{el}</Suspense>
   </AdminGuard>
 );
+
+const lazyPage = (el: React.ReactNode) => <Suspense fallback={<RouteFallback />}>{el}</Suspense>;
 
 const AppRoutes = () => (
   <BrowserRouter>
@@ -131,6 +142,15 @@ const AppRoutes = () => (
       <Route path="/assistant" element={<Assistant />} />
       <Route path="/assistant/:threadId" element={<Assistant />} />
 
+      {/* Trendra Bazaar — browsing is public, the rest needs login (AuthGate) */}
+      <Route path="/bazaar" element={lazyPage(<BazaarHome />)} />
+      <Route path="/bazaar/item/:id" element={lazyPage(<BazaarItem />)} />
+      <Route path="/bazaar/sell" element={lazyPage(<BazaarSell />)} />
+      <Route path="/bazaar/edit/:id" element={lazyPage(<BazaarSell />)} />
+      <Route path="/bazaar/my-ads" element={lazyPage(<BazaarMyAds />)} />
+      <Route path="/bazaar/chats" element={lazyPage(<BazaarChats />)} />
+      <Route path="/bazaar/chats/:id" element={lazyPage(<BazaarChat />)} />
+
       {/* Seller Routes — guarded, lazy */}
       <Route path="/seller" element={seller(<SellerDashboard />)} />
       <Route path="/seller/products" element={seller(<SellerProducts />)} />
@@ -156,6 +176,7 @@ const AppRoutes = () => (
       <Route path="/admin/animations" element={admin(<AdminAnimations />)} />
       <Route path="/admin/coupons" element={admin(<AdminCoupons />)} />
       <Route path="/admin/festival-sale" element={admin(<AdminFestivalSale />)} />
+      <Route path="/admin/bazaar" element={admin(<AdminBazaar />)} />
 
 
       {/* Redirect common paths */}

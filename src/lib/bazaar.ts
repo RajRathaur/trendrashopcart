@@ -120,3 +120,11 @@ export const BAZAAR_SAFETY_TIPS = [
   'Kisi bhi bheed-bhaad wali public jagah par milein.',
   'OTP, UPI PIN ya bank details kabhi share na karein.',
 ];
+
+export const MAX_BAZAAR_MESSAGE = 1000;
+
+/** Trims a chat message; returns '' when it is empty or too long to send. */
+export const cleanBazaarMessage = (text: string): string => {
+  const t = text.trim();
+  return t.length >= 1 && t.length <= MAX_BAZAAR_MESSAGE ? t : '';
+};
