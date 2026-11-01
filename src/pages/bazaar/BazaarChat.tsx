@@ -34,7 +34,7 @@ const BazaarChat = () => {
       setConv(c);
       setMessages(m ?? []);
       setLoading(false);
-      if (c) supabase.rpc('mark_bazaar_read', { _conversation_id: id });
+      if (c) void supabase.rpc('mark_bazaar_read', { _conversation_id: id }).then(() => undefined);
     })();
 
     const ch = supabase
@@ -45,7 +45,7 @@ const BazaarChat = () => {
         (payload) => {
           const msg = payload.new as BazaarMessage;
           setMessages((prev) => (prev.some((x) => x.id === msg.id) ? prev : [...prev, msg]));
-          if (msg.sender_id !== user.id) supabase.rpc('mark_bazaar_read', { _conversation_id: id });
+          if (msg.sender_id !== user.id) void supabase.rpc('mark_bazaar_read', { _conversation_id: id }).then(() => undefined);
         },
       )
       .subscribe();
