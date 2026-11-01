@@ -7,7 +7,7 @@
 
 # Trendra Bazaar (OLX-style used items)
 - [x] Database, photo storage rules, browse/sell/my-ads/item pages.
-- [ ] Chat list + chat thread pages.
-- [ ] Admin approve/reject page + admin menu link.
-- [ ] Routes, menu/homepage links, sitemap.
-- [ ] Run tests, phone-size browser check.
+- [x] Chat list + chat thread pages.
+- [x] Admin approve/reject page + admin menu link.
+- [x] Routes, menu/homepage links, sitemap.
+- [x] Run tests, phone-size browser check.
