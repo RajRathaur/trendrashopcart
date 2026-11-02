@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Ban, Undo2, Users as UsersIcon, UserPlus, Activity, Phone, MapPin, Clock, ShoppingBag, Mail, User } from 'lucide-react';
+import { Loader2, Ban, Undo2, Users as UsersIcon, UserPlus, Activity, Phone, MapPin, Clock, ShoppingBag, Mail, User, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { downloadUsersCsv } from '@/lib/usersCsv';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -147,8 +148,16 @@ const AdminUsers = () => {
           <Button onClick={sendMail} disabled={mailSending}>{mailSending ? 'Bhej rahe hain…' : 'Send Mail'}</Button>
         </DialogContent>
       </Dialog>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-2">
         <h1 className="text-2xl font-bold">Users</h1>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={loading || filtered.length === 0}
+          onClick={() => { downloadUsersCsv(filtered); toast.success(`${filtered.length} customers ki file download ho gayi`); }}
+        >
+          <Download className="h-4 w-4 mr-1" /> Download Excel
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
