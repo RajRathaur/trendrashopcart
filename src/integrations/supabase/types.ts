@@ -1243,6 +1243,140 @@ export type Database = {
         }
         Relationships: []
       }
+      reel_comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          reel_id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          reel_id: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          reel_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_comments_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      reel_likes: {
+        Row: {
+          created_at: string
+          reel_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          reel_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          reel_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_likes_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reels: {
+        Row: {
+          admin_note: string | null
+          approved_at: string | null
+          caption: string
+          comment_count: number
+          created_at: string
+          duration_seconds: number
+          id: string
+          like_count: number
+          product_id: string | null
+          status: string
+          thumbnail_url: string | null
+          updated_at: string
+          user_id: string
+          video_url: string
+          view_count: number
+        }
+        Insert: {
+          admin_note?: string | null
+          approved_at?: string | null
+          caption?: string
+          comment_count?: number
+          created_at?: string
+          duration_seconds: number
+          id?: string
+          like_count?: number
+          product_id?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id: string
+          video_url: string
+          view_count?: number
+        }
+        Update: {
+          admin_note?: string | null
+          approved_at?: string | null
+          caption?: string
+          comment_count?: number
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          like_count?: number
+          product_id?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string
+          video_url?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reels_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       sellers: {
         Row: {
           address: string | null
@@ -1324,6 +1458,42 @@ export type Database = {
         }
         Relationships: []
       }
+      social_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string
+          created_at: string
+          display_name: string
+          followers_count: number
+          following_count: number
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string
+          created_at?: string
+          display_name?: string
+          followers_count?: number
+          following_count?: number
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string
+          created_at?: string
+          display_name?: string
+          followers_count?: number
+          following_count?: number
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -1347,6 +1517,39 @@ export type Database = {
           reason?: string
         }
         Relationships: []
+      }
+      user_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -1408,6 +1611,7 @@ export type Database = {
         Args: { _message: string; _title: string; _type?: string }
         Returns: number
       }
+      ensure_social_profile: { Args: never; Returns: string }
       get_admin_users_overview: {
         Args: never
         Returns: {
@@ -1488,6 +1692,7 @@ export type Database = {
         Args: { _conversation_id: string }
         Returns: undefined
       }
+      register_reel_view: { Args: { _reel_id: string }; Returns: undefined }
       request_redeem: {
         Args: { _coins: number; _email: string }
         Returns: string

@@ -99,6 +99,13 @@
       "when": 1793446351289,
       "tag": "0013_create_bazaar_classifieds",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1793807797973,
+      "tag": "0014_create_reels_social",
+      "breakpoints": true
     }
   ]
 }
