@@ -1469,6 +1469,7 @@ export type Database = {
           updated_at: string
           user_id: string
           username: string
+          username_set: boolean
         }
         Insert: {
           avatar_url?: string | null
@@ -1480,6 +1481,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           username: string
+          username_set?: boolean
         }
         Update: {
           avatar_url?: string | null
@@ -1491,6 +1493,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string
+          username_set?: boolean
         }
         Relationships: []
       }
