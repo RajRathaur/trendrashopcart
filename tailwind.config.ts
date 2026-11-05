@@ -66,6 +66,10 @@ export default {
   				foreground: 'hsl(var(--festive-foreground))'
   			},
   			rating: 'hsl(var(--rating))',
+  			reel: {
+  				DEFAULT: 'hsl(var(--reel))',
+  				foreground: 'hsl(var(--reel-foreground))'
+  			},
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
@@ -180,6 +184,13 @@ export default {
   				'100%': {
   					transform: 'translateX(100%)'
   				}
+  			},
+  			'reel-heart': {
+  				'0%': { transform: 'scale(0.3)', opacity: '0' },
+  				'25%': { transform: 'scale(1.15)', opacity: '1' },
+  				'45%': { transform: 'scale(0.95)', opacity: '1' },
+  				'70%': { transform: 'scale(1)', opacity: '1' },
+  				'100%': { transform: 'scale(1.3) translateY(-20px)', opacity: '0' }
   			}
   		},
   		animation: {
@@ -190,7 +201,8 @@ export default {
   			'fade-in': 'fade-in 0.2s ease-out',
   			'scale-in': 'scale-in 0.2s ease-out',
   			'pulse-deal': 'pulse-deal 2s infinite',
-  			shimmer: 'shimmer 2s infinite'
+  			shimmer: 'shimmer 2s infinite',
+  			'reel-heart': 'reel-heart 0.9s ease-out forwards'
   		},
   		boxShadow: {
   			product: 'var(--shadow-product)',

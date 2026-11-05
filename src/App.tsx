@@ -83,6 +83,12 @@ const BazaarMyAds = lazy(() => import("./pages/bazaar/BazaarMyAds"));
 const BazaarChats = lazy(() => import("./pages/bazaar/BazaarChats"));
 const BazaarChat = lazy(() => import("./pages/bazaar/BazaarChat"));
 
+// Trendra Reels (short videos + user profiles) — lazy
+const ReelsFeed = lazy(() => import("./pages/reels/ReelsFeed"));
+const ReelUpload = lazy(() => import("./pages/reels/ReelUpload"));
+const UserProfile = lazy(() => import("./pages/reels/UserProfile"));
+const AdminReels = lazy(() => import("./pages/admin/AdminReels"));
+
 
 const queryClient = new QueryClient();
 
@@ -151,6 +157,12 @@ const AppRoutes = () => (
       <Route path="/bazaar/chats" element={lazyPage(<BazaarChats />)} />
       <Route path="/bazaar/chats/:id" element={lazyPage(<BazaarChat />)} />
 
+      {/* Trendra Reels — watching and profiles are public, posting needs login (AuthGate) */}
+      <Route path="/reels" element={lazyPage(<ReelsFeed />)} />
+      <Route path="/reels/upload" element={lazyPage(<ReelUpload />)} />
+      <Route path="/reels/:id" element={lazyPage(<ReelsFeed />)} />
+      <Route path="/u/:username" element={lazyPage(<UserProfile />)} />
+
       {/* Seller Routes — guarded, lazy */}
       <Route path="/seller" element={seller(<SellerDashboard />)} />
       <Route path="/seller/products" element={seller(<SellerProducts />)} />
@@ -177,6 +189,7 @@ const AppRoutes = () => (
       <Route path="/admin/coupons" element={admin(<AdminCoupons />)} />
       <Route path="/admin/festival-sale" element={admin(<AdminFestivalSale />)} />
       <Route path="/admin/bazaar" element={admin(<AdminBazaar />)} />
+      <Route path="/admin/reels" element={admin(<AdminReels />)} />
 
 
       {/* Redirect common paths */}

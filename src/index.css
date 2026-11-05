@@ -53,6 +53,10 @@
     --deal: 0 72% 55%;
     --deal-foreground: 0 0% 98%;
 
+    /* Reels: always a dark full-screen video stage */
+    --reel: 0 0% 0%;
+    --reel-foreground: 0 0% 100%;
+
     /* Festival sale (saffron + maroon + gold) */
     --festive: 24 95% 52%;
     --festive-deep: 345 72% 32%;

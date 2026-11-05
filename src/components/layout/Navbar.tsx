@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, Package, Store, Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby, TrendingUp, MoreVertical, Gamepad2, Truck, ShieldCheck, Recycle } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, ChevronDown, Package, Store, Smartphone, Shirt, Home, Sparkles, ShoppingBasket, Laptop, Watch, Baby, TrendingUp, MoreVertical, Gamepad2, Truck, ShieldCheck, Recycle, Clapperboard } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import trendraLogo from '@/assets/trendra-logo.jpeg';
@@ -110,6 +110,12 @@ export const Navbar = () => {
                       <Recycle className="h-3.5 w-3.5 text-primary-foreground" />
                     </div>
                     <span className="text-sm font-medium">Trendra Bazaar — purana saaman</span>
+                  </Link>
+                  <Link to="/reels" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted">
+                    <div className="p-1.5 rounded bg-primary">
+                      <Clapperboard className="h-3.5 w-3.5 text-primary-foreground" />
+                    </div>
+                    <span className="text-sm font-medium">Trendra Reels — videos dekho</span>
                   </Link>
                   <Link to="/fruit-game" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted">
                     <div className="p-1.5 rounded bg-gradient-to-br from-green-400 to-emerald-500">
@@ -396,6 +402,10 @@ export const Navbar = () => {
           <Link to="/bazaar" className="commerce-category-link">
             <Recycle className="h-3.5 w-3.5" />
             <span>Bazaar</span>
+          </Link>
+          <Link to="/reels" className="commerce-category-link">
+            <Clapperboard className="h-3.5 w-3.5" />
+            <span>Reels</span>
           </Link>
           <Link to="/products" className="commerce-category-link">
             <MoreVertical className="h-3.5 w-3.5" />

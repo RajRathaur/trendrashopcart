@@ -34,6 +34,18 @@ describe('isPublicPath', () => {
   });
 });
 
+describe('Reels pages', () => {
+  it('opens the reels feed, a single reel and a public profile without login', () => {
+    expect(isPublicPath('/reels')).toBe(true);
+    expect(isPublicPath('/reels/ed797879-2731-4a89-b786-689856d57b1c')).toBe(true);
+    expect(isPublicPath('/u/trendra_1234')).toBe(true);
+  });
+
+  it.each(['/reels/upload', '/u/me', '/admin/reels', '/u'])('keeps %s behind login', (path) => {
+    expect(isPublicPath(path)).toBe(false);
+  });
+});
+
 describe('loginPath', () => {
   it('sends the shopper back to the product after login', () => {
     expect(loginPath('/product/abc')).toBe('/login?redirect=%2Fproduct%2Fabc');
