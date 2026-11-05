@@ -4,14 +4,22 @@
 const PUBLIC_EXACT = [
   '/', '/products', '/login', '/forgot-password', '/reset-password',
   '/about', '/help', '/shipping', '/privacy-policy', '/refund-policy', '/shipping-policy',
-  '/bazaar',
+  '/bazaar', '/reels',
 ];
+
+// Paths that look like public ones but need a login.
+const PRIVATE_EXACT = ['/reels/upload', '/u/me'];
 
 export const isPublicPath = (pathname: string): boolean => {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
   if (PUBLIC_EXACT.includes(path)) return true;
-  // Product pages: /product/<id>; used-item ads: /bazaar/item/<id>
-  return /^\/product\/[^/]+$/.test(path) || /^\/bazaar\/item\/[^/]+$/.test(path);
+  if (PRIVATE_EXACT.includes(path)) return false;
+  // Product pages: /product/<id>; used-item ads: /bazaar/item/<id>;
+  // single reels: /reels/<id>; public profiles: /u/<username>
+  return /^\/product\/[^/]+$/.test(path)
+    || /^\/bazaar\/item\/[^/]+$/.test(path)
+    || /^\/reels\/[^/]+$/.test(path)
+    || /^\/u\/[^/]+$/.test(path);
 };
 
 /** Login page URL that brings the shopper back to `returnTo` afterwards. */

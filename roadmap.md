@@ -11,3 +11,8 @@
 - [x] Admin approve/reject page + admin menu link.
 - [x] Routes, menu/homepage links, sitemap.
 - [x] Run tests, phone-size browser check.
+
+# Trendra Reels (Instagram-style videos + user profiles)
+- [x] Database, upload, feed, profile, comments, follow, admin page.
+- [x] Routes, public paths, menu/homepage/admin links, heart animation.
+- [x] Phone-size browser check (watch logged out, upload, like, views).

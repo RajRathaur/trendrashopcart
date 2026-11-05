@@ -17,5 +17,7 @@ Disallow: /bazaar/sell
 Disallow: /bazaar/edit/
 Disallow: /bazaar/my-ads
 Disallow: /bazaar/chats
+Disallow: /reels/upload
+Disallow: /u/me
 
 Sitemap: https://trendra.store/sitemap.xml
