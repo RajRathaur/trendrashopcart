@@ -119,5 +119,29 @@ export const ensureSocialProfile = async (): Promise<string> => {
   return data;
 };
 
+/** A few valid UID ideas built from the user's name (used as tap-to-fill chips). */
+export const suggestUsernames = (name: string, seed = Date.now()): string[] => {
+  const words = name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean);
+  const first = words[0] ?? '';
+  const joined = words.join('').slice(0, 20);
+  const n = String(seed % 1000).padStart(3, '0');
+  const base = joined.length >= 3 ? joined : 'trendra';
+  const ideas = [
+    joined,
+    words.length > 1 ? words.slice(0, 2).join('.') : `${base}.style`,
+    `${first.length >= 3 ? first : base}_${n}`,
+    `${base}.official`,
+  ];
+  return [...new Set(ideas)]
+    .map((s) => s.slice(0, 30))
+    .filter((s) => usernameSchema.safeParse(s).success);
+};
+
+/** True when nobody else already uses this UID. */
+export const isUsernameFree = async (username: string, myUserId: string): Promise<boolean> => {
+  const { data } = await supabase.from('social_profiles').select('user_id').eq('username', username).maybeSingle();
+  return !data || data.user_id === myUserId;
+};
+
 export const avatarLetter = (p?: { username?: string | null; display_name?: string | null } | null) =>
   ((p?.display_name || p?.username || '?').trim()[0] ?? '?').toUpperCase();
