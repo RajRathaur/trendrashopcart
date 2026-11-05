@@ -98,7 +98,8 @@ const ReelsFeed = () => {
     const r = reels[active];
     if (r && r.status === 'approved' && !viewed.current.has(r.id)) {
       viewed.current.add(r.id);
-      supabase.rpc('register_reel_view', { _reel_id: r.id });
+      // The request only runs once awaited/then-ed.
+      void supabase.rpc('register_reel_view', { _reel_id: r.id }).then(() => undefined);
     }
     if (active >= reels.length - 3) loadMore();
   }, [active, reels, loadMore]);
