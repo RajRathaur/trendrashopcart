@@ -549,6 +549,79 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_monetization: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          full_name: string
+          status: string
+          updated_at: string
+          upi_id: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          full_name: string
+          status?: string
+          updated_at?: string
+          upi_id: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          full_name?: string
+          status?: string
+          updated_at?: string
+          upi_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_monetization_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      creator_payouts: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          reference: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          reference?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          reference?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_payouts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       delivery_pincodes: {
         Row: {
           city: string | null
@@ -1521,6 +1594,94 @@ export type Database = {
         }
         Relationships: []
       }
+      tech_video_views: {
+        Row: {
+          day: string
+          video_id: string
+          viewer_id: string
+        }
+        Insert: {
+          day?: string
+          video_id: string
+          viewer_id: string
+        }
+        Update: {
+          day?: string
+          video_id?: string
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tech_video_views_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "tech_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tech_videos: {
+        Row: {
+          admin_note: string | null
+          approved_at: string | null
+          category: string
+          created_at: string
+          description: string
+          duration_seconds: number
+          id: string
+          monetized_views: number
+          status: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          video_url: string
+          view_count: number
+        }
+        Insert: {
+          admin_note?: string | null
+          approved_at?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          duration_seconds: number
+          id?: string
+          monetized_views?: number
+          status?: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          video_url: string
+          view_count?: number
+        }
+        Update: {
+          admin_note?: string | null
+          approved_at?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          duration_seconds?: number
+          id?: string
+          monetized_views?: number
+          status?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          video_url?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tech_videos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       user_follows: {
         Row: {
           created_at: string
@@ -1614,6 +1775,20 @@ export type Database = {
         Args: { _message: string; _title: string; _type?: string }
         Returns: number
       }
+      creator_balances: {
+        Args: { _user_id?: string }
+        Returns: {
+          balance: number
+          earned: number
+          full_name: string
+          monetized_views: number
+          paid: number
+          status: string
+          upi_id: string
+          user_id: string
+          username: string
+        }[]
+      }
       ensure_social_profile: { Args: never; Returns: string }
       get_admin_users_overview: {
         Args: never
@@ -1696,6 +1871,10 @@ export type Database = {
         Returns: undefined
       }
       register_reel_view: { Args: { _reel_id: string }; Returns: undefined }
+      register_tech_video_view: {
+        Args: { _video_id: string }
+        Returns: undefined
+      }
       request_redeem: {
         Args: { _coins: number; _email: string }
         Returns: string
@@ -1710,6 +1889,7 @@ export type Database = {
           min_order_amount: number
         }[]
       }
+      video_rate_per_1000: { Args: never; Returns: number }
     }
     Enums: {
       app_role: "admin" | "seller" | "user"

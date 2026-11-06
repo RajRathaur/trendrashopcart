@@ -113,6 +113,13 @@
       "when": 1793840127273,
       "tag": "0015_social_profiles_username_set",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1793924431256,
+      "tag": "0016_tech_videos_monetization_private_profiles",
+      "breakpoints": true
     }
   ]
 }
