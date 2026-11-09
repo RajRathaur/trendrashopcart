@@ -98,7 +98,7 @@ const Index = () => {
       </div>
 
       {/* Trendra Bazaar (used items) + Trendra Reels entries */}
-      <div className="container mx-auto grid gap-2 px-3 pb-2 sm:grid-cols-2">
+      <div className="container mx-auto grid gap-2 px-3 pb-2 sm:grid-cols-3">
         <Link
           to="/bazaar"
           className="flex items-center gap-3 rounded-xl border bg-card p-3 transition-colors hover:bg-muted/50 sm:p-4"
@@ -124,6 +124,10 @@ const Index = () => {
             <span className="block text-sm text-muted-foreground">Short videos dekho, apni reel daalo, follow karo</span>
           </span>
           <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
+        </Link>
+        <Link to="/videos" className="flex items-center gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50 sm:p-4">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground"><Clapperboard className="h-5 w-5" /></span>
+          <span className="min-w-0 flex-1"><span className="block font-semibold">Trendra Videos</span><span className="block text-sm text-muted-foreground">Tech, gadgets & tutorials</span></span><ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
         </Link>
       </div>
 

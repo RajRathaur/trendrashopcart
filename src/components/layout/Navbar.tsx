@@ -117,6 +117,8 @@ export const Navbar = () => {
                     </div>
                     <span className="text-sm font-medium">Trendra Reels — videos dekho</span>
                   </Link>
+                  <Link to="/videos" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted"><Clapperboard className="h-4 w-4 text-primary" /><span className="text-sm font-medium">Trendra Technical Videos</span></Link>
+                  <Link to="/reels/search" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted"><Search className="h-4 w-4 text-primary" /><span className="text-sm font-medium">Username search</span></Link>
                   <Link to="/fruit-game" className="flex items-center gap-3 py-2.5 px-5 hover:bg-muted">
                     <div className="p-1.5 rounded bg-gradient-to-br from-green-400 to-emerald-500">
                       <Gamepad2 className="h-3.5 w-3.5 text-white" />
@@ -407,6 +409,7 @@ export const Navbar = () => {
             <Clapperboard className="h-3.5 w-3.5" />
             <span>Reels</span>
           </Link>
+          <Link to="/videos" className="commerce-category-link"><Clapperboard className="h-3.5 w-3.5" /><span>Tech Videos</span></Link>
           <Link to="/products" className="commerce-category-link">
             <MoreVertical className="h-3.5 w-3.5" />
             <span>More</span>

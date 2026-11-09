@@ -88,6 +88,12 @@ const ReelsFeed = lazy(() => import("./pages/reels/ReelsFeed"));
 const ReelUpload = lazy(() => import("./pages/reels/ReelUpload"));
 const UserProfile = lazy(() => import("./pages/reels/UserProfile"));
 const AdminReels = lazy(() => import("./pages/admin/AdminReels"));
+const UserSearch = lazy(() => import("./pages/reels/UserSearch"));
+const Videos = lazy(() => import("./pages/videos/Videos"));
+const VideoUpload = lazy(() => import("./pages/videos/VideoUpload"));
+const CreatorEarnings = lazy(() => import("./pages/videos/CreatorEarnings"));
+const AdminVideos = lazy(() => import("./pages/admin/AdminVideos"));
+const AdminCreators = lazy(() => import("./pages/admin/AdminCreators"));
 
 
 const queryClient = new QueryClient();
@@ -157,11 +163,16 @@ const AppRoutes = () => (
       <Route path="/bazaar/chats" element={lazyPage(<BazaarChats />)} />
       <Route path="/bazaar/chats/:id" element={lazyPage(<BazaarChat />)} />
 
-      {/* Trendra Reels — watching and profiles are public, posting needs login (AuthGate) */}
+      {/* Watching is public; user profiles, search and posting need login. */}
       <Route path="/reels" element={lazyPage(<ReelsFeed />)} />
+      <Route path="/reels/search" element={lazyPage(<UserSearch />)} />
       <Route path="/reels/upload" element={lazyPage(<ReelUpload />)} />
       <Route path="/reels/:id" element={lazyPage(<ReelsFeed />)} />
       <Route path="/u/:username" element={lazyPage(<UserProfile />)} />
+      <Route path="/videos" element={lazyPage(<Videos />)} />
+      <Route path="/videos/upload" element={lazyPage(<VideoUpload />)} />
+      <Route path="/videos/:id" element={lazyPage(<Videos />)} />
+      <Route path="/creator/earnings" element={lazyPage(<CreatorEarnings />)} />
 
       {/* Seller Routes — guarded, lazy */}
       <Route path="/seller" element={seller(<SellerDashboard />)} />
@@ -190,6 +201,8 @@ const AppRoutes = () => (
       <Route path="/admin/festival-sale" element={admin(<AdminFestivalSale />)} />
       <Route path="/admin/bazaar" element={admin(<AdminBazaar />)} />
       <Route path="/admin/reels" element={admin(<AdminReels />)} />
+      <Route path="/admin/videos" element={admin(<AdminVideos />)} />
+      <Route path="/admin/creators" element={admin(<AdminCreators />)} />
 
 
       {/* Redirect common paths */}

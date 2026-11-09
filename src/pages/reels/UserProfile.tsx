@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 import { Camera, Clapperboard, Eye, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Reel, SocialProfile, avatarLetter, ensureSocialProfile, formatCount, uploadReelFile, validateProfile } from '@/lib/reels';
 import { loginPath } from '@/lib/publicPaths';
+import { UsernamePicker } from '@/components/reels/UsernamePicker';
+import { VideoNav } from '@/components/reels/VideoNav';
 
 type MiniProfile = Pick<SocialProfile, 'user_id' | 'username' | 'display_name' | 'avatar_url'>;
 
@@ -103,6 +105,8 @@ const UserProfile = () => {
         path={`/u/${profile.username}`}
       />
       <div className="container mx-auto max-w-3xl px-3 py-5">
+        <VideoNav />
+        {isOwn && !profile.username_set && <div className="mb-6 border-b pb-5"><UsernamePicker profile={profile} onSaved={p => { setProfile(p); navigate(`/u/${p.username}`, { replace: true }); }} /></div>}
         <div className="flex items-center gap-5">
           <Avatar p={profile} />
           <div className="grid flex-1 grid-cols-3 text-center">
@@ -134,6 +138,7 @@ const UserProfile = () => {
             </Button>
           )}
         </div>
+        <Button variant="outline" className="mt-3" asChild><Link to={`/videos?user=${profile.user_id}`}>Technical videos</Link></Button>
 
         <div className="mt-6 border-t pt-1">
           {reels.length === 0 ? (
@@ -266,7 +271,7 @@ const EditProfile = ({ open, profile, onClose, onSaved }: {
     if (!r.ok) { toast.error(r.error); return; }
     setBusy(true);
     const { data, error } = await supabase.from('social_profiles')
-      .update({ ...r.data, avatar_url: avatar })
+      .update({ ...r.data, avatar_url: avatar, username_set: true })
       .eq('user_id', profile.user_id).select('*').single();
     setBusy(false);
     if (error) {
