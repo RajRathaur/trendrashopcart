@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Clapperboard, Loader2, Plus, UserCircle } from 'lucide-react';
+import { ArrowLeft, Clapperboard, Loader2, Plus, UserCircle, Search, Video } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Seo } from '@/components/Seo';
 import { ReelItem } from '@/components/reels/ReelItem';
@@ -170,6 +171,10 @@ const ReelsFeed = () => {
           </button>
         </div>
       </header>
+      <nav aria-label="Explore videos" className="absolute left-3 top-16 z-50 flex gap-2">
+        <Button variant="secondary" size="sm" asChild><Link to="/videos"><Video className="mr-1 h-4 w-4" />Tech videos</Link></Button>
+        <Button variant="secondary" size="sm" asChild><Link to="/reels/search"><Search className="mr-1 h-4 w-4" />Users</Link></Button>
+      </nav>
 
       <div
         ref={containerRef}

@@ -35,14 +35,21 @@ describe('isPublicPath', () => {
 });
 
 describe('Reels pages', () => {
-  it('opens the reels feed, a single reel and a public profile without login', () => {
+  it('opens the reels feed and a single reel without login', () => {
     expect(isPublicPath('/reels')).toBe(true);
     expect(isPublicPath('/reels/ed797879-2731-4a89-b786-689856d57b1c')).toBe(true);
-    expect(isPublicPath('/u/trendra_1234')).toBe(true);
+    expect(isPublicPath('/u/trendra_1234')).toBe(false);
   });
 
-  it.each(['/reels/upload', '/u/me', '/admin/reels', '/u'])('keeps %s behind login', (path) => {
+  it.each(['/reels/upload', '/reels/search', '/u/me', '/admin/reels', '/u', '/videos/upload', '/creator/earnings', '/admin/videos', '/admin/creators'])('keeps %s behind login', (path) => {
     expect(isPublicPath(path)).toBe(false);
+  });
+});
+
+describe('Technical videos', () => {
+  it('allows public watching', () => {
+    expect(isPublicPath('/videos')).toBe(true);
+    expect(isPublicPath('/videos/123')).toBe(true);
   });
 });
 

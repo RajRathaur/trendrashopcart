@@ -23,6 +23,8 @@ const navItems = [
   { href: '/admin/festival-sale', label: 'Festival Sale', icon: PartyPopper },
   { href: '/admin/bazaar', label: 'Bazaar Ads', icon: Recycle },
   { href: '/admin/reels', label: 'Reels', icon: Clapperboard },
+  { href: '/admin/videos', label: 'Technical Videos', icon: Clapperboard },
+  { href: '/admin/creators', label: 'Creator Earnings', icon: CreditCard },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/broadcast', label: 'Broadcast', icon: Megaphone },
   { href: '/admin/email-monitor', label: 'Email Monitor', icon: MailCheck },
