@@ -159,7 +159,7 @@ export const Navbar = () => {
             </Sheet>
 
             {/* Logo */}
-            <Link to="/" className="commerce-brand shrink-0" aria-label="Trendra home">
+            <Link to="/shop" className="commerce-brand shrink-0" aria-label="Trendra shop">
               <img src={trendraLogo} alt="" className="commerce-brand-logo" />
               <span className="commerce-brand-name">Trendra</span>
             </Link>
