@@ -16,6 +16,7 @@ interface SitemapEntry {
 // Only pages that open without login (see src/lib/publicPaths.ts).
 const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "daily", priority: "1.0" },
+  { path: "/shop", changefreq: "daily", priority: "0.9" },
   { path: "/products", changefreq: "daily", priority: "0.9" },
   { path: "/bazaar", changefreq: "daily", priority: "0.7" },
   { path: "/reels", changefreq: "daily", priority: "0.7" },

@@ -6,6 +6,10 @@ describe('isPublicPath', () => {
     expect(isPublicPath('/')).toBe(true);
   });
 
+  it('opens the shop page without login', () => {
+    expect(isPublicPath('/shop')).toBe(true);
+  });
+
   it('opens the product list without login', () => {
     expect(isPublicPath('/products')).toBe(true);
   });
