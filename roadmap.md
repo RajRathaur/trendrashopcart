@@ -18,7 +18,7 @@
 - [x] Phone-size browser check (watch logged out, upload, like, views).
 
 # Technical videos and creator panel
-- [ ] Username search and UID picker; login-only profiles.
-- [ ] Technical video browse, watch, upload and own-video pages.
-- [ ] Creator earnings and admin video/creator approval, payment records.
+- [x] Username search and UID picker; login-only profiles.
+- [x] Technical video browse, watch, upload and own-video pages.
+- [x] Creator earnings and admin video/creator approval, payment records.
 - [ ] Verify privacy policies, tests and mobile upload/approval/watch flow.
