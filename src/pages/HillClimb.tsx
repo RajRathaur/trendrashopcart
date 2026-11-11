@@ -294,7 +294,7 @@ const HillClimb = () => {
       <GameAdBanner />
       <div className="container mx-auto px-3 py-4 max-w-3xl">
         <div className="flex items-center justify-between mb-2">
-          <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground"><ArrowLeft className="w-4 h-4" /> Home</Link>
+          <Link to="/shop" className="inline-flex items-center gap-1 text-sm text-muted-foreground"><ArrowLeft className="w-4 h-4" /> Home</Link>
           <h1 className="text-lg font-bold text-foreground">🏎️ Hill Climb Racing</h1>
           <span className="text-xs text-muted-foreground">Best: {best}m</span>
         </div>

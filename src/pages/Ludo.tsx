@@ -379,7 +379,7 @@ const Ludo = () => {
     <Layout>
       <GameAdBanner />
       <div className="container mx-auto px-4 py-6 max-w-xl text-center">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-3 hover:text-foreground transition-colors">
+        <Link to="/shop" className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-3 hover:text-foreground transition-colors">
           <ArrowLeft className="w-4 h-4" /> Home
         </Link>
         <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-red-600 via-amber-500 to-green-600 bg-clip-text text-transparent">

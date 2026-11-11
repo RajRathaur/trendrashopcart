@@ -145,7 +145,7 @@ const ReelsFeed = () => {
       {/* Top bar */}
       <header className="absolute inset-x-0 top-0 z-50 flex items-center justify-between gap-2 bg-gradient-to-b from-reel/70 to-transparent px-3 pb-6 pt-3">
         <div className="flex items-center gap-1">
-          <Link to="/" className="rounded-full p-2 hover:bg-reel-foreground/10" aria-label="Home par jaayein">
+          <Link to="/shop" className="rounded-full p-2 hover:bg-reel-foreground/10" aria-label="Home par jaayein">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <span className="text-lg font-bold">Reels</span>

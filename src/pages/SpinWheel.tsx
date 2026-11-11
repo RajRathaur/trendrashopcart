@@ -65,7 +65,7 @@ const SpinWheel = () => {
     <Layout>
       <GameAdBanner />
       <div className="container mx-auto px-4 py-6 max-w-md text-center">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-3">
+        <Link to="/shop" className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-3">
           <ArrowLeft className="w-4 h-4" /> Home
         </Link>
         <h1 className="text-2xl font-bold text-foreground">🎡 Spin the Wheel</h1>

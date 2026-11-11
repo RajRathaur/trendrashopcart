@@ -72,7 +72,7 @@ export const SellerLayout = ({ children }: { children: ReactNode }) => {
         </nav>
 
         <div className="p-4 border-t space-y-2">
-          <Link to="/">
+          <Link to="/shop">
             <Button variant="outline" className="w-full justify-start gap-2">
               <Store className="h-4 w-4" />
               Back to Store
