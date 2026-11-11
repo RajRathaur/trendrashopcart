@@ -9,7 +9,7 @@ export const BottomNav = () => {
   const { user } = useAuth();
 
   const navItems = [
-    { icon: Home, label: 'Home', path: '/' },
+    { icon: Home, label: 'Home', path: '/shop' },
     { icon: Search, label: 'Explore', path: '/products' },
     { icon: Heart, label: 'Wishlist', path: '/wishlist' },
     { icon: ShoppingCart, label: 'Cart', path: '/cart', badge: itemCount },
