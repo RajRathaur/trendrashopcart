@@ -2,7 +2,7 @@
 // checkout, orders, games, profile, admin, seller, contact form…) needs a login.
 // Read-only info and policy pages are public so Google and new shoppers can read them.
 const PUBLIC_EXACT = [
-  '/', '/products', '/login', '/forgot-password', '/reset-password',
+  '/', '/shop', '/products', '/login', '/forgot-password', '/reset-password',
   '/about', '/help', '/shipping', '/privacy-policy', '/refund-policy', '/shipping-policy',
   '/bazaar', '/reels', '/videos',
 ];

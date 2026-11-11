@@ -18,6 +18,7 @@ import { AuthGate } from "@/components/AuthGate";
 
 // Public pages — eager (part of first paint)
 import Index from "./pages/Index";
+import ReelsFeed from "./pages/reels/ReelsFeed";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
@@ -83,8 +84,7 @@ const BazaarMyAds = lazy(() => import("./pages/bazaar/BazaarMyAds"));
 const BazaarChats = lazy(() => import("./pages/bazaar/BazaarChats"));
 const BazaarChat = lazy(() => import("./pages/bazaar/BazaarChat"));
 
-// Trendra Reels (short videos + user profiles) — lazy
-const ReelsFeed = lazy(() => import("./pages/reels/ReelsFeed"));
+// Trendra Reels (short videos + user profiles) — feed is the default page, rest lazy
 const ReelUpload = lazy(() => import("./pages/reels/ReelUpload"));
 const UserProfile = lazy(() => import("./pages/reels/UserProfile"));
 const AdminReels = lazy(() => import("./pages/admin/AdminReels"));
@@ -122,7 +122,8 @@ const AppRoutes = () => (
   <BrowserRouter>
     <AuthGate>
     <Routes>
-      <Route path="/" element={<Index />} />
+      <Route path="/" element={<ReelsFeed />} />
+      <Route path="/shop" element={<Index />} />
       <Route path="/products" element={<Products />} />
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/cart" element={<Cart />} />
