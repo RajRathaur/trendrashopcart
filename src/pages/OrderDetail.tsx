@@ -138,7 +138,7 @@ const OrderDetail = () => {
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link to="/" className="hover:text-primary">Home</Link>
+          <Link to="/shop" className="hover:text-primary">Home</Link>
           <ChevronRight className="h-3 w-3" />
           <Link to="/orders" className="hover:text-primary">Orders</Link>
           <ChevronRight className="h-3 w-3" />

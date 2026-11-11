@@ -88,7 +88,7 @@ const ProfilePage = () => {
       <div className="container mx-auto px-4 py-4">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link to="/" className="hover:text-primary">Home</Link>
+          <Link to="/shop" className="hover:text-primary">Home</Link>
           <ChevronRight className="h-4 w-4" />
           <span className="text-foreground">My Profile</span>
         </div>

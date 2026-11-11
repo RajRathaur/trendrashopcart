@@ -84,7 +84,7 @@ const BazaarMyAds = lazy(() => import("./pages/bazaar/BazaarMyAds"));
 const BazaarChats = lazy(() => import("./pages/bazaar/BazaarChats"));
 const BazaarChat = lazy(() => import("./pages/bazaar/BazaarChat"));
 
-// Trendra Reels (short videos + user profiles) — feed is the default page, rest lazy
+// Trendra Reels (short videos + user profiles); technical Videos feed is the default page
 const ReelUpload = lazy(() => import("./pages/reels/ReelUpload"));
 const UserProfile = lazy(() => import("./pages/reels/UserProfile"));
 const AdminReels = lazy(() => import("./pages/admin/AdminReels"));
@@ -122,7 +122,7 @@ const AppRoutes = () => (
   <BrowserRouter>
     <AuthGate>
     <Routes>
-      <Route path="/" element={<ReelsFeed />} />
+      <Route path="/" element={lazyPage(<Videos />)} />
       <Route path="/shop" element={<Index />} />
       <Route path="/products" element={<Products />} />
       <Route path="/product/:id" element={<ProductDetail />} />

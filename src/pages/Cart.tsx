@@ -86,7 +86,7 @@ const CartPage = () => {
       <div className="container mx-auto px-4 py-4 pb-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-5">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+          <Link to="/shop" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <span className="text-foreground font-medium">Cart</span>
         </nav>

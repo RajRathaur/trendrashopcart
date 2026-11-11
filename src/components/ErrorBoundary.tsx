@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <RefreshCw className="w-4 h-4" /> Reload page
             </Button>
             <Button variant="outline" asChild onClick={this.handleReset}>
-              <Link to="/" className="gap-2">
+              <Link to="/shop" className="gap-2">
                 <Home className="w-4 h-4" /> Home
               </Link>
             </Button>
