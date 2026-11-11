@@ -122,7 +122,7 @@ const AppRoutes = () => (
   <BrowserRouter>
     <AuthGate>
     <Routes>
-      <Route path="/" element={<ReelsFeed />} />
+      <Route path="/" element={lazyPage(<Videos />)} />
       <Route path="/shop" element={<Index />} />
       <Route path="/products" element={<Products />} />
       <Route path="/product/:id" element={<ProductDetail />} />
