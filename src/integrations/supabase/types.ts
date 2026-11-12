@@ -1594,6 +1594,74 @@ export type Database = {
         }
         Relationships: []
       }
+      tech_video_comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tech_video_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "social_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "tech_video_comments_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "tech_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tech_video_reactions: {
+        Row: {
+          created_at: string
+          user_id: string
+          value: number
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+          value: number
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+          value?: number
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tech_video_reactions_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "tech_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tech_video_views: {
         Row: {
           day: string

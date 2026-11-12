@@ -24,4 +24,11 @@ export const uploadTechFile = async (userId: string, body: Blob, ext: string) =>
 export const removeTechFiles = async (urls: string[]) => {
   const paths = urls.map(url => url.split('/object/public/product-images/')[1]).filter((path): path is string => Boolean(path?.startsWith('videos/')));
   if (paths.length) await supabase.storage.from('product-images').remove(paths);
+};/** YouTube-style "x din pehle" label. */
+export const timeAgo = (iso: string | null | undefined, now = Date.now()): string => {
+  if (!iso) return '';
+  const s = Math.max(0, Math.floor((now - new Date(iso).getTime()) / 1000));
+  const steps: [number, string][] = [[31536000, 'saal'], [2592000, 'mahine'], [604800, 'hafte'], [86400, 'din'], [3600, 'ghante'], [60, 'minute']];
+  for (const [size, label] of steps) if (s >= size) return `${Math.floor(s / size)} ${label} pehle`;
+  return 'abhi abhi';
 };
