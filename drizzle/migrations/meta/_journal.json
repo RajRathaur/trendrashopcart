@@ -127,6 +127,13 @@
       "when": 1794450446304,
       "tag": "0017_tech_video_reactions_comments",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794582452512,
+      "tag": "0018_scope_social_reads",
+      "breakpoints": true
     }
   ]
 }

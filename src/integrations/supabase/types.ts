@@ -1947,6 +1947,13 @@ export type Database = {
         Args: { _coins: number; _email: string }
         Returns: string
       }
+      tech_video_reaction_counts: {
+        Args: { _video_id: string }
+        Returns: {
+          down: number
+          up: number
+        }[]
+      }
       validate_coupon: {
         Args: { _code: string; _order_amount: number }
         Returns: {

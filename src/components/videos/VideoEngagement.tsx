@@ -26,11 +26,12 @@ export function VideoEngagement({ videoId, channel }: { videoId: string; channel
   useEffect(() => setSubs(channel?.followers_count ?? 0), [channel]);
   useEffect(() => {
     if (!user) return;
-    void supabase.from('tech_video_reactions').select('user_id, value').eq('video_id', videoId).then(({ data }) => {
-      const rows = data ?? [];
-      setCounts({ up: rows.filter(r => r.value === 1).length, down: rows.filter(r => r.value === -1).length });
-      setMine(rows.find(r => r.user_id === user.id)?.value ?? 0);
+    void supabase.rpc('tech_video_reaction_counts', { _video_id: videoId }).then(({ data }) => {
+      const c = data?.[0];
+      setCounts({ up: Number(c?.up ?? 0), down: Number(c?.down ?? 0) });
     });
+    void supabase.from('tech_video_reactions').select('value').eq('video_id', videoId).eq('user_id', user.id).maybeSingle()
+      .then(({ data }) => setMine(data?.value ?? 0));
     void supabase.from('tech_video_comments').select('id, body, created_at, user_id, p:social_profiles(username, display_name, avatar_url)').eq('video_id', videoId).order('created_at', { ascending: false }).limit(100)
       .then(({ data }) => setComments((data ?? []) as Comment[]));
   }, [user, videoId]);
