@@ -134,6 +134,13 @@
       "when": 1794582452512,
       "tag": "0018_scope_social_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794645753742,
+      "tag": "0019_video_marketing_campaigns",
+      "breakpoints": true
     }
   ]
 }

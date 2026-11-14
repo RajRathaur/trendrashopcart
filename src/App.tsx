@@ -94,6 +94,7 @@ const VideoUpload = lazy(() => import("./pages/videos/VideoUpload"));
 const CreatorEarnings = lazy(() => import("./pages/videos/CreatorEarnings"));
 const AdminVideos = lazy(() => import("./pages/admin/AdminVideos"));
 const AdminCreators = lazy(() => import("./pages/admin/AdminCreators"));
+const Marketing = lazy(() => import("./pages/videos/Marketing"));
 
 
 const queryClient = new QueryClient();
@@ -174,6 +175,7 @@ const AppRoutes = () => (
       <Route path="/videos/upload" element={lazyPage(<VideoUpload />)} />
       <Route path="/videos/:id" element={lazyPage(<Videos />)} />
       <Route path="/creator/earnings" element={lazyPage(<CreatorEarnings />)} />
+      <Route path="/creator/marketing" element={lazyPage(<Marketing />)} />
 
       {/* Seller Routes — guarded, lazy */}
       <Route path="/seller" element={seller(<SellerDashboard />)} />
@@ -204,6 +206,7 @@ const AppRoutes = () => (
       <Route path="/admin/reels" element={admin(<AdminReels />)} />
       <Route path="/admin/videos" element={admin(<AdminVideos />)} />
       <Route path="/admin/creators" element={admin(<AdminCreators />)} />
+      <Route path="/admin/marketing" element={admin(<Marketing admin />)} />
 
 
       {/* Redirect common paths */}

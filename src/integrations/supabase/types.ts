@@ -1804,6 +1804,94 @@ export type Database = {
         }
         Relationships: []
       }
+      video_campaign_events: {
+        Row: {
+          campaign_id: string
+          day: string
+          event_type: string
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          day?: string
+          event_type: string
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          day?: string
+          event_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_campaign_events_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "video_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_campaigns: {
+        Row: {
+          admin_note: string
+          amount_inr: number
+          brand_name: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          kind: string
+          pack_days: number
+          payment_status: string
+          razorpay_payment_id: string | null
+          starts_at: string | null
+          status: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          admin_note?: string
+          amount_inr: number
+          brand_name?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          kind: string
+          pack_days: number
+          payment_status?: string
+          razorpay_payment_id?: string | null
+          starts_at?: string | null
+          status?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          admin_note?: string
+          amount_inr?: number
+          brand_name?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          kind?: string
+          pack_days?: number
+          payment_status?: string
+          razorpay_payment_id?: string | null
+          starts_at?: string | null
+          status?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_campaigns_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "tech_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wishlist_items: {
         Row: {
           created_at: string
@@ -1838,10 +1926,41 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      active_video_campaigns: {
+        Args: never
+        Returns: {
+          brand_name: string
+          campaign_id: string
+          category: string
+          duration_seconds: number
+          kind: string
+          thumbnail_url: string
+          title: string
+          video_id: string
+          view_count: number
+        }[]
+      }
       add_coins: { Args: { _coins: number }; Returns: number }
       broadcast_notification: {
         Args: { _message: string; _title: string; _type?: string }
         Returns: number
+      }
+      campaign_metrics: {
+        Args: never
+        Returns: {
+          campaign_id: string
+          clicks: number
+          impressions: number
+        }[]
+      }
+      create_video_campaign: {
+        Args: {
+          _brand_name: string
+          _days: number
+          _kind: string
+          _video_id: string
+        }
+        Returns: string
       }
       creator_balances: {
         Args: { _user_id?: string }
@@ -1936,6 +2055,21 @@ export type Database = {
       }
       mark_bazaar_read: {
         Args: { _conversation_id: string }
+        Returns: undefined
+      }
+      moderate_video_campaign: {
+        Args: { _id: string; _note?: string; _status: string }
+        Returns: undefined
+      }
+      promotion_packs: {
+        Args: never
+        Returns: {
+          days: number
+          price: number
+        }[]
+      }
+      record_campaign_event: {
+        Args: { _event: string; _id: string }
         Returns: undefined
       }
       register_reel_view: { Args: { _reel_id: string }; Returns: undefined }

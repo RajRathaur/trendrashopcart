@@ -1,6 +1,7 @@
 // Verifies a Razorpay payment for a coin pack and credits coins to the wallet.
 // Idempotent: the same razorpay_payment_id is credited only once.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { coinOrderMatches } from '../_shared/promotionPayment.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -53,6 +54,10 @@ Deno.serve(async (req) => {
       return json({ error: 'Payment fetch failed' }, 502);
     }
     const payment = JSON.parse(await payRes.text());
+    const orderRes = await fetch(`https://api.razorpay.com/v1/orders/${encodeURIComponent(String(razorpay_order_id))}`, { headers: { Authorization: `Basic ${auth}` } });
+    if (!orderRes.ok) return json({ error: 'Order fetch failed' }, 502);
+    const order = await orderRes.json();
+    if (!coinOrderMatches(order, payment, userId)) return json({ error: 'Payment is not a captured coin purchase for this user' }, 400);
     if (payment.order_id !== razorpay_order_id) return json({ error: 'Order mismatch' }, 400);
     if (!['captured', 'authorized'].includes(payment.status)) {
       return json({ error: `Payment not successful (${payment.status})` }, 400);

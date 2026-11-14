@@ -25,6 +25,7 @@ const navItems = [
   { href: '/admin/reels', label: 'Reels', icon: Clapperboard },
   { href: '/admin/videos', label: 'Technical Videos', icon: Clapperboard },
   { href: '/admin/creators', label: 'Creator Earnings', icon: CreditCard },
+  { href: '/admin/marketing', label: 'Marketing', icon: Megaphone },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/broadcast', label: 'Broadcast', icon: Megaphone },
   { href: '/admin/email-monitor', label: 'Email Monitor', icon: MailCheck },

@@ -1,3 +1,9 @@
+# Video marketing panel
+- [ ] Creator/brand promotion form, fixed server prices and Razorpay verification.
+- [ ] Admin approval, active sponsored placements and campaign statistics.
+- [ ] Prevent promotion payments from being redeemed as coin purchases.
+- [ ] Run focused tests and authenticated mobile verification.
+
 # Custom T-shirt printing
 - [x] Enable customization per product in admin.
 - [x] Add front/back image upload, position and size preview.

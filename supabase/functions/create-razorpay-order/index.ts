@@ -52,10 +52,18 @@ Deno.serve(async (req) => {
         : null;
 
     let amountPaise: number;
-    let purpose: 'order' | 'coins';
+    let purpose: 'order' | 'coins' | 'promotion';
     let orderTotalNote = '';
+    const campaignId = body?.campaign_id;
 
-    if (orderId) {
+    if (campaignId) {
+      if (typeof campaignId !== 'string' || !UUID_RE.test(campaignId) || orderId) return json({ error: 'Invalid campaign' }, 400);
+      const { data: campaign, error } = await supabase.from('video_campaigns').select('id,user_id,amount_inr,payment_status,status').eq('id', campaignId).maybeSingle();
+      if (error || !campaign || campaign.user_id !== userId) return json({ error: 'Campaign not found' }, 404);
+      if (campaign.payment_status !== 'unpaid' || campaign.status !== 'pending') return json({ error: 'Campaign is not awaiting payment' }, 409);
+      purpose = 'promotion';
+      amountPaise = Math.round(Number(campaign.amount_inr) * 100);
+    } else if (orderId) {
       if (!UUID_RE.test(orderId)) return json({ error: 'Invalid order' }, 400);
       purpose = 'order';
 
@@ -126,6 +134,7 @@ Deno.serve(async (req) => {
           user_id: userId,
           trendra_order_id: orderId ?? '',
           purpose,
+          campaign_id: typeof campaignId === 'string' ? campaignId : '',
           coupon_code: couponCode ?? '',
           server_priced: '1',
           order_total: orderTotalNote,

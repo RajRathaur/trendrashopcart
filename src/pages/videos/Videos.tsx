@@ -11,6 +11,7 @@ import { TechVideo, VIDEO_CATEGORIES, searchTerm, videoTime, timeAgo } from '@/l
 import { Avatar, VideoEngagement } from '@/components/videos/VideoEngagement';
 import { formatCount } from '@/lib/reels';
 import { Loader2, Video } from 'lucide-react';
+import { SponsoredVideos } from '@/components/videos/SponsoredVideos';
 
 export default function Videos() {
   const { id } = useParams();
@@ -82,7 +83,7 @@ export default function Videos() {
     <div className="mb-6 flex gap-2 overflow-x-auto pb-1">{['All', ...VIDEO_CATEGORIES].map(c => <Button key={c} className="shrink-0 rounded-lg" variant={c === category ? 'default' : 'secondary'} size="sm" onClick={() => setCategory(c)}>{c}</Button>)}</div>
     {shorts.length > 0 && !query && category === 'All' && <section className="mb-8"><h2 className="mb-3 text-lg font-bold">Shorts</h2><div className="flex gap-3 overflow-x-auto pb-2">{shorts.map(r => <Link key={r.id} to={`/reels/${r.id}`} className="w-36 shrink-0"><div className="aspect-[9/16] overflow-hidden rounded-xl bg-muted">{r.thumbnail_url && <img src={r.thumbnail_url} alt={r.caption} loading="lazy" className="h-full w-full object-cover" />}</div><p className="mt-1 line-clamp-2 text-sm font-medium">{r.caption}</p><p className="text-xs text-muted-foreground">{formatCount(r.view_count)} views</p></Link>)}</div></section>}</>}
     {error && <p role="alert" className="mb-4 text-destructive">{error}<Button variant="ghost" onClick={() => load()}>Retry</Button></p>}
-    {!id && <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">{rows.map(r => card(r))}</div>}
+    {!id && <><SponsoredVideos /><div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">{rows.map(r => card(r))}</div></>}
     {loading && <Loader2 className="mx-auto my-10 animate-spin" />}{!loading && !rows.length && <p className="py-12 text-center text-muted-foreground">Abhi koi video nahi</p>}{more && <Button className="mt-6" variant="outline" disabled={loading} onClick={() => load(rows.length)}>Aur dekhein</Button>}
   </div></Layout>;
 }
