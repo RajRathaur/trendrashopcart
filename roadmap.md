@@ -1,4 +1,5 @@
 # Video marketing panel
+- [ ] Verify promotion checkout, cross-purpose rejection and duplicate coin-credit protection; a captured live payment needs user authorization.
 - [ ] Creator/brand promotion form, fixed server prices and Razorpay verification.
 - [ ] Admin approval, active sponsored placements and campaign statistics.
 - [ ] Prevent promotion payments from being redeemed as coin purchases.
