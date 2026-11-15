@@ -7,7 +7,7 @@ import { Seo } from '@/components/Seo';
 import { ReelItem } from '@/components/reels/ReelItem';
 import { CommentsDrawer } from '@/components/reels/CommentsDrawer';
 import { useReelActions } from '@/hooks/useReelActions';
-import { FEED_SELECT, FeedReel } from '@/lib/reels';
+import { getReelFeedSelect, FeedReel } from '@/lib/reels';
 import { SITE_URL } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -31,9 +31,10 @@ const ReelsFeed = () => {
 
   const { user, liked, following, toggleLike, toggleFollow, requireLogin } = useReelActions(reels.map((r) => r.id));
   const followingKey = [...following].sort().join(',');
+  const feedSelect = getReelFeedSelect(Boolean(user));
 
   const fetchPage = useCallback(async (offset: number, exclude?: string): Promise<FeedReel[]> => {
-    let q = supabase.from('reels').select(FEED_SELECT).eq('status', 'approved')
+    let q = supabase.from('reels').select(feedSelect).eq('status', 'approved')
       .order('approved_at', { ascending: false }).range(offset, offset + PAGE - 1);
     if (tab === 'following') {
       const ids = followingKey ? followingKey.split(',') : [];
@@ -43,7 +44,7 @@ const ReelsFeed = () => {
     if (exclude) q = q.neq('id', exclude);
     const { data } = await q;
     return (data as unknown as FeedReel[] | null) ?? [];
-  }, [tab, followingKey]);
+  }, [tab, followingKey, feedSelect]);
 
   // First load (and reload on tab change).
   useEffect(() => {
@@ -54,7 +55,7 @@ const ReelsFeed = () => {
     (async () => {
       let first: FeedReel[] = [];
       if (id && tab === 'all') {
-        const { data } = await supabase.from('reels').select(FEED_SELECT).eq('id', id).maybeSingle();
+        const { data } = await supabase.from('reels').select(feedSelect).eq('id', id).maybeSingle();
         if (data) first = [data as unknown as FeedReel];
       }
       const page = await fetchPage(0, first[0]?.id);
@@ -64,7 +65,7 @@ const ReelsFeed = () => {
       setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [id, tab, fetchPage]);
+  }, [id, tab, fetchPage, feedSelect]);
 
   const loadMore = useCallback(async () => {
     if (loadingMore.current || !hasMore) return;
@@ -123,7 +124,7 @@ const ReelsFeed = () => {
 
   const share = async (r: FeedReel) => {
     const url = `${SITE_URL}/reels/${r.id}`;
-    const text = r.caption ? r.caption.slice(0, 80) : `@${r.author?.username} ki reel Trendra par`;
+    const text = r.caption ? r.caption.slice(0, 80) : r.author?.username ? `@${r.author.username} ki reel Trendra par` : 'Trendra par reel dekhein';
     try {
       if (navigator.share) { await navigator.share({ title: 'Trendra Reels', text, url }); return; }
       await navigator.clipboard.writeText(url);

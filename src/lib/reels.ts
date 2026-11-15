@@ -15,9 +15,16 @@ export const MAX_REEL_MB = 100;
 export const MAX_CAPTION = 500;
 export const MAX_COMMENT = 500;
 
-/** Columns used by the feed, profile grid and single reel page. */
-export const FEED_SELECT =
-  '*, author:social_profiles!reels_user_id_fkey(user_id, username, display_name, avatar_url), product:products(id, name, price, images)';
+/** Public watching must not query authenticated-only social profiles. */
+export const getReelFeedSelect = (signedIn: boolean): string => {
+  const publicSelect = '*, product:products(id, name, price, images)';
+  return signedIn
+    ? `${publicSelect}, author:social_profiles!reels_user_id_fkey(user_id, username, display_name, avatar_url)`
+    : publicSelect;
+};
+
+/** Authenticated admin moderation uses the existing author-inclusive selection. */
+export const FEED_SELECT = getReelFeedSelect(true);
 
 export const usernameSchema = z
   .string()
